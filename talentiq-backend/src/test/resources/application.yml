@@ -1,0 +1,52 @@
+spring:
+  profiles:
+    active: test
+
+  # Use H2 in-memory DB for tests (no MySQL required during unit tests)
+  datasource:
+    url: jdbc:h2:mem:talentiq_test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+
+  flyway:
+    enabled: false
+
+  # Disable Redis for tests
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  # Disable mail sending for tests
+  mail:
+    host: localhost
+    port: 25
+
+app:
+  jwt:
+    secret: test-secret-key-for-unit-tests-only-must-be-256-bits-long
+    access-token-expiry-ms: 900000
+    refresh-token-expiry-days: 7
+  rate-limit:
+    enabled: false
+  storage:
+    provider: local
+    local:
+      base-path: /tmp/talentiq-test-uploads
+  ai:
+    provider: openai
+    openai:
+      api-key: ""
+
+logging:
+  level:
+    com.talentiq: WARN
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN

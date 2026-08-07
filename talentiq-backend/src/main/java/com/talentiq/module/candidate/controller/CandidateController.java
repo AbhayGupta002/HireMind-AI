@@ -1,0 +1,150 @@
+package com.talentiq.module.candidate.controller;
+
+import com.talentiq.common.response.ApiResponse;
+import com.talentiq.common.response.PagedResponse;
+import com.talentiq.module.candidate.dto.CandidateDto;
+import com.talentiq.module.candidate.service.CandidateService;
+import com.talentiq.security.userdetails.UserPrincipal;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/v1/candidates")
+@RequiredArgsConstructor
+@Tag(name = "Candidate", description = "Candidate profile management, skills, experience, education, projects")
+public class CandidateController {
+
+    private final CandidateService candidateService;
+
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    @Operation(summary = "Get own candidate profile")
+    public ResponseEntity<ApiResponse<CandidateDto.Response>> getMyProfile(
+            @AuthenticationPrincipal UserPrincipal principal) {
+        CandidateDto.Response profile = candidateService.getProfileByUserId(principal.getId());
+        return ResponseEntity.ok(ApiResponse.success(profile));
+    }
+
+    @PutMapping("/me")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    @Operation(summary = "Update candidate profile")
+    public ResponseEntity<ApiResponse<CandidateDto.Response>> updateProfile(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @RequestBody CandidateDto.ProfileUpdateRequest request) {
+        CandidateDto.Response updated = candidateService.updateProfile(principal.getId(), request);
+        return ResponseEntity.ok(ApiResponse.success("Profile updated successfully", updated));
+    }
+
+    // ── Skills ────────────────────────────────────────────────────────────────
+    @PostMapping("/me/skills")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    @Operation(summary = "Add a skill to candidate profile")
+    public ResponseEntity<ApiResponse<CandidateDto.Response>> addSkill(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @Valid @RequestBody CandidateDto.SkillRequest request) {
+        CandidateDto.Response updated = candidateService.addSkill(principal.getId(), request);
+        return ResponseEntity.ok(ApiResponse.success("Skill added", updated));
+    }
+
+    @DeleteMapping("/me/skills/{skillId}")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    @Operation(summary = "Delete a skill")
+    public ResponseEntity<ApiResponse<Void>> deleteSkill(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @PathVariable Long skillId) {
+        candidateService.deleteSkill(principal.getId(), skillId);
+        return ResponseEntity.ok(ApiResponse.success("Skill deleted"));
+    }
+
+    // ── Experiences ───────────────────────────────────────────────────────────
+    @PostMapping("/me/experiences")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    @Operation(summary = "Add experience entry")
+    public ResponseEntity<ApiResponse<CandidateDto.Response>> addExperience(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @Valid @RequestBody CandidateDto.ExperienceRequest request) {
+        CandidateDto.Response updated = candidateService.addExperience(principal.getId(), request);
+        return ResponseEntity.ok(ApiResponse.success("Experience added", updated));
+    }
+
+    @DeleteMapping("/me/experiences/{experienceId}")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    @Operation(summary = "Delete an experience entry")
+    public ResponseEntity<ApiResponse<Void>> deleteExperience(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @PathVariable Long experienceId) {
+        candidateService.deleteExperience(principal.getId(), experienceId);
+        return ResponseEntity.ok(ApiResponse.success("Experience deleted"));
+    }
+
+    // ── Educations ────────────────────────────────────────────────────────────
+    @PostMapping("/me/educations")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    @Operation(summary = "Add education entry")
+    public ResponseEntity<ApiResponse<CandidateDto.Response>> addEducation(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @Valid @RequestBody CandidateDto.EducationRequest request) {
+        CandidateDto.Response updated = candidateService.addEducation(principal.getId(), request);
+        return ResponseEntity.ok(ApiResponse.success("Education added", updated));
+    }
+
+    @DeleteMapping("/me/educations/{educationId}")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    @Operation(summary = "Delete an education entry")
+    public ResponseEntity<ApiResponse<Void>> deleteEducation(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @PathVariable Long educationId) {
+        candidateService.deleteEducation(principal.getId(), educationId);
+        return ResponseEntity.ok(ApiResponse.success("Education deleted"));
+    }
+
+    // ── Projects ──────────────────────────────────────────────────────────────
+    @PostMapping("/me/projects")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    @Operation(summary = "Add project entry")
+    public ResponseEntity<ApiResponse<CandidateDto.Response>> addProject(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @Valid @RequestBody CandidateDto.ProjectRequest request) {
+        CandidateDto.Response updated = candidateService.addProject(principal.getId(), request);
+        return ResponseEntity.ok(ApiResponse.success("Project added", updated));
+    }
+
+    @DeleteMapping("/me/projects/{projectId}")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    @Operation(summary = "Delete a project entry")
+    public ResponseEntity<ApiResponse<Void>> deleteProject(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @PathVariable Long projectId) {
+        candidateService.deleteProject(principal.getId(), projectId);
+        return ResponseEntity.ok(ApiResponse.success("Project deleted"));
+    }
+
+    // ── Search & View (HR/Admin) ──────────────────────────────────────────────
+    @GetMapping("/search")
+    @PreAuthorize("hasAnyRole('HR', 'COMPANY_ADMIN', 'PLATFORM_ADMIN', 'SUPER_ADMIN')")
+    @Operation(summary = "Search open-to-work candidates by skill")
+    public ResponseEntity<PagedResponse<CandidateDto.Response>> searchCandidates(
+            @RequestParam(required = false) String skill,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(candidateService.searchCandidates(skill, pageable));
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('HR', 'COMPANY_ADMIN', 'PLATFORM_ADMIN', 'SUPER_ADMIN')")
+    @Operation(summary = "Get candidate profile by ID")
+    public ResponseEntity<ApiResponse<CandidateDto.Response>> getCandidateById(
+            @PathVariable Long id) {
+        CandidateDto.Response profile = candidateService.getProfileById(id);
+        return ResponseEntity.ok(ApiResponse.success(profile));
+    }
+}

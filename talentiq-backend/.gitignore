@@ -1,0 +1,66 @@
+# ============================================================
+# TalentIQ — .gitignore
+# ============================================================
+
+# ── Maven ──────────────────────────────────────────────────────
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ── IDE ────────────────────────────────────────────────────────
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ── Environment ────────────────────────────────────────────────
+.env
+*.env.local
+*.env.*.local
+
+# ── Logs ───────────────────────────────────────────────────────
+*.log
+logs/
+/var/log/
+
+# ── File Uploads ───────────────────────────────────────────────
+uploads/
+!uploads/.gitkeep
+
+# ── OS ─────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# ── Node (Frontend) ────────────────────────────────────────────
+node_modules/
+dist/
+.npm
+.cache/
+*.local
+
+# ── Docker ─────────────────────────────────────────────────────
+docker-compose.override.yml
+
+# ── Security ───────────────────────────────────────────────────
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+*.truststore
+private/
+secrets/
+
+# ── Test coverage ─────────────────────────────────────────────
+*.exec
+jacoco.xml

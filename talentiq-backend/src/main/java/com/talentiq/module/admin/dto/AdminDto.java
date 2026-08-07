@@ -1,0 +1,54 @@
+package com.talentiq.module.admin.dto;
+
+import com.talentiq.module.company.dto.CompanyDto;
+import com.talentiq.module.user.dto.UserDto;
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Data;
+
+import java.time.Instant;
+import java.util.List;
+
+public class AdminDto {
+
+    @Data
+    public static class UserStatusRequest {
+        @NotNull(message = "Enabled status is required")
+        private Boolean enabled;
+        private String reason;
+    }
+
+    @Data
+    public static class CompanyVerificationRequest {
+        @NotNull(message = "Approval status is required")
+        private Boolean approved;
+        private String notes;
+    }
+
+    @Data
+    @Builder
+    public static class SystemMetricsResponse {
+        private long totalUsers;
+        private long activeUsers;
+        private long lockedUsers;
+        private long totalCompanies;
+        private long verifiedCompanies;
+        private long pendingCompanies;
+        private long totalJobs;
+        private long activeJobs;
+        private long totalApplications;
+        private long totalResumes;
+    }
+
+    @Data
+    @Builder
+    public static class AuditLogResponse {
+        private Long id;
+        private String action;
+        private String entityName;
+        private Long entityId;
+        private String performedByEmail;
+        private String details;
+        private Instant timestamp;
+    }
+}

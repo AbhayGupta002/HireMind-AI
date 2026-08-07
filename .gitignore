@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.idea/
+*.iml
+*.iws
+.vscode/
+
+# Node / Frontend
+node_modules/
+dist/
+build/
+.npm
+npm-debug.log*
+
+# Maven / Spring Boot Backend
+target/
+*.class
+*.jar
+*.war
+
+# Logs & Environment
+*.log
+/tmp/
+.env
+.env.local

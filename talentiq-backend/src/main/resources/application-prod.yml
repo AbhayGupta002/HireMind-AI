@@ -1,0 +1,79 @@
+# ============================================================
+# TalentIQ — Production Profile
+# ============================================================
+spring:
+  # ── Database ───────────────────────────────────────────────
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT:3306}/${DB_NAME}?useSSL=true&requireSSL=true&serverTimezone=UTC&characterEncoding=UTF-8
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: TalentIQ-HikariPool-Prod
+      minimum-idle: 5
+      maximum-pool-size: 30
+      idle-timeout: 30000
+      connection-timeout: 20000
+      max-lifetime: 1800000
+      connection-test-query: SELECT 1
+
+  # ── JPA ───────────────────────────────────────────────────
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+
+  # ── Redis ─────────────────────────────────────────────────
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD}
+      timeout: 3000ms
+      ssl:
+        enabled: ${REDIS_SSL:false}
+      lettuce:
+        pool:
+          max-active: 20
+          max-idle: 20
+          min-idle: 5
+
+  # ── Mail ──────────────────────────────────────────────────
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+# ── Logging (Prod — minimal) ─────────────────────────────────
+logging:
+  level:
+    com.talentiq: WARN
+    org.springframework: ERROR
+    org.hibernate: ERROR
+  file:
+    name: /var/log/talentiq/application.log
+  logback:
+    rollingpolicy:
+      max-file-size: 100MB
+      max-history: 30
+      total-size-cap: 3GB
+
+# ── Security Headers ─────────────────────────────────────────
+server:
+  ssl:
+    enabled: ${SSL_ENABLED:false}
+
+# ── Actuator (prod — restricted) ─────────────────────────────
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
