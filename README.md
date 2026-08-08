@@ -1,4 +1,4 @@
-# 🧠 HireMind AI (TalentIQ) — Next-Gen AI Recruitment & Talent Intelligence Platform
+#  HireMe AI (TalentIQ) — Next-Gen AI Recruitment & Talent Intelligence Platform
 
 [![Build Status](https://img.shields.io/badge/Build-Passing-emerald?style=for-the-badge&logo=github)](https://github.com/AbhayGupta002/HireMind-AI)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.4-brightgreen?style=for-the-badge&logo=springboot)](https://spring.io/projects/spring-boot)
@@ -10,30 +10,30 @@
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 ### 🏢 HR Recruiter Portal
-- 📢 **Live Job Publishing**: Post, edit, and publish technical job opportunities with customizable skill tags, experience levels, and salary ranges.
-- 👥 **Applicant Review & Resume Downloader**: View submitted candidate profiles, cover letters, and download original candidate resume PDFs (`.pdf`, `.docx`).
-- 🔄 **Hiring Funnel Stage Pipeline**: Move candidates through recruitment stages (`APPLIED` ➔ `SCREENED` ➔ `INTERVIEWING` ➔ `OFFERED` ➔ `REJECTED`) with automatic candidate notifications.
-- 🤖 **RAG HR AI Copilot**: Generate tailored interview questions, evaluate technical competencies, and synthesize candidate summaries in real time.
-- 📊 **Recruiter Telemetry & Analytics**: Stage-by-stage funnel conversion rates, average time-to-hire, and active job telemetry.
+-  **Live Job Publishing**: Post, edit, and publish technical job opportunities with customizable skill tags, experience levels, and salary ranges.
+-  **Applicant Review & Resume Downloader**: View submitted candidate profiles, cover letters, and download original candidate resume PDFs (`.pdf`, `.docx`).
+-  **Hiring Funnel Stage Pipeline**: Move candidates through recruitment stages (`APPLIED` ➔ `SCREENED` ➔ `INTERVIEWING` ➔ `OFFERED` ➔ `REJECTED`) with automatic candidate notifications.
+-  **RAG HR AI Copilot**: Generate tailored interview questions, evaluate technical competencies, and synthesize candidate summaries in real time.
+-  **Recruiter Telemetry & Analytics**: Stage-by-stage funnel conversion rates, average time-to-hire, and active job telemetry.
 
-### 🎯 Candidate Applicant Portal
+###  Candidate Applicant Portal
 - ⚡ **AI Match Scoring**: Algorithmic fit analysis (0–100%) comparing candidate profile skills against active job requirements.
-- 📄 **Resume Parser**: Automatic extraction of technical skills, experience history, and education details.
-- 📂 **Interactive Portfolio Showcase**: Create and highlight project demos, GitHub repositories, and live URLs.
-- 📊 **Application Tracker**: Monitor application status changes and receive real-time recruiter notifications.
+-  **Resume Parser**: Automatic extraction of technical skills, experience history, and education details.
+-  **Interactive Portfolio Showcase**: Create and highlight project demos, GitHub repositories, and live URLs.
+-  **Application Tracker**: Monitor application status changes and receive real-time recruiter notifications.
 
-### 🛡️ Security & Infrastructure
-- 🔐 **Spring Security 6 & JWT**: Stateless token authentication with BCrypt strength 12 password hashing.
-- 🔒 **Brute-Force & Lockout Protection**: Automatic 15-minute account lockout after 5 consecutive failed login attempts.
-- ⚡ **Redis Cache & Rate Limiting**: Distributed session caching and sliding window rate limiting for public endpoints.
-- 🗄️ **Flyway Schema Versioning**: Automated database migration pipeline (`V1` through `V11`).
+###  Security & Infrastructure
+-  **Spring Security 6 & JWT**: Stateless token authentication with BCrypt strength 12 password hashing.
+-  **Brute-Force & Lockout Protection**: Automatic 15-minute account lockout after 5 consecutive failed login attempts.
+-  **Redis Cache & Rate Limiting**: Distributed session caching and sliding window rate limiting for public endpoints.
+-  **Flyway Schema Versioning**: Automated database migration pipeline (`V1` through `V11`).
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 | Layer | Technologies & Tools |
 |---|---|
@@ -45,7 +45,7 @@
 
 ---
 
-## 🚀 Quick Start & Local Setup
+##  Quick Start & Local Setup
 
 ### 1. Prerequisites
 Ensure you have the following installed locally:
@@ -144,7 +144,7 @@ You can test the application immediately using the pre-configured role switcher 
 
 ---
 
-## 🧪 Running Automated Tests
+##  Running Automated Tests
 
 Execute backend integration tests using the isolated H2 in-memory profile:
 
@@ -161,5 +161,5 @@ Distributed under the **MIT License**. See `LICENSE` for more details.
 
 ---
 
-### 👨‍💻 Developed & Maintained by
+###  Developed & Maintained by
 **Abhay Gupta** — [GitHub Profile](https://github.com/AbhayGupta002)
