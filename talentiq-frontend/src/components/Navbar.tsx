@@ -130,14 +130,14 @@ export const Navbar: React.FC = () => {
 
           {isHr && (
             <>
+              <Link to="/hr-analytics" className="btn btn-secondary" style={{ border: location.pathname === '/hr-analytics' ? '1px solid var(--primary-cyan)' : 'none' }}>
+                <BarChart3 size={16} color="var(--primary-cyan)" /> HR Dashboard
+              </Link>
               <Link to="/hr-applications" className="btn btn-secondary" style={{ border: location.pathname === '/hr-applications' ? '1px solid var(--primary-cyan)' : 'none' }}>
                 <Users size={16} color="var(--primary-cyan)" /> Applicants
               </Link>
               <Link to="/copilot" className="btn btn-secondary" style={{ border: location.pathname === '/copilot' ? '1px solid var(--primary-cyan)' : 'none' }}>
                 <Bot size={16} color="var(--primary-cyan)" /> HR AI Copilot
-              </Link>
-              <Link to="/hr-analytics" className="btn btn-secondary" style={{ border: location.pathname === '/hr-analytics' ? '1px solid var(--primary-indigo)' : 'none' }}>
-                <BarChart3 size={16} /> Analytics
               </Link>
             </>
           )}
