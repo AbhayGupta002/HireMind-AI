@@ -36,7 +36,8 @@ function getStorageUser(): { roles: string[]; email: string } {
 }
 
 function hasHrRole(data: { roles: string[]; email: string }): boolean {
-  if (data.email.includes('hr@') || data.email.includes('recruiter') || data.email.includes('rachel.hr')) return true;
+  const email = (data.email || '').toLowerCase();
+  if (email.includes('hr') || email.includes('recruiter')) return true;
   return data.roles.some(r => {
     const str = (typeof r === 'string' ? r : (r as any)?.name || (r as any)?.role || String(r)).toUpperCase();
     return ['ROLE_HR', 'HR', 'ROLE_RECRUITER', 'RECRUITER', 'ROLE_HR_MANAGER', 'HR_MANAGER'].includes(str);

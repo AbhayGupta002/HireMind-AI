@@ -37,27 +37,13 @@ export const Login: React.FC = () => {
     try {
       await login({ email, password });
 
-      // Read the actual roles that were stored during login (most reliable source)
-      const redirectTo = (() => {
-        try {
-          const saved = localStorage.getItem('user');
-          if (!saved) return '/jobs';
-          const u = JSON.parse(saved);
-          const roles: string[] = Array.isArray(u.roles)
-            ? u.roles.map((r: any) => (typeof r === 'string' ? r : r?.name || '').toUpperCase())
-            : [];
-          const isAdmin = roles.some(r => ['ROLE_SUPER_ADMIN','ROLE_PLATFORM_ADMIN','SUPER_ADMIN','ADMIN','ROLE_ADMIN'].includes(r));
-          const isHr = roles.some(r => ['ROLE_HR','HR','ROLE_RECRUITER','RECRUITER','ROLE_HR_MANAGER','HR_MANAGER'].includes(r));
-          if (isAdmin) return '/admin';
-          if (isHr) return '/hr-analytics';
-          return '/jobs';
-        } catch {
-          // Fall back to UI tab selection
-          if (selectedRole === 'ADMIN') return '/admin';
-          if (selectedRole === 'HR') return '/hr-analytics';
-          return '/jobs';
-        }
-      })();
+      const emailLower = email.toLowerCase();
+      let redirectTo = '/jobs';
+      if (selectedRole === 'ADMIN' || emailLower.includes('admin')) {
+        redirectTo = '/admin';
+      } else if (selectedRole === 'HR' || emailLower.includes('hr') || emailLower.includes('recruiter')) {
+        redirectTo = '/hr-analytics';
+      }
 
       navigate(redirectTo);
     } catch (err: any) {
