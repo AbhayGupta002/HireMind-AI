@@ -35,10 +35,14 @@ export const Login: React.FC = () => {
     setError('');
     setLoading(true);
     try {
-      await login({ email, password });
-      if (selectedRole === 'ADMIN') {
+      const loggedUser = await login({ email, password });
+      const roles = loggedUser?.roles || [];
+      const isHrUser = roles.includes('ROLE_HR') || roles.includes('HR') || selectedRole === 'HR' || email.toLowerCase().includes('hr');
+      const isAdminUser = roles.includes('ROLE_SUPER_ADMIN') || roles.includes('ROLE_ADMIN') || roles.includes('ADMIN') || selectedRole === 'ADMIN';
+
+      if (isAdminUser) {
         navigate('/admin');
-      } else if (selectedRole === 'HR') {
+      } else if (isHrUser) {
         navigate('/hr-analytics');
       } else {
         navigate('/jobs');

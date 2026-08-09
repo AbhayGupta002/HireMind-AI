@@ -18,7 +18,7 @@ interface AuthContextType {
   isCandidate: boolean;
   isHr: boolean;
   isAdmin: boolean;
-  login: (credentials: any) => Promise<void>;
+  login: (credentials: any) => Promise<UserProfile>;
   register: (data: any) => Promise<void>;
   logout: () => void;
 }
@@ -71,7 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     verifyUser();
   }, []);
 
-  const login = async (credentials: any) => {
+  const login = async (credentials: any): Promise<UserProfile> => {
     const res = await apiClient.post('/auth/login', credentials);
     const authData = res.data.data;
     if (authData.accessToken) {
@@ -83,6 +83,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const authUser = parseUserFromAuthData(authData);
     localStorage.setItem('user', JSON.stringify(authUser));
     setUser(authUser);
+    return authUser;
   };
 
   const register = async (data: any) => {

@@ -55,10 +55,11 @@ function ProtectedRoute({ children }: { children: React.ReactElement }) {
 function AppLayout() {
   const location = useLocation();
   const isHome = location.pathname === '/';
+  const isHrDashboard = location.pathname === '/hr-analytics';
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {!isHome && <Navbar />}
+      {!isHome && !isHrDashboard && <Navbar />}
       <main style={{ flex: 1 }}>
         <Routes>
           <Route path="/" element={<Home />} />
