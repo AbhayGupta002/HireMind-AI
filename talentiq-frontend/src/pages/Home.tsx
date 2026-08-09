@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AiGuideChatbot } from '../components/AiGuideChatbot';
 import {
   Sparkles, ArrowRight, Search, MapPin, Zap,
   Brain, Bell, BarChart3, Sun, Moon,
@@ -732,6 +733,9 @@ export const Home: React.FC = () => {
           {' '}· AI-powered recruitment, reimagined.
         </p>
       </footer>
+
+      {/* ══ AI GUIDE CHATBOT WIDGET ══ */}
+      <AiGuideChatbot dark={dark} />
     </div>
   );
 };
