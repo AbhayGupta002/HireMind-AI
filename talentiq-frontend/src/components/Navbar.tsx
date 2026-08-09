@@ -85,7 +85,7 @@ export const Navbar: React.FC = () => {
       alignItems: 'center',
       justifyContent: 'space-between'
     }}>
-      <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
+      <Link to={isHr ? '/hr-analytics' : isAdmin ? '/admin' : '/'} style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
         <div style={{
           width: '42px',
           height: '42px',
@@ -110,12 +110,26 @@ export const Navbar: React.FC = () => {
 
       {isAuthenticated && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Link to="/jobs" className="btn btn-secondary" style={{ border: location.pathname === '/jobs' ? '1px solid var(--primary-indigo)' : 'none' }}>
-            <Briefcase size={16} /> Jobs
-          </Link>
-
-          {isCandidate && (
+          {isHr ? (
             <>
+              <Link to="/hr-analytics" className="btn btn-secondary" style={{ border: location.pathname === '/hr-analytics' ? '1px solid var(--primary-indigo)' : 'none' }}>
+                <BarChart3 size={16} color="var(--primary-cyan)" /> HR Dashboard
+              </Link>
+              <Link to="/hr-applications" className="btn btn-secondary" style={{ border: location.pathname === '/hr-applications' ? '1px solid var(--primary-cyan)' : 'none' }}>
+                <Users size={16} color="var(--primary-cyan)" /> Applicants
+              </Link>
+              <Link to="/copilot" className="btn btn-secondary" style={{ border: location.pathname === '/copilot' ? '1px solid var(--primary-cyan)' : 'none' }}>
+                <Bot size={16} color="var(--primary-cyan)" /> HR AI Copilot
+              </Link>
+              <Link to="/jobs" className="btn btn-secondary" style={{ border: location.pathname === '/jobs' ? '1px solid var(--primary-indigo)' : 'none' }}>
+                <Briefcase size={16} /> Jobs
+              </Link>
+            </>
+          ) : isCandidate ? (
+            <>
+              <Link to="/jobs" className="btn btn-secondary" style={{ border: location.pathname === '/jobs' ? '1px solid var(--primary-indigo)' : 'none' }}>
+                <Briefcase size={16} /> Jobs
+              </Link>
               <Link to="/recommendations" className="btn btn-secondary" style={{ border: location.pathname === '/recommendations' ? '1px solid var(--primary-indigo)' : 'none' }}>
                 <Sparkles size={16} color="var(--primary-cyan)" /> AI Matches
               </Link>
@@ -126,20 +140,10 @@ export const Navbar: React.FC = () => {
                 <FolderGit2 size={16} /> Portfolio
               </Link>
             </>
-          )}
-
-          {isHr && (
-            <>
-              <Link to="/hr-analytics" className="btn btn-secondary" style={{ border: location.pathname === '/hr-analytics' ? '1px solid var(--primary-cyan)' : 'none' }}>
-                <BarChart3 size={16} color="var(--primary-cyan)" /> HR Dashboard
-              </Link>
-              <Link to="/hr-applications" className="btn btn-secondary" style={{ border: location.pathname === '/hr-applications' ? '1px solid var(--primary-cyan)' : 'none' }}>
-                <Users size={16} color="var(--primary-cyan)" /> Applicants
-              </Link>
-              <Link to="/copilot" className="btn btn-secondary" style={{ border: location.pathname === '/copilot' ? '1px solid var(--primary-cyan)' : 'none' }}>
-                <Bot size={16} color="var(--primary-cyan)" /> HR AI Copilot
-              </Link>
-            </>
+          ) : (
+            <Link to="/jobs" className="btn btn-secondary" style={{ border: location.pathname === '/jobs' ? '1px solid var(--primary-indigo)' : 'none' }}>
+              <Briefcase size={16} /> Jobs
+            </Link>
           )}
 
           {isAdmin && (

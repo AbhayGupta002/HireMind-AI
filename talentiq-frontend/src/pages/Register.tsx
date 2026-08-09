@@ -96,7 +96,11 @@ export const Register: React.FC = () => {
           companySize: form.companySize
         });
       }
-      navigate('/jobs');
+      if (mode === 'HR') {
+        navigate('/hr-analytics');
+      } else {
+        navigate('/jobs');
+      }
     } catch (err: any) {
       setError(err?.response?.data?.message || err?.message || 'Registration failed. Please try again.');
     } finally {

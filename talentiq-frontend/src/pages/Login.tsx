@@ -36,23 +36,24 @@ export const Login: React.FC = () => {
     setLoading(true);
     try {
       await login({ email, password });
+      const savedUser = JSON.parse(localStorage.getItem('user') || '{}');
+      const roles = savedUser.roles || [];
+      const userIsHr = roles.includes('ROLE_HR') || roles.includes('HR') || selectedRole === 'HR';
+      const userIsAdmin = roles.includes('ROLE_SUPER_ADMIN') || roles.includes('SUPER_ADMIN') || selectedRole === 'ADMIN';
 
-      const emailLower = email.toLowerCase();
-      let redirectTo = '/jobs';
-      if (selectedRole === 'ADMIN' || emailLower.includes('admin')) {
-        redirectTo = '/admin';
-      } else if (selectedRole === 'HR' || emailLower.includes('hr') || emailLower.includes('recruiter')) {
-        redirectTo = '/hr-analytics';
+      if (userIsAdmin) {
+        navigate('/admin');
+      } else if (userIsHr) {
+        navigate('/hr-analytics');
+      } else {
+        navigate('/jobs');
       }
-
-      navigate(redirectTo);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Invalid email or password. Please verify your credentials.');
     } finally {
       setLoading(false);
     }
   };
-
 
   return (
     <div style={{

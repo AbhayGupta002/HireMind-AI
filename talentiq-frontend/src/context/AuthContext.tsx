@@ -25,63 +25,20 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-/* ─── Normalise roles from any shape the backend may return ─── */
-const parseRoles = (rawRoles: any): string[] => {
-  if (!rawRoles) return [];
-  if (Array.isArray(rawRoles)) {
-    return rawRoles.map((r: any) =>
-      typeof r === 'string' ? r : r?.name || r?.role || String(r)
-    );
-  }
-  if (typeof rawRoles === 'object') return Object.values(rawRoles) as string[];
-  return [];
-};
-
 const parseUserFromAuthData = (data: any): UserProfile => {
-  const roles = parseRoles(data.roles);
+  const rolesArray = Array.isArray(data.roles)
+    ? data.roles
+    : (data.roles ? Object.values(data.roles) : []);
+
   return {
     id: data.userId || data.id,
     email: data.email,
-    firstName: data.firstName || data.first_name || '',
-    lastName: data.lastName || data.last_name || '',
-    roles,
+    firstName: data.firstName,
+    lastName: data.lastName,
+    roles: rolesArray,
     status: data.status || 'ACTIVE',
-    emailVerified: data.emailVerified ?? true,
+    emailVerified: data.emailVerified ?? true
   };
-};
-
-/* ─── Role-check helpers covering all backend naming conventions & fallback emails ─── */
-const checkIsHr = (user: UserProfile | null) => {
-  if (!user) return false;
-  const email = (user.email || '').toLowerCase();
-  if (email.includes('hr@') || email.includes('recruiter') || email.includes('rachel.hr')) return true;
-  const roles = user.roles || [];
-  return roles.some(r => {
-    const str = (typeof r === 'string' ? r : (r as any)?.name || (r as any)?.role || String(r)).toUpperCase();
-    return ['ROLE_HR', 'HR', 'ROLE_RECRUITER', 'RECRUITER', 'ROLE_HR_MANAGER', 'HR_MANAGER'].includes(str);
-  });
-};
-
-const checkIsAdmin = (user: UserProfile | null) => {
-  if (!user) return false;
-  const email = (user.email || '').toLowerCase();
-  if (email.includes('admin@')) return true;
-  const roles = user.roles || [];
-  return roles.some(r => {
-    const str = (typeof r === 'string' ? r : (r as any)?.name || (r as any)?.role || String(r)).toUpperCase();
-    return ['ROLE_SUPER_ADMIN', 'ROLE_PLATFORM_ADMIN', 'SUPER_ADMIN', 'ADMIN', 'ROLE_ADMIN', 'PLATFORM_ADMIN'].includes(str);
-  });
-};
-
-const checkIsCandidate = (user: UserProfile | null) => {
-  if (!user) return false;
-  const email = (user.email || '').toLowerCase();
-  if (email.includes('candidate@') || email.includes('jane.dev')) return true;
-  const roles = user.roles || [];
-  return roles.some(r => {
-    const str = (typeof r === 'string' ? r : (r as any)?.name || (r as any)?.role || String(r)).toUpperCase();
-    return ['ROLE_CANDIDATE', 'CANDIDATE', 'ROLE_USER', 'USER'].includes(str);
-  });
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -89,29 +46,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const saved = localStorage.getItem('user');
       return saved ? JSON.parse(saved) : null;
-    } catch {
+    } catch (e) {
       return null;
     }
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  /* On mount, if a token exists re-validate the session */
   useEffect(() => {
     const verifyUser = async () => {
       const token = localStorage.getItem('accessToken');
       if (token) {
         try {
           const res = await apiClient.get('/users/me');
-          const userData = res.data.data || res.data;
+          const userData = res.data.data;
           const userObj = parseUserFromAuthData(userData);
           setUser(userObj);
           localStorage.setItem('user', JSON.stringify(userObj));
         } catch (e) {
-          // Token expired or invalid — fall back to cached user
-          const saved = localStorage.getItem('user');
-          if (saved) {
-            try { setUser(JSON.parse(saved)); } catch { /* ignore */ }
-          }
+          console.warn('Session check warning (using cached user):', e);
         }
       }
       setIsLoading(false);
@@ -119,52 +71,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     verifyUser();
   }, []);
 
-  /* Login: get token → immediately fetch /users/me for fresh roles */
   const login = async (credentials: any) => {
     const res = await apiClient.post('/auth/login', credentials);
-    const authData = res.data.data || res.data;
-
+    const authData = res.data.data;
     if (authData.accessToken) {
       localStorage.setItem('accessToken', authData.accessToken);
     }
     if (authData.refreshToken) {
       localStorage.setItem('refreshToken', authData.refreshToken);
     }
-
-    // Parse what the login endpoint returned first
-    let authUser = parseUserFromAuthData(authData);
-
-    // Immediately fetch /users/me to get accurate roles (login response sometimes omits them)
-    try {
-      const meRes = await apiClient.get('/users/me');
-      const meData = meRes.data.data || meRes.data;
-      authUser = parseUserFromAuthData({ ...authData, ...meData });
-    } catch {
-      // If /users/me fails, trust what login gave us
-    }
-
+    const authUser = parseUserFromAuthData(authData);
     localStorage.setItem('user', JSON.stringify(authUser));
     setUser(authUser);
   };
 
   const register = async (data: any) => {
     const res = await apiClient.post('/auth/register', data);
-    const authData = res.data.data || res.data;
-
+    const authData = res.data.data;
     if (authData.accessToken) {
       localStorage.setItem('accessToken', authData.accessToken);
     }
     if (authData.refreshToken) {
       localStorage.setItem('refreshToken', authData.refreshToken);
     }
-
-    let authUser = parseUserFromAuthData(authData);
-    try {
-      const meRes = await apiClient.get('/users/me');
-      const meData = meRes.data.data || meRes.data;
-      authUser = parseUserFromAuthData({ ...authData, ...meData });
-    } catch { /* use what register returned */ }
-
+    const authUser = parseUserFromAuthData(authData);
     localStorage.setItem('user', JSON.stringify(authUser));
     setUser(authUser);
   };
@@ -176,19 +106,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
   };
 
-
+  const roles = user?.roles || [];
+  const isCandidate = roles.includes('ROLE_CANDIDATE') || roles.includes('CANDIDATE');
+  const isHr = roles.includes('ROLE_HR') || roles.includes('HR');
+  const isAdmin = roles.includes('ROLE_SUPER_ADMIN') || roles.includes('ROLE_PLATFORM_ADMIN') || roles.includes('SUPER_ADMIN');
 
   return (
     <AuthContext.Provider value={{
       user,
       isAuthenticated: !!user,
       isLoading,
-      isCandidate: checkIsCandidate(user),
-      isHr: checkIsHr(user),
-      isAdmin: checkIsAdmin(user),
+      isCandidate,
+      isHr,
+      isAdmin,
       login,
       register,
-      logout,
+      logout
     }}>
       {children}
     </AuthContext.Provider>
