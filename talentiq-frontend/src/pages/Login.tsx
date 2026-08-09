@@ -39,7 +39,7 @@ export const Login: React.FC = () => {
       if (selectedRole === 'ADMIN') {
         navigate('/admin');
       } else if (selectedRole === 'HR') {
-        navigate('/copilot');
+        navigate('/hr-analytics');
       } else {
         navigate('/jobs');
       }
