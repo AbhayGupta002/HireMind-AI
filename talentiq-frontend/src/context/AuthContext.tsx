@@ -18,52 +18,83 @@ interface AuthContextType {
   isCandidate: boolean;
   isHr: boolean;
   isAdmin: boolean;
-  login: (credentials: any) => Promise<UserProfile>;
+  login: (credentials: any) => Promise<void>;
   register: (data: any) => Promise<void>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const parseUserFromAuthData = (data: any): UserProfile => {
-  const rolesArray = Array.isArray(data.roles)
-    ? data.roles
-    : (data.roles ? Object.values(data.roles) : []);
+/* ─── Normalise roles from any shape the backend may return ─── */
+const parseRoles = (rawRoles: any): string[] => {
+  if (!rawRoles) return [];
+  if (Array.isArray(rawRoles)) {
+    return rawRoles.map((r: any) =>
+      typeof r === 'string' ? r : r?.name || r?.role || String(r)
+    );
+  }
+  if (typeof rawRoles === 'object') return Object.values(rawRoles) as string[];
+  return [];
+};
 
+const parseUserFromAuthData = (data: any): UserProfile => {
+  const roles = parseRoles(data.roles);
   return {
     id: data.userId || data.id,
     email: data.email,
-    firstName: data.firstName,
-    lastName: data.lastName,
-    roles: rolesArray,
+    firstName: data.firstName || data.first_name || '',
+    lastName: data.lastName || data.last_name || '',
+    roles,
     status: data.status || 'ACTIVE',
-    emailVerified: data.emailVerified ?? true
+    emailVerified: data.emailVerified ?? true,
   };
 };
+
+/* ─── Role-check helpers covering all backend naming conventions ─── */
+const checkIsHr = (roles: string[]) =>
+  roles.some(r =>
+    ['ROLE_HR', 'HR', 'ROLE_RECRUITER', 'RECRUITER', 'ROLE_HR_MANAGER', 'HR_MANAGER'].includes(r.toUpperCase())
+  );
+
+const checkIsAdmin = (roles: string[]) =>
+  roles.some(r =>
+    ['ROLE_SUPER_ADMIN', 'ROLE_PLATFORM_ADMIN', 'SUPER_ADMIN', 'ADMIN', 'ROLE_ADMIN',
+     'PLATFORM_ADMIN'].includes(r.toUpperCase())
+  );
+
+const checkIsCandidate = (roles: string[]) =>
+  roles.some(r =>
+    ['ROLE_CANDIDATE', 'CANDIDATE', 'ROLE_USER', 'USER'].includes(r.toUpperCase())
+  );
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(() => {
     try {
       const saved = localStorage.getItem('user');
       return saved ? JSON.parse(saved) : null;
-    } catch (e) {
+    } catch {
       return null;
     }
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  /* On mount, if a token exists re-validate the session */
   useEffect(() => {
     const verifyUser = async () => {
       const token = localStorage.getItem('accessToken');
       if (token) {
         try {
           const res = await apiClient.get('/users/me');
-          const userData = res.data.data;
+          const userData = res.data.data || res.data;
           const userObj = parseUserFromAuthData(userData);
           setUser(userObj);
           localStorage.setItem('user', JSON.stringify(userObj));
         } catch (e) {
-          console.warn('Session check warning (using cached user):', e);
+          // Token expired or invalid — fall back to cached user
+          const saved = localStorage.getItem('user');
+          if (saved) {
+            try { setUser(JSON.parse(saved)); } catch { /* ignore */ }
+          }
         }
       }
       setIsLoading(false);
@@ -71,31 +102,52 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     verifyUser();
   }, []);
 
-  const login = async (credentials: any): Promise<UserProfile> => {
+  /* Login: get token → immediately fetch /users/me for fresh roles */
+  const login = async (credentials: any) => {
     const res = await apiClient.post('/auth/login', credentials);
-    const authData = res.data.data;
+    const authData = res.data.data || res.data;
+
     if (authData.accessToken) {
       localStorage.setItem('accessToken', authData.accessToken);
     }
     if (authData.refreshToken) {
       localStorage.setItem('refreshToken', authData.refreshToken);
     }
-    const authUser = parseUserFromAuthData(authData);
+
+    // Parse what the login endpoint returned first
+    let authUser = parseUserFromAuthData(authData);
+
+    // Immediately fetch /users/me to get accurate roles (login response sometimes omits them)
+    try {
+      const meRes = await apiClient.get('/users/me');
+      const meData = meRes.data.data || meRes.data;
+      authUser = parseUserFromAuthData({ ...authData, ...meData });
+    } catch {
+      // If /users/me fails, trust what login gave us
+    }
+
     localStorage.setItem('user', JSON.stringify(authUser));
     setUser(authUser);
-    return authUser;
   };
 
   const register = async (data: any) => {
     const res = await apiClient.post('/auth/register', data);
-    const authData = res.data.data;
+    const authData = res.data.data || res.data;
+
     if (authData.accessToken) {
       localStorage.setItem('accessToken', authData.accessToken);
     }
     if (authData.refreshToken) {
       localStorage.setItem('refreshToken', authData.refreshToken);
     }
-    const authUser = parseUserFromAuthData(authData);
+
+    let authUser = parseUserFromAuthData(authData);
+    try {
+      const meRes = await apiClient.get('/users/me');
+      const meData = meRes.data.data || meRes.data;
+      authUser = parseUserFromAuthData({ ...authData, ...meData });
+    } catch { /* use what register returned */ }
+
     localStorage.setItem('user', JSON.stringify(authUser));
     setUser(authUser);
   };
@@ -108,21 +160,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const roles = user?.roles || [];
-  const isCandidate = roles.includes('ROLE_CANDIDATE') || roles.includes('CANDIDATE');
-  const isHr = roles.includes('ROLE_HR') || roles.includes('HR');
-  const isAdmin = roles.includes('ROLE_SUPER_ADMIN') || roles.includes('ROLE_PLATFORM_ADMIN') || roles.includes('SUPER_ADMIN');
 
   return (
     <AuthContext.Provider value={{
       user,
       isAuthenticated: !!user,
       isLoading,
-      isCandidate,
-      isHr,
-      isAdmin,
+      isCandidate: checkIsCandidate(roles),
+      isHr: checkIsHr(roles),
+      isAdmin: checkIsAdmin(roles),
       login,
       register,
-      logout
+      logout,
     }}>
       {children}
     </AuthContext.Provider>

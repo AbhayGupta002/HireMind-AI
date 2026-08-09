@@ -35,24 +35,38 @@ export const Login: React.FC = () => {
     setError('');
     setLoading(true);
     try {
-      const loggedUser = await login({ email, password });
-      const roles = loggedUser?.roles || [];
-      const isHrUser = roles.includes('ROLE_HR') || roles.includes('HR') || selectedRole === 'HR' || email.toLowerCase().includes('hr');
-      const isAdminUser = roles.includes('ROLE_SUPER_ADMIN') || roles.includes('ROLE_ADMIN') || roles.includes('ADMIN') || selectedRole === 'ADMIN';
+      await login({ email, password });
 
-      if (isAdminUser) {
-        navigate('/admin');
-      } else if (isHrUser) {
-        navigate('/hr-analytics');
-      } else {
-        navigate('/jobs');
-      }
+      // Read the actual roles that were stored during login (most reliable source)
+      const redirectTo = (() => {
+        try {
+          const saved = localStorage.getItem('user');
+          if (!saved) return '/jobs';
+          const u = JSON.parse(saved);
+          const roles: string[] = Array.isArray(u.roles)
+            ? u.roles.map((r: any) => (typeof r === 'string' ? r : r?.name || '').toUpperCase())
+            : [];
+          const isAdmin = roles.some(r => ['ROLE_SUPER_ADMIN','ROLE_PLATFORM_ADMIN','SUPER_ADMIN','ADMIN','ROLE_ADMIN'].includes(r));
+          const isHr = roles.some(r => ['ROLE_HR','HR','ROLE_RECRUITER','RECRUITER','ROLE_HR_MANAGER','HR_MANAGER'].includes(r));
+          if (isAdmin) return '/admin';
+          if (isHr) return '/hr-analytics';
+          return '/jobs';
+        } catch {
+          // Fall back to UI tab selection
+          if (selectedRole === 'ADMIN') return '/admin';
+          if (selectedRole === 'HR') return '/hr-analytics';
+          return '/jobs';
+        }
+      })();
+
+      navigate(redirectTo);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Invalid email or password. Please verify your credentials.');
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div style={{
