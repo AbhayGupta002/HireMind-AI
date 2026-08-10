@@ -5,7 +5,7 @@ import { apiClient } from '../api/client';
 import {
   Calendar, ChevronLeft, ChevronRight, Clock, Mail,
   Plus, X, Check, LayoutDashboard, MessageSquare,
-  Users, Briefcase, Settings, LogOut, Bot, Star,
+  Users, Briefcase, Settings, LogOut, Bot,
   AlertCircle
 } from 'lucide-react';
 
@@ -213,7 +213,7 @@ const HrCalendar: React.FC = () => {
           <NavItem icon={<LogOut size={17} />} label="Sign Out" onClick={() => { logout(); navigate('/'); }} />
         </nav>
         <div style={{ padding: '12px', background: 'rgba(99,102,241,0.1)', borderRadius: 10, border: '1px solid rgba(99,102,241,0.2)' }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: '#e2e8f0' }}>{user?.name || 'HR Manager'}</div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: '#e2e8f0' }}>{user ? `${user.firstName} ${user.lastName}` : 'HR Manager'}</div>
           <div style={{ fontSize: 10, color: '#64748b', marginTop: 2 }}>{user?.email || ''}</div>
         </div>
       </aside>

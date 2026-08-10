@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { apiClient } from '../api/client';
 import {
   LayoutDashboard, MessageSquare, Calendar, Briefcase,
-  Users, TrendingUp, Bell, Settings, Search,
+  Users, TrendingUp, Bell, Settings,
   LogOut, RefreshCw, ChevronRight, Bot, Star
 } from 'lucide-react';
 import {
@@ -215,7 +215,7 @@ const HrAnalytics: React.FC = () => {
 
         {/* User profile */}
         <div style={{ padding: '16px', background: 'rgba(99,102,241,0.1)', borderRadius: 12, border: '1px solid rgba(99,102,241,0.2)' }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: '#e2e8f0' }}>{user?.name || 'HR Manager'}</div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: '#e2e8f0' }}>{user ? `${user.firstName} ${user.lastName}` : 'HR Manager'}</div>
           <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>{user?.email || ''}</div>
         </div>
       </aside>
