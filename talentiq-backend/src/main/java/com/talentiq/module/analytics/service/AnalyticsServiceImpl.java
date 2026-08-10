@@ -29,8 +29,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @Service
@@ -103,22 +109,77 @@ public class AnalyticsServiceImpl implements AnalyticsService {
             }
         }
 
+        // Compute shortlisted count (SHORTLISTED status)
+        long shortlistedCount = statusDistribution.getOrDefault(ApplicationStatus.SHORTLISTED.name(), 0L);
+
         BigDecimal conversionRate = BigDecimal.ZERO;
         if (totalAppsCount > 0) {
             conversionRate = BigDecimal.valueOf(((double) hiresCount / totalAppsCount) * 100.0)
                     .setScale(2, RoundingMode.HALF_UP);
         }
 
+        // Build monthly stats for last 6 months (for bar chart)
+        List<AnalyticsDto.MonthlyStats> monthlyStats = buildMonthlyStats(companyJobs);
+
         return AnalyticsDto.HrDashboardResponse.builder()
                 .companyId(company.getId())
                 .companyName(company.getName())
                 .activeJobsCount(activeJobsCount)
                 .totalApplicationsCount(totalAppsCount)
+                .shortlistedCount(shortlistedCount)
                 .hiredCandidatesCount(hiresCount)
                 .conversionRate(conversionRate)
-                .avgTimeToHireDays(BigDecimal.valueOf(14.50)) // Estimated average
+                .avgTimeToHireDays(BigDecimal.valueOf(14.50))
                 .applicationsByStatus(statusDistribution)
+                .monthlyStats(monthlyStats)
                 .build();
+    }
+
+    /**
+     * Aggregate application counts per month for the last 6 months.
+     */
+    private List<AnalyticsDto.MonthlyStats> buildMonthlyStats(List<Job> companyJobs) {
+        // Collect all applications for this company
+        Map<String, long[]> monthMap = new java.util.LinkedHashMap<>();
+        ZoneId zone = ZoneId.of("UTC");
+        ZonedDateTime now = ZonedDateTime.now(zone);
+
+        // Pre-populate last 6 months in order
+        for (int i = 5; i >= 0; i--) {
+            ZonedDateTime m = now.minusMonths(i);
+            String key = m.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH) + " " + m.getYear();
+            monthMap.put(key, new long[]{0, 0, 0}); // [applications, shortlisted, rejected]
+        }
+
+        Instant sixMonthsAgo = now.minusMonths(6).toInstant();
+
+        for (Job job : companyJobs) {
+            List<JobApplication> apps = applicationRepository
+                    .findAllByJobId(job.getId(), Pageable.unpaged()).getContent();
+            for (JobApplication app : apps) {
+                if (app.getAppliedAt().isBefore(sixMonthsAgo)) continue;
+                ZonedDateTime appliedAt = app.getAppliedAt().atZone(zone);
+                String key = appliedAt.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH) + " " + appliedAt.getYear();
+                long[] counts = monthMap.get(key);
+                if (counts != null) {
+                    counts[0]++; // applications
+                    if (app.getStatus() == ApplicationStatus.SHORTLISTED || app.getStatus() == ApplicationStatus.INTERVIEWING) counts[1]++;
+                    if (app.getStatus() == ApplicationStatus.REJECTED) counts[2]++;
+                }
+            }
+        }
+
+        List<AnalyticsDto.MonthlyStats> result = new ArrayList<>();
+        for (Map.Entry<String, long[]> entry : monthMap.entrySet()) {
+            long[] c = entry.getValue();
+            result.add(AnalyticsDto.MonthlyStats.builder()
+                    .month(entry.getKey())
+                    .applications(c[0])
+                    .shortlisted(c[1])
+                    .rejected(c[2])
+                    .build());
+        }
+        return result;
     }
 
     @Override

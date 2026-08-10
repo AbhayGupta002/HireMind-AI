@@ -1,0 +1,65 @@
+package com.talentiq.module.interview.controller;
+
+import com.talentiq.common.response.ApiResponse;
+import com.talentiq.module.interview.dto.InterviewSlotDto;
+import com.talentiq.module.interview.service.InterviewService;
+import com.talentiq.security.userdetails.UserPrincipal;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/v1/interviews")
+@RequiredArgsConstructor
+@Tag(name = "Interview Calendar", description = "HR interview scheduling and selection email APIs")
+public class InterviewController {
+
+    private final InterviewService interviewService;
+
+    @PostMapping("/schedule")
+    @PreAuthorize("hasRole('HR')")
+    @Operation(summary = "Schedule an interview slot — sends email to candidate")
+    public ResponseEntity<ApiResponse<InterviewSlotDto.Response>> scheduleInterview(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @Valid @RequestBody InterviewSlotDto.ScheduleRequest request) {
+        InterviewSlotDto.Response slot = interviewService.scheduleInterview(principal.getId(), request);
+        return ResponseEntity.ok(ApiResponse.success(slot));
+    }
+
+    @PostMapping("/select")
+    @PreAuthorize("hasRole('HR')")
+    @Operation(summary = "Send 'You are selected' email to candidate")
+    public ResponseEntity<ApiResponse<Void>> sendSelectionEmail(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @Valid @RequestBody InterviewSlotDto.SelectionEmailRequest request) {
+        interviewService.sendSelectionEmail(principal.getId(), request);
+        return ResponseEntity.ok(ApiResponse.success("Selection email sent successfully"));
+    }
+
+    @GetMapping("/calendar")
+    @PreAuthorize("hasRole('HR')")
+    @Operation(summary = "Get HR's upcoming interview calendar slots")
+    public ResponseEntity<ApiResponse<List<InterviewSlotDto.Response>>> getCalendar(
+            @AuthenticationPrincipal UserPrincipal principal) {
+        List<InterviewSlotDto.Response> slots = interviewService.getCalendar(principal.getId());
+        return ResponseEntity.ok(ApiResponse.success(slots));
+    }
+
+    @PutMapping("/{id}/status")
+    @PreAuthorize("hasRole('HR')")
+    @Operation(summary = "Update interview slot status (CONFIRMED / CANCELLED)")
+    public ResponseEntity<ApiResponse<InterviewSlotDto.Response>> updateStatus(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserPrincipal principal,
+            @Valid @RequestBody InterviewSlotDto.StatusUpdateRequest request) {
+        InterviewSlotDto.Response updated = interviewService.updateStatus(id, principal.getId(), request);
+        return ResponseEntity.ok(ApiResponse.success(updated));
+    }
+}

@@ -56,7 +56,10 @@ public class SecurityConfig {
             "/v1/companies/*/public",
             "/swagger-ui/**",
             "/api-docs/**",
-            "/actuator/health"
+            "/actuator/health",
+            // WebSocket SockJS handshake endpoints
+            "/ws/**",
+            "/ws/info/**"
     };
 
     @Bean

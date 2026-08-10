@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 /**
  * Mail service for transactional emails.
@@ -76,6 +80,34 @@ public class MailService {
         String body = buildAlertHtml(alertTitle, alertMessage);
         sendHtmlEmail(toEmail, subject, body);
         log.info("System alert email dispatched to: {}", toEmail);
+    }
+
+    /**
+     * Sends a "You are selected" email from HR to a candidate.
+     */
+    @Async("mailExecutor")
+    public void sendSelectionEmail(String toEmail, String candidateName, String jobTitle,
+                                   String hrName, String customMessage) {
+        String subject = "🎉 You've been selected — " + jobTitle + " at TalentIQ";
+        String body = buildSelectionHtml(candidateName, jobTitle, hrName, customMessage);
+        sendHtmlEmail(toEmail, subject, body);
+        log.info("Selection email dispatched to: {} for job: {}", toEmail, jobTitle);
+    }
+
+    /**
+     * Sends an interview schedule confirmation email to a candidate.
+     */
+    @Async("mailExecutor")
+    public void sendInterviewScheduleEmail(String toEmail, String candidateName, String jobTitle,
+                                           Instant scheduledAt, String meetingLink) {
+        String formattedDate = DateTimeFormatter
+                .ofPattern("EEEE, MMMM d, yyyy 'at' h:mm a z", Locale.ENGLISH)
+                .withZone(ZoneId.of("UTC"))
+                .format(scheduledAt);
+        String subject = "📅 Interview Scheduled — " + jobTitle;
+        String body = buildInterviewScheduleHtml(candidateName, jobTitle, formattedDate, meetingLink);
+        sendHtmlEmail(toEmail, subject, body);
+        log.info("Interview schedule email dispatched to: {} for job: {}", toEmail, jobTitle);
     }
 
     // ── Core Send ─────────────────────────────────────────────────────────────
@@ -232,5 +264,77 @@ public class MailService {
                 </table></td></tr></table>
                 </body></html>
                 """.formatted(title, title, message);
+    }
+
+    private String buildSelectionHtml(String candidateName, String jobTitle, String hrName, String customMessage) {
+        return """
+                <!DOCTYPE html>
+                <html lang="en">
+                <head><meta charset="UTF-8"><title>You're Selected!</title></head>
+                <body style="margin:0;padding:0;background:#0f172a;font-family:'Segoe UI',Arial,sans-serif;">
+                <table width="100%%" cellpadding="0" cellspacing="0" style="background:#0f172a;">
+                <tr><td align="center" style="padding:40px 20px;">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#1e293b;border-radius:16px;overflow:hidden;">
+                <tr><td style="background:linear-gradient(135deg,#10b981,#06b6d4);padding:40px 40px 30px;text-align:center;">
+                  <h1 style="color:#fff;margin:0;font-size:32px;font-weight:700;">🎉 Congratulations!</h1>
+                  <p style="color:rgba(255,255,255,0.9);margin:10px 0 0;font-size:16px;">You've been selected!</p>
+                </td></tr>
+                <tr><td style="padding:40px;">
+                  <h2 style="color:#f8fafc;margin:0 0 16px;font-size:22px;">Hello, %s! 🌟</h2>
+                  <p style="color:#94a3b8;line-height:1.6;margin:0 0 16px;">
+                    We are thrilled to inform you that your application for the position of
+                    <strong style="color:#f1f5f9;">%s</strong> has been shortlisted.
+                  </p>
+                  <div style="background:#0f172a;border-left:4px solid #10b981;padding:20px;border-radius:8px;margin:24px 0;">
+                    <p style="color:#94a3b8;margin:0;line-height:1.7;font-size:15px;">%s</p>
+                  </div>
+                  <p style="color:#64748b;font-size:14px;margin:0;">— %s, Talent Team @ TalentIQ</p>
+                </td></tr>
+                <tr><td style="padding:24px 40px;border-top:1px solid #334155;text-align:center;">
+                  <p style="color:#475569;font-size:12px;margin:0;">© 2025 TalentIQ · AI Talent Intelligence Platform</p>
+                </td></tr>
+                </table></td></tr></table>
+                </body></html>
+                """.formatted(candidateName, jobTitle, customMessage, hrName);
+    }
+
+    private String buildInterviewScheduleHtml(String candidateName, String jobTitle,
+                                              String formattedDate, String meetingLink) {
+        String meetingSection = (meetingLink != null && !meetingLink.isBlank())
+                ? "<div style=\"text-align:center;margin:28px 0;\"><a href=\"" + meetingLink + "\" style=\"display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;padding:14px 36px;border-radius:8px;font-weight:600;font-size:16px;\">Join Meeting</a></div>"
+                : "<p style=\"color:#64748b;font-size:13px;text-align:center;\">Meeting link will be shared separately.</p>";
+
+        return """
+                <!DOCTYPE html>
+                <html lang="en">
+                <head><meta charset="UTF-8"><title>Interview Scheduled</title></head>
+                <body style="margin:0;padding:0;background:#0f172a;font-family:'Segoe UI',Arial,sans-serif;">
+                <table width="100%%" cellpadding="0" cellspacing="0" style="background:#0f172a;">
+                <tr><td align="center" style="padding:40px 20px;">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#1e293b;border-radius:16px;overflow:hidden;">
+                <tr><td style="background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:40px 40px 30px;text-align:center;">
+                  <h1 style="color:#fff;margin:0;font-size:28px;font-weight:700;">📅 Interview Scheduled</h1>
+                  <p style="color:rgba(255,255,255,0.8);margin:8px 0 0;font-size:14px;">TalentIQ Recruitment Platform</p>
+                </td></tr>
+                <tr><td style="padding:40px;">
+                  <h2 style="color:#f8fafc;margin:0 0 16px;font-size:22px;">Hello, %s!</h2>
+                  <p style="color:#94a3b8;line-height:1.6;margin:0 0 24px;">
+                    Your interview for <strong style="color:#f1f5f9;">%s</strong> has been scheduled.
+                  </p>
+                  <div style="background:#0f172a;border-radius:12px;padding:24px;margin:0 0 24px;">
+                    <p style="color:#64748b;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px;">Scheduled Time</p>
+                    <p style="color:#e2e8f0;font-size:18px;font-weight:600;margin:0;">%s</p>
+                  </div>
+                  %s
+                  <p style="color:#64748b;font-size:13px;text-align:center;margin:16px 0 0;">
+                    Please be available 5 minutes before the scheduled time.
+                  </p>
+                </td></tr>
+                <tr><td style="padding:24px 40px;border-top:1px solid #334155;text-align:center;">
+                  <p style="color:#475569;font-size:12px;margin:0;">© 2025 TalentIQ · AI Talent Intelligence Platform</p>
+                </td></tr>
+                </table></td></tr></table>
+                </body></html>
+                """.formatted(candidateName, jobTitle, formattedDate, meetingSection);
     }
 }

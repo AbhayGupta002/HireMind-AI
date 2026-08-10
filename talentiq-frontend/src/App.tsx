@@ -9,20 +9,25 @@ import { Recommendations } from './pages/Recommendations';
 import { MyApplications } from './pages/MyApplications';
 import { PortfolioBuilder } from './pages/PortfolioBuilder';
 import { HrCopilot } from './pages/HrCopilot';
-import { HrAnalytics } from './pages/HrAnalytics';
+import HrAnalytics from './pages/HrAnalytics';
 import { HrApplications } from './pages/HrApplications';
 import { AdminPortal } from './pages/AdminPortal';
 import { ProfilePage } from './pages/ProfilePage';
+import HrMessages from './pages/HrMessages';
+import HrCalendar from './pages/HrCalendar';
 
 // Wrapper that hides the global Navbar on the home page
 // (Home.tsx has its own full custom navbar with dark/light toggle)
 function AppLayout() {
   const location = useLocation();
+  // HR dashboard pages have their own sidebar navbar — hide the global navbar
+  const HR_ROUTES = ['/hr-analytics', '/hr-messages', '/hr-calendar', '/hr-applications', '/hr-copilot', '/copilot', '/admin'];
   const isHome = location.pathname === '/';
+  const hideNavbar = isHome || HR_ROUTES.some(r => location.pathname.startsWith(r));
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {!isHome && <Navbar />}
+      {!hideNavbar && <Navbar />}
       <main style={{ flex: 1 }}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -35,6 +40,8 @@ function AppLayout() {
           <Route path="/copilot" element={<HrCopilot />} />
           <Route path="/hr-analytics" element={<HrAnalytics />} />
           <Route path="/hr-applications" element={<HrApplications />} />
+          <Route path="/hr-messages" element={<HrMessages />} />
+          <Route path="/hr-calendar" element={<HrCalendar />} />
           <Route path="/admin" element={<AdminPortal />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="*" element={<Navigate to="/" replace />} />

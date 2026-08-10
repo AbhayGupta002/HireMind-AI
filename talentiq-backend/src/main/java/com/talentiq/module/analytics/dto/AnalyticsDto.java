@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 public class AnalyticsDto {
@@ -21,15 +22,26 @@ public class AnalyticsDto {
 
     @Data
     @Builder
+    public static class MonthlyStats {
+        private String month;          // "Jan", "Feb", ...
+        private long applications;
+        private long shortlisted;
+        private long rejected;
+    }
+
+    @Data
+    @Builder
     public static class HrDashboardResponse {
         private Long companyId;
         private String companyName;
         private long activeJobsCount;
         private long totalApplicationsCount;
+        private long shortlistedCount;
         private long hiredCandidatesCount;
         private BigDecimal conversionRate;
         private BigDecimal avgTimeToHireDays;
         private Map<String, Long> applicationsByStatus;
+        private List<MonthlyStats> monthlyStats;
     }
 
     @Data
