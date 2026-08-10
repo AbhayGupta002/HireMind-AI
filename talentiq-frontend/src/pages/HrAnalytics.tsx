@@ -279,7 +279,7 @@ export const HrAnalytics: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('accessToken') || localStorage.getItem('accessToken');
     if (!token) return;
 
     const client = new StompClient({

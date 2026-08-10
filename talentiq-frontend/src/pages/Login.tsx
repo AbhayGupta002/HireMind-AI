@@ -36,7 +36,7 @@ export const Login: React.FC = () => {
     setLoading(true);
     try {
       await login({ email, password });
-      const savedUser = JSON.parse(localStorage.getItem('user') || '{}');
+      const savedUser = JSON.parse(sessionStorage.getItem('user') || localStorage.getItem('user') || '{}');
       const roles = savedUser.roles || [];
       const userIsHr = roles.includes('ROLE_HR') || roles.includes('HR') || selectedRole === 'HR';
       const userIsAdmin = roles.includes('ROLE_SUPER_ADMIN') || roles.includes('SUPER_ADMIN') || selectedRole === 'ADMIN';

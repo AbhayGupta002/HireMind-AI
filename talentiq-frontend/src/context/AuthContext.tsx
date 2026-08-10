@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { apiClient } from '../api/client';
+import { apiClient, clearStoredAuth, getStoredToken } from '../api/client';
 
 export interface UserProfile {
   id: number;
@@ -44,7 +44,8 @@ const parseUserFromAuthData = (data: any): UserProfile => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(() => {
     try {
-      const saved = localStorage.getItem('user');
+      // Check sessionStorage first for active tab security
+      const saved = sessionStorage.getItem('user') || localStorage.getItem('user');
       return saved ? JSON.parse(saved) : null;
     } catch (e) {
       return null;
@@ -52,21 +53,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const logout = () => {
+    clearStoredAuth();
+    setUser(null);
+  };
+
   useEffect(() => {
     const verifyUser = async () => {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
-        try {
-          const res = await apiClient.get('/users/me');
-          const userData = res.data.data;
-          const userObj = parseUserFromAuthData(userData);
-          setUser(userObj);
-          localStorage.setItem('user', JSON.stringify(userObj));
-        } catch (e) {
-          console.warn('Session check warning (using cached user):', e);
-        }
+      const token = getStoredToken();
+      if (!token) {
+        logout();
+        setIsLoading(false);
+        return;
       }
-      setIsLoading(false);
+      try {
+        const res = await apiClient.get('/users/me');
+        const userData = res.data.data;
+        const userObj = parseUserFromAuthData(userData);
+        setUser(userObj);
+        sessionStorage.setItem('user', JSON.stringify(userObj));
+      } catch (e) {
+        console.warn('Session verification failed, logging out:', e);
+        logout(); // Strictly log out on session check failure
+      } finally {
+        setIsLoading(false);
+      }
     };
     verifyUser();
   }, []);
@@ -74,36 +85,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (credentials: any) => {
     const res = await apiClient.post('/auth/login', credentials);
     const authData = res.data.data;
+    
+    // Store in sessionStorage so window/tab closure automatically logs out for security
     if (authData.accessToken) {
-      localStorage.setItem('accessToken', authData.accessToken);
+      sessionStorage.setItem('accessToken', authData.accessToken);
     }
     if (authData.refreshToken) {
-      localStorage.setItem('refreshToken', authData.refreshToken);
+      sessionStorage.setItem('refreshToken', authData.refreshToken);
     }
     const authUser = parseUserFromAuthData(authData);
-    localStorage.setItem('user', JSON.stringify(authUser));
+    sessionStorage.setItem('user', JSON.stringify(authUser));
+    
+    // Clean old localStorage items to avoid stale auto-login
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+    
     setUser(authUser);
   };
 
   const register = async (data: any) => {
     const res = await apiClient.post('/auth/register', data);
     const authData = res.data.data;
+
     if (authData.accessToken) {
-      localStorage.setItem('accessToken', authData.accessToken);
+      sessionStorage.setItem('accessToken', authData.accessToken);
     }
     if (authData.refreshToken) {
-      localStorage.setItem('refreshToken', authData.refreshToken);
+      sessionStorage.setItem('refreshToken', authData.refreshToken);
     }
     const authUser = parseUserFromAuthData(authData);
-    localStorage.setItem('user', JSON.stringify(authUser));
-    setUser(authUser);
-  };
+    sessionStorage.setItem('user', JSON.stringify(authUser));
 
-  const logout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
-    setUser(null);
+
+    setUser(authUser);
   };
 
   const roles = user?.roles || [];

@@ -118,7 +118,7 @@ const HrMessages: React.FC = () => {
 
   /* ─── Connect WebSocket / STOMP ─── */
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('accessToken') || localStorage.getItem('accessToken');
     if (!token) return;
 
     const client = new StompClient({
