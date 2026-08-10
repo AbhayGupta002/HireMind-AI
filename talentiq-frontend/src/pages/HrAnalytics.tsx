@@ -6,7 +6,7 @@ import {
   LayoutDashboard, MessageSquare, Calendar, Briefcase,
   Users, Star, UserCircle2, BarChart2,
   Settings, Search, Bell, TrendingUp, ChevronDown,
-  Plus, MoreVertical, Bot, RefreshCw, LogOut
+  Plus, MoreVertical, Bot, RefreshCw, LogOut, Sun, Sparkles
 } from 'lucide-react';
 import { Client as StompClient } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
@@ -67,10 +67,11 @@ interface NavItemProps {
   icon: React.ReactNode;
   label: string;
   active?: boolean;
+  isUniverse?: boolean;
   onClick?: () => void;
 }
 
-const NavItem: React.FC<NavItemProps> = ({ icon, label, active, onClick }) => (
+const NavItem: React.FC<NavItemProps> = ({ icon, label, active, isUniverse, onClick }) => (
   <button
     onClick={onClick}
     style={{
@@ -84,13 +85,19 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, active, onClick }) => (
       cursor: 'pointer',
       fontSize: '14px',
       fontWeight: active ? 600 : 400,
-      background: active ? '#2563EB' : 'transparent',
-      color: active ? '#FFFFFF' : '#64748B',
+      background: active
+        ? (isUniverse ? 'linear-gradient(135deg, #6366F1, #8B5CF6)' : '#2563EB')
+        : 'transparent',
+      color: active ? '#FFFFFF' : (isUniverse ? '#94A3B8' : '#64748B'),
       transition: 'all 0.2s',
       textAlign: 'left',
     }}
-    onMouseEnter={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.background = '#F1F5F9'; }}
-    onMouseLeave={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+    onMouseEnter={e => {
+      if (!active) (e.currentTarget as HTMLButtonElement).style.background = isUniverse ? 'rgba(99,102,241,0.12)' : '#F1F5F9';
+    }}
+    onMouseLeave={e => {
+      if (!active) (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+    }}
   >
     {icon}
     {label}
@@ -98,12 +105,12 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, active, onClick }) => (
 );
 
 /* ─── Circular Progress Ring ─── */
-const RingChart: React.FC<{ pct: number; color: string }> = ({ pct, color }) => {
+const RingChart: React.FC<{ pct: number; color: string; isUniverse?: boolean }> = ({ pct, color, isUniverse }) => {
   const r = 28, circ = 2 * Math.PI * r;
   const filled = circ - (Math.min(100, Math.max(0, pct)) / 100) * circ;
   return (
     <svg width="72" height="72" viewBox="0 0 72 72">
-      <circle cx="36" cy="36" r={r} fill="none" stroke="#E2E8F0" strokeWidth="7" />
+      <circle cx="36" cy="36" r={r} fill="none" stroke={isUniverse ? 'rgba(255,255,255,0.08)' : '#E2E8F0'} strokeWidth="7" />
       <circle cx="36" cy="36" r={r} fill="none" stroke={color} strokeWidth="7"
         strokeDasharray={circ} strokeDashoffset={filled}
         strokeLinecap="round" transform="rotate(-90 36 36)" />
@@ -113,7 +120,7 @@ const RingChart: React.FC<{ pct: number; color: string }> = ({ pct, color }) => 
 };
 
 /* ─── Custom Bar Chart ─── */
-const BarChartComponent: React.FC<{ data: Array<{ month: string; apps: number; shortlisted: number; rejected: number }> }> = ({ data }) => {
+const BarChartComponent: React.FC<{ data: Array<{ month: string; apps: number; shortlisted: number; rejected: number }>; isUniverse?: boolean }> = ({ data, isUniverse }) => {
   const maxVal = Math.max(...data.map(d => Math.max(d.apps, d.shortlisted, d.rejected, 1)), 10);
   return (
     <div style={{ display: 'flex', alignItems: 'flex-end', gap: '12px', height: '200px', padding: '0 8px' }}>
@@ -129,7 +136,7 @@ const BarChartComponent: React.FC<{ data: Array<{ month: string; apps: number; s
               <div title={`Shortlisted: ${d.shortlisted}`} style={{ width: '7px', height: `${slH}px`, background: '#FBBF24', borderRadius: '4px 4px 0 0', transition: 'height 0.5s' }} />
               <div title={`Rejected: ${d.rejected}`} style={{ width: '7px', height: `${rjH}px`, background: '#FB7185', borderRadius: '4px 4px 0 0', transition: 'height 0.5s' }} />
             </div>
-            <span style={{ fontSize: '10px', color: '#94A3B8', marginTop: '4px' }}>{monthLabel}</span>
+            <span style={{ fontSize: '10px', color: isUniverse ? '#94A3B8' : '#64748B', marginTop: '4px' }}>{monthLabel}</span>
           </div>
         );
       })}
@@ -143,6 +150,19 @@ const BarChartComponent: React.FC<{ data: Array<{ month: string; apps: number; s
 export const HrAnalytics: React.FC = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+
+  // Theme State: 'light' or 'universe'
+  const [theme, setTheme] = useState<'light' | 'universe'>(() => {
+    return (localStorage.getItem('hr_theme') as 'light' | 'universe') || 'light';
+  });
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'light' ? 'universe' : 'light';
+    setTheme(nextTheme);
+    localStorage.setItem('hr_theme', nextTheme);
+  };
+
+  const isUniverse = theme === 'universe';
 
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [activityFeed, setActivityFeed] = useState<ActivityItem[]>([]);
@@ -185,7 +205,6 @@ export const HrAnalytics: React.FC = () => {
         });
       }
 
-      // Real Activity Feed from applications
       if (appsRes?.data?.data?.content) {
         const items: ActivityItem[] = appsRes.data.data.content.map((app: any) => {
           const name = `${app.candidate?.user?.firstName || 'Candidate'} ${app.candidate?.user?.lastName || ''}`.trim();
@@ -214,7 +233,6 @@ export const HrAnalytics: React.FC = () => {
         setActivityFeed(items);
       }
 
-      // Real Meetings from interview calendar
       if (calRes?.data?.data) {
         const mtgs: MeetingItem[] = calRes.data.data.slice(0, 4).map((slot: any) => {
           const dt = new Date(slot.scheduledAt);
@@ -232,12 +250,11 @@ export const HrAnalytics: React.FC = () => {
         setMeetings(mtgs);
       }
 
-      // Real Recent Jobs
       if (jobsRes?.data?.data?.content) {
         const jbs: RecentJob[] = jobsRes.data.data.content.slice(0, 4).map((j: any) => ({
           id: j.id,
           icon: j.title?.charAt(0) || '💼',
-          iconBg: '#2563EB',
+          iconBg: isUniverse ? '#6366F1' : '#2563EB',
           title: j.title,
           company: j.company?.name || 'Company',
           location: j.location || 'Remote',
@@ -246,7 +263,6 @@ export const HrAnalytics: React.FC = () => {
         setRecentJobs(jbs);
       }
 
-      // Real Chat Contacts
       if (chatRes?.data?.data) {
         setContacts(chatRes.data.data.slice(0, 3));
       }
@@ -262,7 +278,6 @@ export const HrAnalytics: React.FC = () => {
     loadDashboardData();
   }, []);
 
-  // WebSocket Subscription for live dynamic updates
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -294,7 +309,6 @@ export const HrAnalytics: React.FC = () => {
   const hrName = user ? `${user.firstName} ${user.lastName}` : 'HR Manager';
   const hrRole = 'Director of Recruiting';
 
-  // Dynamic Chart Data
   const chartData = (analytics?.monthlyStats && analytics.monthlyStats.length > 0)
     ? analytics.monthlyStats.map(m => ({ month: m.month, apps: m.applications, shortlisted: m.shortlisted, rejected: m.rejected }))
     : [
@@ -306,7 +320,6 @@ export const HrAnalytics: React.FC = () => {
         { month: 'Jun', apps: 78, shortlisted: 58, rejected: 42 },
       ];
 
-  // Dynamic Stats Cards
   const stats = [
     {
       label: 'Total Applications',
@@ -331,20 +344,42 @@ export const HrAnalytics: React.FC = () => {
     },
   ];
 
+  // Theme-dependent styles
+  const styles = {
+    bg: isUniverse
+      ? 'radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15), transparent 40%), radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.12), transparent 40%), #070B19'
+      : '#F8FAFC',
+    sidebarBg: isUniverse ? '#0F172A' : '#FFFFFF',
+    sidebarBorder: isUniverse ? '1px solid rgba(255,255,255,0.08)' : '1px solid #E2E8F0',
+    headerBg: isUniverse ? '#0F172A' : '#FFFFFF',
+    headerBorder: isUniverse ? '1px solid rgba(255,255,255,0.08)' : '1px solid #E2E8F0',
+    cardBg: isUniverse ? 'rgba(15, 23, 42, 0.75)' : '#FFFFFF',
+    cardBorder: isUniverse ? '1px solid rgba(255,255,255,0.08)' : '1px solid #E2E8F0',
+    cardShadow: isUniverse ? '0 8px 32px rgba(0,0,0,0.37)' : '0 1px 3px rgba(0,0,0,0.05)',
+    heading: isUniverse ? '#F8FAFC' : '#1E293B',
+    subtext: isUniverse ? '#94A3B8' : '#64748B',
+    cardSubBg: isUniverse ? 'rgba(255,255,255,0.03)' : '#F8FAFC',
+    inputBg: isUniverse ? 'rgba(255,255,255,0.06)' : '#F8FAFC',
+    inputBorder: isUniverse ? '1px solid rgba(255,255,255,0.1)' : '1px solid #E2E8F0',
+    inputText: isUniverse ? '#F8FAFC' : '#1E293B',
+  };
+
   return (
     <div style={{
       display: 'flex',
       minHeight: '100vh',
-      background: '#F8FAFC',
+      background: styles.bg,
+      color: styles.heading,
       fontFamily: "'Inter', 'Outfit', sans-serif",
+      transition: 'background 0.3s, color 0.3s',
     }}>
 
       {/* ══════════ LEFT SIDEBAR ══════════ */}
       <aside style={{
         width: '220px',
         minHeight: '100vh',
-        background: '#FFFFFF',
-        borderRight: '1px solid #E2E8F0',
+        background: styles.sidebarBg,
+        borderRight: styles.sidebarBorder,
         display: 'flex',
         flexDirection: 'column',
         padding: '24px 12px',
@@ -358,38 +393,38 @@ export const HrAnalytics: React.FC = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '4px 8px 24px', cursor: 'pointer' }} onClick={() => navigate('/')}>
           <div style={{
             width: '36px', height: '36px', borderRadius: '10px',
-            background: 'linear-gradient(135deg, #2563EB, #7C3AED)',
+            background: isUniverse ? 'linear-gradient(135deg, #6366F1, #8B5CF6)' : 'linear-gradient(135deg, #2563EB, #7C3AED)',
             display: 'flex', alignItems: 'center', justifyContent: 'center'
           }}>
-            <span style={{ fontSize: '16px' }}>🧠</span>
+            <span style={{ fontSize: '16px' }}>🌌</span>
           </div>
-          <span style={{ fontWeight: 700, fontSize: '16px', color: '#1E293B' }}>HireMind AI</span>
+          <span style={{ fontWeight: 700, fontSize: '16px', color: styles.heading }}>HireMind AI</span>
         </div>
 
         {/* MENU */}
         <div style={{ marginBottom: '8px' }}>
-          <p style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.1em', padding: '0 16px', marginBottom: '8px' }}>MENU</p>
-          <NavItem icon={<LayoutDashboard size={16} />} label="Dashboard" active={activeNav === 'Dashboard'} onClick={() => setActiveNav('Dashboard')} />
-          <NavItem icon={<MessageSquare size={16} />} label="Message" active={activeNav === 'Message'} onClick={() => { setActiveNav('Message'); navigate('/hr-messages'); }} />
-          <NavItem icon={<Calendar size={16} />} label="Calendar" active={activeNav === 'Calendar'} onClick={() => { setActiveNav('Calendar'); navigate('/hr-calendar'); }} />
+          <p style={{ fontSize: '10px', fontWeight: 700, color: styles.subtext, letterSpacing: '0.1em', padding: '0 16px', marginBottom: '8px' }}>MENU</p>
+          <NavItem icon={<LayoutDashboard size={16} />} label="Dashboard" active={activeNav === 'Dashboard'} isUniverse={isUniverse} onClick={() => setActiveNav('Dashboard')} />
+          <NavItem icon={<MessageSquare size={16} />} label="Message" active={activeNav === 'Message'} isUniverse={isUniverse} onClick={() => { setActiveNav('Message'); navigate('/hr-messages'); }} />
+          <NavItem icon={<Calendar size={16} />} label="Calendar" active={activeNav === 'Calendar'} isUniverse={isUniverse} onClick={() => { setActiveNav('Calendar'); navigate('/hr-calendar'); }} />
         </div>
 
         {/* RECRUITMENT */}
         <div style={{ marginBottom: '8px', marginTop: '16px' }}>
-          <p style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.1em', padding: '0 16px', marginBottom: '8px' }}>RECRUITMENT</p>
-          <NavItem icon={<Briefcase size={16} />} label="Jobs" active={activeNav === 'Jobs'} onClick={() => { setActiveNav('Jobs'); navigate('/jobs'); }} />
-          <NavItem icon={<Users size={16} />} label="Candidates" active={activeNav === 'Candidates'} onClick={() => { setActiveNav('Candidates'); navigate('/hr-applications'); }} />
-          <NavItem icon={<Bot size={16} />} label="AI Copilot" active={activeNav === 'Copilot'} onClick={() => { setActiveNav('Copilot'); navigate('/copilot'); }} />
-          <NavItem icon={<Star size={16} />} label="My Referrals" active={activeNav === 'Referrals'} onClick={() => setActiveNav('Referrals')} />
+          <p style={{ fontSize: '10px', fontWeight: 700, color: styles.subtext, letterSpacing: '0.1em', padding: '0 16px', marginBottom: '8px' }}>RECRUITMENT</p>
+          <NavItem icon={<Briefcase size={16} />} label="Jobs" active={activeNav === 'Jobs'} isUniverse={isUniverse} onClick={() => { setActiveNav('Jobs'); navigate('/jobs'); }} />
+          <NavItem icon={<Users size={16} />} label="Candidates" active={activeNav === 'Candidates'} isUniverse={isUniverse} onClick={() => { setActiveNav('Candidates'); navigate('/hr-applications'); }} />
+          <NavItem icon={<Bot size={16} />} label="AI Copilot" active={activeNav === 'Copilot'} isUniverse={isUniverse} onClick={() => { setActiveNav('Copilot'); navigate('/copilot'); }} />
+          <NavItem icon={<Star size={16} />} label="My Referrals" active={activeNav === 'Referrals'} isUniverse={isUniverse} onClick={() => setActiveNav('Referrals')} />
         </div>
 
         {/* ORGANIZATION */}
         <div style={{ marginTop: '16px' }}>
-          <p style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.1em', padding: '0 16px', marginBottom: '8px' }}>ORGANIZATION</p>
-          <NavItem icon={<UserCircle2 size={16} />} label="Employee" active={activeNav === 'Employee'} onClick={() => setActiveNav('Employee')} />
-          <NavItem icon={<BarChart2 size={16} />} label="Report" active={activeNav === 'Report'} onClick={() => setActiveNav('Report')} />
-          <NavItem icon={<Settings size={16} />} label="Settings" active={activeNav === 'Settings'} onClick={() => setActiveNav('Settings')} />
-          <NavItem icon={<LogOut size={16} />} label="Sign Out" onClick={() => { logout(); navigate('/'); }} />
+          <p style={{ fontSize: '10px', fontWeight: 700, color: styles.subtext, letterSpacing: '0.1em', padding: '0 16px', marginBottom: '8px' }}>ORGANIZATION</p>
+          <NavItem icon={<UserCircle2 size={16} />} label="Employee" active={activeNav === 'Employee'} isUniverse={isUniverse} onClick={() => setActiveNav('Employee')} />
+          <NavItem icon={<BarChart2 size={16} />} label="Report" active={activeNav === 'Report'} isUniverse={isUniverse} onClick={() => setActiveNav('Report')} />
+          <NavItem icon={<Settings size={16} />} label="Settings" active={activeNav === 'Settings'} isUniverse={isUniverse} onClick={() => setActiveNav('Settings')} />
+          <NavItem icon={<LogOut size={16} />} label="Sign Out" isUniverse={isUniverse} onClick={() => { logout(); navigate('/'); }} />
         </div>
       </aside>
 
@@ -399,8 +434,8 @@ export const HrAnalytics: React.FC = () => {
         {/* ── Top Header Bar ── */}
         <header style={{
           height: '64px',
-          background: '#FFFFFF',
-          borderBottom: '1px solid #E2E8F0',
+          background: styles.headerBg,
+          borderBottom: styles.headerBorder,
           display: 'flex',
           alignItems: 'center',
           padding: '0 24px',
@@ -410,15 +445,15 @@ export const HrAnalytics: React.FC = () => {
           zIndex: 10,
         }}>
           <div style={{ flex: 1 }}>
-            <h1 style={{ fontSize: '20px', fontWeight: 700, color: '#1E293B', margin: 0 }}>
+            <h1 style={{ fontSize: '20px', fontWeight: 700, color: styles.heading, margin: 0 }}>
               {analytics?.companyName || 'Dashboard'}
             </h1>
-            <p style={{ fontSize: '12px', color: '#94A3B8', margin: 0 }}>Hello, {user?.firstName || 'HR Manager'}. Welcome back!</p>
+            <p style={{ fontSize: '12px', color: styles.subtext, margin: 0 }}>Hello, {user?.firstName || 'HR Manager'}. Welcome to HireMind AI</p>
           </div>
 
           {/* Search */}
-          <div style={{ position: 'relative', width: '280px' }}>
-            <Search size={15} color="#94A3B8" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
+          <div style={{ position: 'relative', width: '260px' }}>
+            <Search size={15} color={styles.subtext} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
             <input
               type="text"
               value={searchQuery}
@@ -427,31 +462,45 @@ export const HrAnalytics: React.FC = () => {
               style={{
                 width: '100%',
                 padding: '8px 12px 8px 36px',
-                border: '1px solid #E2E8F0',
+                border: styles.inputBorder,
                 borderRadius: '10px',
                 fontSize: '13px',
-                background: '#F8FAFC',
-                color: '#1E293B',
+                background: styles.inputBg,
+                color: styles.inputText,
                 outline: 'none',
                 boxSizing: 'border-box',
               }}
             />
-            <button style={{
-              position: 'absolute', right: '6px', top: '50%', transform: 'translateY(-50%)',
-              background: '#2563EB', border: 'none', borderRadius: '7px',
-              width: '28px', height: '28px', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center'
-            }}>
-              <Search size={13} color="#FFFFFF" />
-            </button>
           </div>
 
+          {/* Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 14px',
+              borderRadius: '20px',
+              border: isUniverse ? '1px solid rgba(139, 92, 246, 0.4)' : '1px solid #CBD5E1',
+              background: isUniverse ? 'rgba(99, 102, 241, 0.15)' : '#F1F5F9',
+              color: isUniverse ? '#A78BFA' : '#475569',
+              fontSize: '12px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+            }}
+          >
+            {isUniverse ? <Sparkles size={14} color="#A78BFA" /> : <Sun size={14} color="#F59E0B" />}
+            {isUniverse ? 'Universe Mode' : 'Light Mode'}
+          </button>
+
           {/* Refresh & Notifications */}
-          <button onClick={loadDashboardData} title="Refresh data" style={{ background: '#F1F5F9', border: 'none', borderRadius: '8px', padding: '8px', cursor: 'pointer', color: '#64748B', display: 'flex', alignItems: 'center' }}>
+          <button onClick={loadDashboardData} title="Refresh data" style={{ background: isUniverse ? 'rgba(255,255,255,0.06)' : '#F1F5F9', border: 'none', borderRadius: '8px', padding: '8px', cursor: 'pointer', color: styles.subtext, display: 'flex', alignItems: 'center' }}>
             <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
           </button>
           <div style={{ position: 'relative' }}>
-            <button onClick={() => navigate('/hr-messages')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748B' }}>
+            <button onClick={() => navigate('/hr-messages')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: styles.subtext }}>
               <Bell size={18} />
             </button>
             {notifications > 0 && (
@@ -467,7 +516,7 @@ export const HrAnalytics: React.FC = () => {
             onClick={() => navigate('/profile')}
             style={{
               width: '34px', height: '34px', borderRadius: '50%',
-              background: 'linear-gradient(135deg, #2563EB, #7C3AED)',
+              background: isUniverse ? 'linear-gradient(135deg, #6366F1, #8B5CF6)' : 'linear-gradient(135deg, #2563EB, #7C3AED)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer', fontSize: '13px', fontWeight: 700, color: '#FFF'
             }}>
@@ -485,17 +534,19 @@ export const HrAnalytics: React.FC = () => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
               {stats.map((s, i) => (
                 <div key={i} style={{
-                  background: '#FFFFFF',
+                  background: styles.cardBg,
                   borderRadius: '16px',
                   padding: '20px 24px',
-                  border: '1px solid #E2E8F0',
+                  border: styles.cardBorder,
+                  boxShadow: styles.cardShadow,
+                  backdropFilter: isUniverse ? 'blur(16px)' : 'none',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
                 }}>
                   <div>
-                    <p style={{ fontSize: '12px', color: '#94A3B8', margin: '0 0 4px', fontWeight: 500 }}>{s.label}</p>
-                    <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#1E293B', margin: '0 0 8px', lineHeight: 1 }}>
+                    <p style={{ fontSize: '12px', color: styles.subtext, margin: '0 0 4px', fontWeight: 500 }}>{s.label}</p>
+                    <h2 style={{ fontSize: '32px', fontWeight: 800, color: styles.heading, margin: '0 0 8px', lineHeight: 1 }}>
                       {s.value.toLocaleString()}
                     </h2>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: s.color }}>
@@ -503,30 +554,32 @@ export const HrAnalytics: React.FC = () => {
                       <span>{s.trend}</span>
                     </div>
                   </div>
-                  <RingChart pct={s.pct} color={s.color} />
+                  <RingChart pct={s.pct} color={s.color} isUniverse={isUniverse} />
                 </div>
               ))}
             </div>
 
             {/* Monthly Bar Chart */}
             <div style={{
-              background: '#FFFFFF',
+              background: styles.cardBg,
               borderRadius: '16px',
               padding: '24px',
-              border: '1px solid #E2E8F0',
+              border: styles.cardBorder,
+              boxShadow: styles.cardShadow,
+              backdropFilter: isUniverse ? 'blur(16px)' : 'none',
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#1E293B', margin: 0 }}>Statistics of active Applications</h3>
+                <h3 style={{ fontSize: '15px', fontWeight: 700, color: styles.heading, margin: 0 }}>Statistics of active Applications</h3>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                   {[{ c: '#38BDF8', l: 'Applications' }, { c: '#FBBF24', l: 'Shortlisted' }, { c: '#FB7185', l: 'Rejected' }].map(item => (
-                    <div key={item.l} style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: '#64748B' }}>
+                    <div key={item.l} style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: styles.subtext }}>
                       <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: item.c }} />
                       {item.l}
                     </div>
                   ))}
                   <button style={{
-                    padding: '5px 12px', borderRadius: '8px', border: '1px solid #E2E8F0',
-                    background: '#FFF', fontSize: '12px', color: '#1E293B', cursor: 'pointer',
+                    padding: '5px 12px', borderRadius: '8px', border: styles.cardBorder,
+                    background: styles.cardBg, fontSize: '12px', color: styles.heading, cursor: 'pointer',
                     display: 'flex', alignItems: 'center', gap: '4px'
                   }}>
                     {timeFilter} <ChevronDown size={12} />
@@ -538,11 +591,11 @@ export const HrAnalytics: React.FC = () => {
               <div style={{ display: 'flex', gap: '8px' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '210px', alignItems: 'flex-end', paddingBottom: '20px' }}>
                   {['100%', '80%', '60%', '40%', '20%'].map(l => (
-                    <span key={l} style={{ fontSize: '10px', color: '#CBD5E1' }}>{l}</span>
+                    <span key={l} style={{ fontSize: '10px', color: styles.subtext }}>{l}</span>
                   ))}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <BarChartComponent data={chartData} />
+                  <BarChartComponent data={chartData} isUniverse={isUniverse} />
                 </div>
               </div>
             </div>
@@ -551,12 +604,12 @@ export const HrAnalytics: React.FC = () => {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
 
               {/* Activity Feed */}
-              <div style={{ background: '#FFFFFF', borderRadius: '16px', padding: '20px', border: '1px solid #E2E8F0' }}>
+              <div style={{ background: styles.cardBg, borderRadius: '16px', padding: '20px', border: styles.cardBorder, boxShadow: styles.cardShadow, backdropFilter: isUniverse ? 'blur(16px)' : 'none' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                  <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#1E293B', margin: 0 }}>Activity Feed</h3>
+                  <h3 style={{ fontSize: '14px', fontWeight: 700, color: styles.heading, margin: 0 }}>Activity Feed</h3>
                   <button onClick={() => navigate('/hr-applications')} style={{
-                    padding: '4px 10px', borderRadius: '8px', border: '1px solid #E2E8F0',
-                    background: '#FFF', fontSize: '11px', color: '#64748B', cursor: 'pointer',
+                    padding: '4px 10px', borderRadius: '8px', border: styles.cardBorder,
+                    background: styles.cardBg, fontSize: '11px', color: styles.subtext, cursor: 'pointer',
                     display: 'flex', alignItems: 'center', gap: '4px'
                   }}>
                     All Activity <ChevronDown size={11} />
@@ -564,7 +617,7 @@ export const HrAnalytics: React.FC = () => {
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                   {activityFeed.length === 0 ? (
-                    <div style={{ fontSize: '12px', color: '#94A3B8', textAlign: 'center', padding: '20px 0' }}>
+                    <div style={{ fontSize: '12px', color: styles.subtext, textAlign: 'center', padding: '20px 0' }}>
                       No recent activity recorded yet.
                     </div>
                   ) : (
@@ -572,15 +625,15 @@ export const HrAnalytics: React.FC = () => {
                       <div key={item.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
                         <div style={{
                           width: '34px', height: '34px', borderRadius: '50%', flexShrink: 0,
-                          background: 'linear-gradient(135deg, #2563EB, #7C3AED)',
+                          background: isUniverse ? 'linear-gradient(135deg, #6366F1, #8B5CF6)' : 'linear-gradient(135deg, #2563EB, #7C3AED)',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           color: '#FFF', fontSize: '12px', fontWeight: 700,
                         }}>{item.avatar}</div>
                         <div style={{ flex: 1 }}>
-                          <p style={{ margin: 0, fontSize: '12px', color: '#1E293B' }}>
+                          <p style={{ margin: 0, fontSize: '12px', color: styles.heading }}>
                             <strong>{item.name}</strong> {item.action} <strong>{item.job}</strong>
                           </p>
-                          <span style={{ fontSize: '10px', color: '#94A3B8' }}>{item.time}</span>
+                          <span style={{ fontSize: '10px', color: styles.subtext }}>{item.time}</span>
                         </div>
                         <span style={{
                           fontSize: '10px', fontWeight: 600, padding: '3px 8px', borderRadius: '20px',
@@ -593,12 +646,12 @@ export const HrAnalytics: React.FC = () => {
               </div>
 
               {/* Meetings */}
-              <div style={{ background: '#FFFFFF', borderRadius: '16px', padding: '20px', border: '1px solid #E2E8F0' }}>
+              <div style={{ background: styles.cardBg, borderRadius: '16px', padding: '20px', border: styles.cardBorder, boxShadow: styles.cardShadow, backdropFilter: isUniverse ? 'blur(16px)' : 'none' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                  <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#1E293B', margin: 0 }}>Meetings</h3>
+                  <h3 style={{ fontSize: '14px', fontWeight: 700, color: styles.heading, margin: 0 }}>Meetings</h3>
                   <button onClick={() => navigate('/hr-calendar')} style={{
-                    padding: '4px 10px', borderRadius: '8px', border: '1px solid #E2E8F0',
-                    background: '#FFF', fontSize: '11px', color: '#64748B', cursor: 'pointer',
+                    padding: '4px 10px', borderRadius: '8px', border: styles.cardBorder,
+                    background: styles.cardBg, fontSize: '11px', color: styles.subtext, cursor: 'pointer',
                     display: 'flex', alignItems: 'center', gap: '4px'
                   }}>
                     View Calendar <ChevronDown size={11} />
@@ -606,15 +659,15 @@ export const HrAnalytics: React.FC = () => {
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                   {meetings.length === 0 ? (
-                    <div style={{ fontSize: '12px', color: '#94A3B8', textAlign: 'center', padding: '20px 0' }}>
+                    <div style={{ fontSize: '12px', color: styles.subtext, textAlign: 'center', padding: '20px 0' }}>
                       No scheduled meetings for today.
                     </div>
                   ) : (
                     meetings.map(m => (
                       <div key={m.id} style={{
                         display: 'flex', alignItems: 'center', gap: '12px',
-                        padding: '10px 12px', borderRadius: '12px', background: '#F8FAFC',
-                        border: '1px solid #E2E8F0'
+                        padding: '10px 12px', borderRadius: '12px', background: styles.cardSubBg,
+                        border: styles.cardBorder
                       }}>
                         <div style={{
                           width: '40px', height: '40px', borderRadius: '10px',
@@ -625,10 +678,10 @@ export const HrAnalytics: React.FC = () => {
                           <span style={{ fontSize: '14px', color: m.color, fontWeight: 800, lineHeight: 1 }}>{m.date}</span>
                         </div>
                         <div style={{ flex: 1 }}>
-                          <p style={{ margin: '0 0 2px', fontSize: '13px', fontWeight: 600, color: '#1E293B' }}>{m.title}</p>
-                          <p style={{ margin: 0, fontSize: '11px', color: '#94A3B8' }}>{m.time}</p>
+                          <p style={{ margin: '0 0 2px', fontSize: '13px', fontWeight: 600, color: styles.heading }}>{m.title}</p>
+                          <p style={{ margin: 0, fontSize: '11px', color: styles.subtext }}>{m.time}</p>
                         </div>
-                        <button onClick={() => navigate('/hr-calendar')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#CBD5E1' }}>
+                        <button onClick={() => navigate('/hr-calendar')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: styles.subtext }}>
                           <MoreVertical size={14} />
                         </button>
                       </div>
@@ -642,7 +695,7 @@ export const HrAnalytics: React.FC = () => {
                     onClick={() => navigate('/jobs')}
                     style={{
                       flex: 1, padding: '10px', borderRadius: '10px',
-                      background: '#2563EB', color: '#FFF', border: 'none',
+                      background: isUniverse ? 'linear-gradient(135deg, #6366F1, #8B5CF6)' : '#2563EB', color: '#FFF', border: 'none',
                       fontSize: '12px', fontWeight: 600, cursor: 'pointer',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px'
                     }}
@@ -653,7 +706,7 @@ export const HrAnalytics: React.FC = () => {
                     onClick={() => navigate('/copilot')}
                     style={{
                       flex: 1, padding: '10px', borderRadius: '10px',
-                      background: '#7C3AED', color: '#FFF', border: 'none',
+                      background: isUniverse ? 'linear-gradient(135deg, #06B6D4, #3B82F6)' : '#7C3AED', color: '#FFF', border: 'none',
                       fontSize: '12px', fontWeight: 600, cursor: 'pointer',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px'
                     }}
@@ -676,47 +729,49 @@ export const HrAnalytics: React.FC = () => {
 
             {/* Profile Card */}
             <div style={{
-              background: '#FFFFFF',
+              background: styles.cardBg,
               borderRadius: '16px',
               padding: '24px 20px',
-              border: '1px solid #E2E8F0',
+              border: styles.cardBorder,
+              boxShadow: styles.cardShadow,
+              backdropFilter: isUniverse ? 'blur(16px)' : 'none',
               textAlign: 'center',
             }}>
               <div style={{
                 width: '72px', height: '72px', borderRadius: '50%',
-                background: 'linear-gradient(135deg, #2563EB, #7C3AED)',
+                background: isUniverse ? 'linear-gradient(135deg, #6366F1, #8B5CF6)' : 'linear-gradient(135deg, #2563EB, #7C3AED)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: '28px', fontWeight: 800, color: '#FFF',
                 margin: '0 auto 12px',
-                boxShadow: '0 4px 20px rgba(37, 99, 235, 0.35)',
+                boxShadow: isUniverse ? '0 4px 24px rgba(99, 102, 241, 0.45)' : '0 4px 20px rgba(37, 99, 235, 0.35)',
               }}>
                 {(user?.firstName?.[0] || 'H')}
               </div>
-              <p style={{ fontWeight: 700, fontSize: '16px', color: '#1E293B', margin: '0 0 4px' }}>{hrName}</p>
-              <p style={{ fontSize: '12px', color: '#94A3B8', margin: 0 }}>{hrRole}</p>
+              <p style={{ fontWeight: 700, fontSize: '16px', color: styles.heading, margin: '0 0 4px' }}>{hrName}</p>
+              <p style={{ fontSize: '12px', color: styles.subtext, margin: 0 }}>{hrRole}</p>
             </div>
 
             {/* Messages */}
-            <div style={{ background: '#FFFFFF', borderRadius: '16px', padding: '20px', border: '1px solid #E2E8F0' }}>
+            <div style={{ background: styles.cardBg, borderRadius: '16px', padding: '20px', border: styles.cardBorder, boxShadow: styles.cardShadow, backdropFilter: isUniverse ? 'blur(16px)' : 'none' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#1E293B', margin: 0 }}>Messages</h4>
-                <button onClick={() => navigate('/hr-messages')} style={{ background: 'none', border: 'none', color: '#2563EB', fontSize: '11px', cursor: 'pointer', fontWeight: 600 }}>View All</button>
+                <h4 style={{ fontSize: '14px', fontWeight: 700, color: styles.heading, margin: 0 }}>Messages</h4>
+                <button onClick={() => navigate('/hr-messages')} style={{ background: 'none', border: 'none', color: isUniverse ? '#A78BFA' : '#2563EB', fontSize: '11px', cursor: 'pointer', fontWeight: 600 }}>View All</button>
               </div>
               {contacts.length === 0 ? (
-                <div style={{ fontSize: '11px', color: '#94A3B8' }}>No recent messages</div>
+                <div style={{ fontSize: '11px', color: styles.subtext }}>No recent messages</div>
               ) : (
                 contacts.map((m, i) => (
                   <div key={i} style={{ display: 'flex', gap: '10px', marginBottom: i < contacts.length - 1 ? '12px' : 0, cursor: 'pointer' }}
                     onClick={() => navigate('/hr-messages')}>
                     <div style={{
                       width: '34px', height: '34px', borderRadius: '50%', flexShrink: 0,
-                      background: 'linear-gradient(135deg, #2563EB, #7C3AED)',
+                      background: isUniverse ? 'linear-gradient(135deg, #6366F1, #8B5CF6)' : 'linear-gradient(135deg, #2563EB, #7C3AED)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       color: '#FFF', fontSize: '12px', fontWeight: 700,
                     }}>{m.name.charAt(0)}</div>
                     <div style={{ minWidth: 0, flex: 1 }}>
-                      <p style={{ margin: 0, fontSize: '12px', fontWeight: 600, color: '#1E293B' }}>{m.name}</p>
-                      <p style={{ margin: 0, fontSize: '11px', color: '#94A3B8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{m.lastMessage || m.email}</p>
+                      <p style={{ margin: 0, fontSize: '12px', fontWeight: 600, color: styles.heading }}>{m.name}</p>
+                      <p style={{ margin: 0, fontSize: '11px', color: styles.subtext, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{m.lastMessage || m.email}</p>
                     </div>
                   </div>
                 ))
@@ -724,11 +779,11 @@ export const HrAnalytics: React.FC = () => {
             </div>
 
             {/* Recent Added Jobs */}
-            <div style={{ background: '#FFFFFF', borderRadius: '16px', padding: '20px', border: '1px solid #E2E8F0' }}>
-              <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#1E293B', margin: '0 0 12px' }}>Recent Added Jobs</h4>
+            <div style={{ background: styles.cardBg, borderRadius: '16px', padding: '20px', border: styles.cardBorder, boxShadow: styles.cardShadow, backdropFilter: isUniverse ? 'blur(16px)' : 'none' }}>
+              <h4 style={{ fontSize: '14px', fontWeight: 700, color: styles.heading, margin: '0 0 12px' }}>Recent Added Jobs</h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {recentJobs.length === 0 ? (
-                  <div style={{ fontSize: '11px', color: '#94A3B8' }}>No active jobs</div>
+                  <div style={{ fontSize: '11px', color: styles.subtext }}>No active jobs</div>
                 ) : (
                   recentJobs.map(job => (
                     <div key={job.id} style={{ display: 'flex', gap: '10px', alignItems: 'center', cursor: 'pointer' }}
@@ -739,8 +794,8 @@ export const HrAnalytics: React.FC = () => {
                         justifyContent: 'center', fontSize: '14px', color: '#FFF', fontWeight: 700
                       }}>{job.icon}</div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ margin: 0, fontSize: '12px', fontWeight: 600, color: '#1E293B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{job.title}</p>
-                        <p style={{ margin: 0, fontSize: '10px', color: '#94A3B8' }}>{job.company}, {job.location}</p>
+                        <p style={{ margin: 0, fontSize: '12px', fontWeight: 600, color: styles.heading, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{job.title}</p>
+                        <p style={{ margin: 0, fontSize: '10px', color: styles.subtext }}>{job.company}, {job.location}</p>
                       </div>
                     </div>
                   ))
@@ -749,8 +804,8 @@ export const HrAnalytics: React.FC = () => {
             </div>
 
             {/* Hiring Funnel Stats */}
-            <div style={{ background: '#FFFFFF', borderRadius: '16px', padding: '20px', border: '1px solid #E2E8F0' }}>
-              <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#1E293B', margin: '0 0 12px' }}>Hiring Funnel</h4>
+            <div style={{ background: styles.cardBg, borderRadius: '16px', padding: '20px', border: styles.cardBorder, boxShadow: styles.cardShadow, backdropFilter: isUniverse ? 'blur(16px)' : 'none' }}>
+              <h4 style={{ fontSize: '14px', fontWeight: 700, color: styles.heading, margin: '0 0 12px' }}>Hiring Funnel</h4>
               {[
                 { label: 'Applied', val: analytics?.applicationsByStatus['APPLIED'] ?? 0, color: '#38BDF8' },
                 { label: 'Screened', val: analytics?.applicationsByStatus['SCREENING'] ?? 0, color: '#FBBF24' },
@@ -764,10 +819,10 @@ export const HrAnalytics: React.FC = () => {
                 return (
                   <div key={s.label} style={{ marginBottom: '10px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                      <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 500 }}>{s.label}</span>
-                      <span style={{ fontSize: '11px', color: '#1E293B', fontWeight: 700 }}>{s.val}</span>
+                      <span style={{ fontSize: '11px', color: styles.subtext, fontWeight: 500 }}>{s.label}</span>
+                      <span style={{ fontSize: '11px', color: styles.heading, fontWeight: 700 }}>{s.val}</span>
                     </div>
-                    <div style={{ height: '5px', background: '#F1F5F9', borderRadius: '3px', overflow: 'hidden' }}>
+                    <div style={{ height: '5px', background: isUniverse ? 'rgba(255,255,255,0.06)' : '#F1F5F9', borderRadius: '3px', overflow: 'hidden' }}>
                       <div style={{ width: `${pct}%`, height: '100%', background: s.color, borderRadius: '3px', transition: 'width 0.8s ease' }} />
                     </div>
                   </div>
