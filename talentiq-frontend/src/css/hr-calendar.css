@@ -1,75 +1,132 @@
 /* ============================================================
-   TalentIQ — HR Calendar & Interview Management Styles
+   TalentIQ / HireMind — HR Calendar & Interview Management Styles
    ============================================================ */
 
 .calendar-page-wrapper {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   font-family: 'Inter', sans-serif;
   overflow: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* ── Light Theme ─────────────────────────────────────────── */
-.calendar-page-wrapper.theme-light {
-  background: #F8FAFC;
-  color: #1E293B;
+.calendar-page-wrapper.theme-light,
+.theme-light {
+  background: #F8FAFC !important;
+  color: #0F172A !important;
+}
+
+.calendar-page-wrapper.theme-light h1,
+.calendar-page-wrapper.theme-light h2,
+.calendar-page-wrapper.theme-light h3,
+.calendar-page-wrapper.theme-light h4,
+.calendar-page-wrapper.theme-light h5,
+.calendar-page-wrapper.theme-light h6 {
+  color: #0F172A !important;
 }
 
 .calendar-page-wrapper.theme-light .cal-sidebar {
-  background: #FFFFFF;
-  border-right: 1px solid #E2E8F0;
+  background: #FFFFFF !important;
+  border-right: 1px solid #E2E8F0 !important;
 }
 
 .calendar-page-wrapper.theme-light .cal-card {
-  background: #FFFFFF;
-  border: 1px solid #E2E8F0;
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05) !important;
+  color: #0F172A !important;
 }
 
 .calendar-page-wrapper.theme-light .cal-header-bar {
-  background: #FFFFFF;
-  border-bottom: 1px solid #E2E8F0;
+  background: #FFFFFF !important;
+  border-bottom: 1px solid #E2E8F0 !important;
 }
 
 .calendar-page-wrapper.theme-light .cal-day-cell {
-  background: #FFFFFF;
-  border: 1px solid #E2E8F0;
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #0F172A !important;
 }
 
 .calendar-page-wrapper.theme-light .cal-day-cell:hover {
-  background: #F8FAFC;
+  background: #F1F5F9 !important;
 }
 
 .calendar-page-wrapper.theme-light .cal-day-cell.selected {
-  border-color: #2563EB;
-  background: #EFF6FF;
+  border-color: #2563EB !important;
+  background: #EFF6FF !important;
+}
+
+.calendar-page-wrapper.theme-light .cal-day-number {
+  color: #0F172A !important;
+}
+
+.calendar-page-wrapper.theme-light .cal-weekdays-row {
+  color: #475569 !important;
 }
 
 .calendar-page-wrapper.theme-light .cal-slot-chip {
-  background: #EFF6FF;
-  color: #1D4ED8;
-  border: 1px solid #BFDBFE;
+  background: #EFF6FF !important;
+  color: #1D4ED8 !important;
+  border: 1px solid #BFDBFE !important;
 }
 
 .calendar-page-wrapper.theme-light .cal-modal-panel {
-  background: #FFFFFF;
-  border: 1px solid #E2E8F0;
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #0F172A !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15) !important;
 }
 
 .calendar-page-wrapper.theme-light .cal-input-field {
-  background: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  color: #1E293B;
+  background: #F8FAFC !important;
+  border: 1px solid #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+.calendar-page-wrapper.theme-light .cal-input-field::placeholder {
+  color: #64748B !important;
 }
 
 .calendar-page-wrapper.theme-light .cal-user-badge {
-  background: #F1F5F9;
-  border: 1px solid #E2E8F0;
+  background: #F1F5F9 !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #0F172A !important;
 }
 
 .calendar-page-wrapper.theme-light .cal-theme-btn {
-  background: #F1F5F9;
-  color: #475569;
-  border: 1px solid #E2E8F0;
+  background: #F1F5F9 !important;
+  color: #334155 !important;
+  border: 1px solid #CBD5E1 !important;
+}
+
+.calendar-page-wrapper.theme-light .cal-theme-btn:hover {
+  background: #E2E8F0 !important;
+}
+
+.calendar-page-wrapper.theme-light .cal-nav-item {
+  color: #475569 !important;
+}
+
+.calendar-page-wrapper.theme-light .cal-nav-item:hover {
+  background: #F1F5F9 !important;
+  color: #0F172A !important;
+}
+
+.calendar-page-wrapper.theme-light .cal-nav-item.active {
+  background: #2563EB !important;
+  color: #FFFFFF !important;
+}
+
+.calendar-page-wrapper.theme-light .cal-nav-arrow-btn {
+  border: 1px solid #CBD5E1 !important;
+  color: #0F172A !important;
+  background: #F8FAFC !important;
+}
+
+.calendar-page-wrapper.theme-light .cal-nav-arrow-btn:hover {
+  background: #E2E8F0 !important;
 }
 
 .calendar-page-wrapper.theme-light .cal-avatar-brand {
@@ -77,66 +134,118 @@
 }
 
 /* ── Universe Theme ──────────────────────────────────────── */
-.calendar-page-wrapper.theme-universe {
-  background: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.12), transparent 40%), #070B19;
-  color: #F8FAFC;
+.calendar-page-wrapper.theme-universe,
+.theme-universe {
+  background: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.12), transparent 40%), #070B19 !important;
+  color: #F8FAFC !important;
+}
+
+.calendar-page-wrapper.theme-universe h1,
+.calendar-page-wrapper.theme-universe h2,
+.calendar-page-wrapper.theme-universe h3,
+.calendar-page-wrapper.theme-universe h4,
+.calendar-page-wrapper.theme-universe h5,
+.calendar-page-wrapper.theme-universe h6 {
+  color: #F8FAFC !important;
 }
 
 .calendar-page-wrapper.theme-universe .cal-sidebar {
-  background: #0F172A;
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0F172A !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
 .calendar-page-wrapper.theme-universe .cal-card {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37) !important;
+  backdrop-filter: blur(16px);
+  color: #F8FAFC !important;
 }
 
 .calendar-page-wrapper.theme-universe .cal-header-bar {
-  background: rgba(15, 23, 42, 0.85);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.85) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
 .calendar-page-wrapper.theme-universe .cal-day-cell {
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(15, 23, 42, 0.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  color: #F8FAFC !important;
 }
 
 .calendar-page-wrapper.theme-universe .cal-day-cell:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.06) !important;
 }
 
 .calendar-page-wrapper.theme-universe .cal-day-cell.selected {
-  border-color: #6366F1;
-  background: rgba(99, 102, 241, 0.15);
+  border-color: #6366F1 !important;
+  background: rgba(99, 102, 241, 0.18) !important;
+}
+
+.calendar-page-wrapper.theme-universe .cal-day-number {
+  color: #F8FAFC !important;
+}
+
+.calendar-page-wrapper.theme-universe .cal-weekdays-row {
+  color: #94A3B8 !important;
 }
 
 .calendar-page-wrapper.theme-universe .cal-slot-chip {
-  background: rgba(99, 102, 241, 0.2);
-  color: #A78BFA;
-  border: 1px solid rgba(99, 102, 241, 0.35);
+  background: rgba(99, 102, 241, 0.2) !important;
+  color: #A78BFA !important;
+  border: 1px solid rgba(99, 102, 241, 0.35) !important;
 }
 
 .calendar-page-wrapper.theme-universe .cal-modal-panel {
-  background: #0F172A;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #0F172A !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6) !important;
+  color: #F8FAFC !important;
 }
 
 .calendar-page-wrapper.theme-universe .cal-input-field {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #F8FAFC;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #F8FAFC !important;
+}
+
+.calendar-page-wrapper.theme-universe .cal-input-field::placeholder {
+  color: #94A3B8 !important;
 }
 
 .calendar-page-wrapper.theme-universe .cal-user-badge {
-  background: rgba(99, 102, 241, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(99, 102, 241, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
 .calendar-page-wrapper.theme-universe .cal-theme-btn {
-  background: rgba(99, 102, 241, 0.2);
-  color: #A78BFA;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(99, 102, 241, 0.2) !important;
+  color: #A78BFA !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.calendar-page-wrapper.theme-universe .cal-theme-btn:hover {
+  background: rgba(99, 102, 241, 0.35) !important;
+}
+
+.calendar-page-wrapper.theme-universe .cal-nav-item {
+  color: #94A3B8 !important;
+}
+
+.calendar-page-wrapper.theme-universe .cal-nav-item:hover {
+  background: rgba(99, 102, 241, 0.12) !important;
+  color: #F8FAFC !important;
+}
+
+.calendar-page-wrapper.theme-universe .cal-nav-item.active {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+  color: #FFFFFF !important;
+}
+
+.calendar-page-wrapper.theme-universe .cal-nav-arrow-btn {
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #F8FAFC !important;
+  background: rgba(255, 255, 255, 0.04) !important;
 }
 
 .calendar-page-wrapper.theme-universe .cal-avatar-brand {
@@ -150,6 +259,9 @@
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
 }
 
 .cal-sidebar-brand {
@@ -161,9 +273,9 @@
 }
 
 .cal-brand-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 9px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -178,7 +290,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 
 .cal-nav-item {
@@ -186,7 +298,7 @@
   align-items: center;
   gap: 12px;
   width: 100%;
-  padding: 11px 16px;
+  padding: 10px 16px;
   border-radius: 10px;
   border: none;
   cursor: pointer;
@@ -194,30 +306,6 @@
   text-align: left;
   transition: all 0.2s;
   background: transparent;
-  color: #64748b;
-}
-
-.theme-universe .cal-nav-item {
-  color: #94a3b8;
-}
-
-.cal-nav-item:hover {
-  background: #F1F5F9;
-}
-
-.theme-universe .cal-nav-item:hover {
-  background: rgba(99, 102, 241, 0.12);
-}
-
-.cal-nav-item.active {
-  background: #2563EB;
-  color: #FFFFFF;
-  font-weight: 600;
-}
-
-.theme-universe .cal-nav-item.active {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
-  color: #FFFFFF;
 }
 
 .cal-nav-divider {
@@ -227,7 +315,7 @@
 }
 
 .theme-universe .cal-nav-divider {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .cal-user-badge {
@@ -236,12 +324,12 @@
 }
 
 .cal-user-name {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
 }
 
 .cal-user-email {
-  font-size: 10px;
+  font-size: 11px;
   color: #64748B;
   margin-top: 2px;
 }
@@ -256,6 +344,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  height: 100vh;
 }
 
 .cal-header-bar {
@@ -263,12 +352,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.cal-header-title-group {
-  display: flex;
-  align-items: center;
-  gap: 16px;
+  flex-shrink: 0;
 }
 
 .cal-header-title {
@@ -280,12 +364,13 @@
 .cal-theme-btn {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  border-radius: 16px;
-  font-size: 11px;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 20px;
+  font-size: 12px;
   cursor: pointer;
   font-weight: 600;
+  transition: all 0.2s ease;
 }
 
 .cal-header-actions {
@@ -298,14 +383,20 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 9px 16px;
-  border-radius: 10px;
+  padding: 8px 16px;
+  border-radius: 9px;
   border: none;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   background: #2563EB;
-  color: #fff;
+  color: #FFFFFF !important;
+  transition: all 0.2s ease;
+}
+
+.cal-btn-schedule:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
 }
 
 .theme-universe .cal-btn-schedule {
@@ -316,14 +407,20 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 9px 16px;
-  border-radius: 10px;
+  padding: 8px 16px;
+  border-radius: 9px;
   border: none;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   background: #10B981;
-  color: #fff;
+  color: #FFFFFF !important;
+  transition: all 0.2s ease;
+}
+
+.cal-btn-select:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
 }
 
 .theme-universe .cal-btn-select {
@@ -350,25 +447,14 @@
   margin: 0;
 }
 
-.cal-month-nav-btns {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
 .cal-nav-arrow-btn {
-  padding: 6px 10px;
+  padding: 6px 12px;
   border-radius: 8px;
-  border: 1px solid #E2E8F0;
-  background: transparent;
   cursor: pointer;
   display: flex;
   align-items: center;
-}
-
-.theme-universe .cal-nav-arrow-btn {
-  border-color: rgba(255, 255, 255, 0.1);
-  color: #F8FAFC;
+  justify-content: center;
+  transition: all 0.15s ease;
 }
 
 .cal-weekdays-row {
@@ -379,11 +465,7 @@
   text-align: center;
   font-size: 12px;
   font-weight: 600;
-  color: #64748B;
-}
-
-.theme-universe .cal-weekdays-row {
-  color: #94A3B8;
+  letter-spacing: 0.5px;
 }
 
 .cal-grid {
@@ -401,11 +483,6 @@
   justify-content: space-between;
   cursor: pointer;
   transition: all 0.15s;
-}
-
-.cal-day-cell.empty {
-  opacity: 0.2;
-  cursor: default;
 }
 
 .cal-day-number {
@@ -433,7 +510,7 @@
 .cal-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(9, 13, 22, 0.8);
+  background: rgba(9, 13, 22, 0.75);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -444,10 +521,12 @@
 
 .cal-modal-panel {
   width: 100%;
-  max-width: 520px;
+  max-width: 540px;
   border-radius: 16px;
   padding: 28px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .cal-modal-header {
@@ -472,5 +551,5 @@
 .cal-modal-actions {
   display: flex;
   gap: 10px;
-  margin-top: 8px;
+  margin-top: 12px;
 }

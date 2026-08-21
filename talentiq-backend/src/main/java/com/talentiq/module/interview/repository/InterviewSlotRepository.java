@@ -11,8 +11,11 @@ import java.util.Optional;
 @Repository
 public interface InterviewSlotRepository extends JpaRepository<InterviewSlot, Long> {
 
-    /** All upcoming interviews for an HR user (for calendar view) */
+    /** All interviews for an HR user sorted chronologically (ascending) */
     List<InterviewSlot> findByHrUserIdOrderByScheduledAtAsc(Long hrUserId);
+
+    /** All interviews for an HR user sorted newest first (descending) */
+    List<InterviewSlot> findByHrUserIdOrderByScheduledAtDesc(Long hrUserId);
 
     /** Interviews in a date range for an HR user */
     List<InterviewSlot> findByHrUserIdAndScheduledAtBetweenOrderByScheduledAtAsc(

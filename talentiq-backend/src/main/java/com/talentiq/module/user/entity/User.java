@@ -84,7 +84,7 @@ public class User extends AuditEntity {
     @Column(name = "locked_until")
     private Instant lockedUntil;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),

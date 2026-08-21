@@ -40,9 +40,15 @@ interface MeetingItem {
   id: number;
   day: string;
   date: number;
+  month: string;
   title: string;
+  candidateName: string;
+  jobTitle: string;
   time: string;
   color: string;
+  status: string;
+  isPast: boolean;
+  meetingLink?: string;
 }
 
 interface RecentJob {
@@ -235,17 +241,30 @@ export const HrAnalytics: React.FC = () => {
       }
 
       if (calRes?.data?.data) {
-        const mtgs: MeetingItem[] = calRes.data.data.slice(0, 4).map((slot: any) => {
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const colors = ['#3B82F6', '#F59E0B', '#10B981', '#8B5CF6'];
+        const now = new Date();
+
+        const mtgs: MeetingItem[] = calRes.data.data.slice(0, 10).map((slot: any) => {
           const dt = new Date(slot.scheduledAt);
-          const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-          const colors = ['#3B82F6', '#F59E0B', '#10B981', '#8B5CF6'];
+          const isPast = dt < now;
+          let status = slot.status || (isPast ? 'COMPLETED' : 'UPCOMING');
+          if (isPast && status === 'PENDING') status = 'COMPLETED';
+
           return {
             id: slot.id,
             day: days[dt.getDay()],
             date: dt.getDate(),
-            title: `Interview: ${slot.candidateName}`,
-            time: `${dt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} (${slot.jobTitle})`,
+            month: months[dt.getMonth()],
+            title: `Interview: ${slot.candidateName || 'Candidate'}`,
+            candidateName: slot.candidateName || 'Candidate',
+            jobTitle: slot.jobTitle || 'Discussion',
+            time: `${dt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} (${dt.toLocaleDateString([], { month: 'short', day: 'numeric' })})`,
             color: colors[slot.id % colors.length],
+            status,
+            isPast,
+            meetingLink: slot.meetingLink,
           };
         });
         setMeetings(mtgs);
@@ -366,7 +385,7 @@ export const HrAnalytics: React.FC = () => {
   };
 
   return (
-    <div style={{
+    <div className={`analytics-page-wrapper ${isUniverse ? 'theme-universe' : 'theme-light'}`} style={{
       display: 'flex',
       minHeight: '100vh',
       background: styles.bg,
@@ -646,73 +665,114 @@ export const HrAnalytics: React.FC = () => {
                 </div>
               </div>
 
-              {/* Meetings */}
+              {/* Last 10 Meetings Widget */}
               <div style={{ background: styles.cardBg, borderRadius: '16px', padding: '20px', border: styles.cardBorder, boxShadow: styles.cardShadow, backdropFilter: isUniverse ? 'blur(16px)' : 'none' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                  <h3 style={{ fontSize: '14px', fontWeight: 700, color: styles.heading, margin: 0 }}>Meetings</h3>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <h3 style={{ fontSize: '15px', fontWeight: 700, color: styles.heading, margin: 0 }}>Recent & Scheduled Meetings</h3>
+                    <span style={{ fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '12px', background: isUniverse ? 'rgba(99,102,241,0.2)' : '#EFF6FF', color: isUniverse ? '#818CF8' : '#2563EB' }}>
+                      {meetings.length}
+                    </span>
+                  </div>
                   <button onClick={() => navigate('/hr-calendar')} style={{
                     padding: '4px 10px', borderRadius: '8px', border: styles.cardBorder,
-                    background: styles.cardBg, fontSize: '11px', color: styles.subtext, cursor: 'pointer',
+                    background: styles.cardBg, fontSize: '11px', fontWeight: 600, color: styles.subtext, cursor: 'pointer',
                     display: 'flex', alignItems: 'center', gap: '4px'
                   }}>
                     View Calendar <ChevronDown size={11} />
                   </button>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '420px', overflowY: 'auto', paddingRight: '4px' }}>
                   {meetings.length === 0 ? (
-                    <div style={{ fontSize: '12px', color: styles.subtext, textAlign: 'center', padding: '20px 0' }}>
-                      No scheduled meetings for today.
+                    <div style={{ fontSize: '12px', color: styles.subtext, textAlign: 'center', padding: '30px 0' }}>
+                      No meetings recorded. Schedule your first candidate interview!
                     </div>
                   ) : (
-                    meetings.map(m => (
-                      <div key={m.id} style={{
-                        display: 'flex', alignItems: 'center', gap: '12px',
-                        padding: '10px 12px', borderRadius: '12px', background: styles.cardSubBg,
-                        border: styles.cardBorder
-                      }}>
-                        <div style={{
-                          width: '40px', height: '40px', borderRadius: '10px',
-                          background: m.color + '20', display: 'flex', flexDirection: 'column',
-                          alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                    meetings.map(m => {
+                      const badgeBg = m.status === 'CONFIRMED' ? 'rgba(16,185,129,0.15)' : m.status === 'COMPLETED' ? 'rgba(59,130,246,0.15)' : m.status === 'CANCELLED' ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)';
+                      const badgeColor = m.status === 'CONFIRMED' ? '#10B981' : m.status === 'COMPLETED' ? '#3B82F6' : m.status === 'CANCELLED' ? '#EF4444' : '#F59E0B';
+
+                      return (
+                        <div key={m.id} style={{
+                          display: 'flex', alignItems: 'center', gap: '12px',
+                          padding: '10px 12px', borderRadius: '12px', background: styles.cardSubBg,
+                          border: styles.cardBorder,
+                          borderLeft: `3px solid ${badgeColor}`
                         }}>
-                          <span style={{ fontSize: '9px', color: m.color, fontWeight: 700 }}>{m.day}</span>
-                          <span style={{ fontSize: '14px', color: m.color, fontWeight: 800, lineHeight: 1 }}>{m.date}</span>
+                          <div style={{
+                            width: '42px', height: '42px', borderRadius: '10px',
+                            background: m.color + '18', display: 'flex', flexDirection: 'column',
+                            alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                          }}>
+                            <span style={{ fontSize: '9px', color: m.color, fontWeight: 700, textTransform: 'uppercase' }}>{m.month || m.day}</span>
+                            <span style={{ fontSize: '14px', color: m.color, fontWeight: 800, lineHeight: 1 }}>{m.date}</span>
+                          </div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, marginBottom: 2 }}>
+                              <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: styles.heading, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                {m.candidateName}
+                              </p>
+                              <span style={{
+                                fontSize: '9px', fontWeight: 700, padding: '2px 6px', borderRadius: '10px',
+                                background: badgeBg, color: badgeColor, flexShrink: 0
+                              }}>
+                                {m.status}
+                              </span>
+                            </div>
+                            <p style={{ margin: 0, fontSize: '11px', color: styles.subtext, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {m.jobTitle}
+                            </p>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
+                              <span style={{ fontSize: '10px', color: styles.subtext, fontWeight: 500 }}>
+                                ⏰ {m.time}
+                              </span>
+                              {m.meetingLink && (
+                                <a
+                                  href={m.meetingLink}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  style={{ fontSize: '10px', color: isUniverse ? '#818CF8' : '#2563EB', textDecoration: 'none', fontWeight: 600 }}
+                                >
+                                  📹 Join Call
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                          <button onClick={() => navigate('/hr-calendar')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: styles.subtext, padding: 4 }}>
+                            <MoreVertical size={14} />
+                          </button>
                         </div>
-                        <div style={{ flex: 1 }}>
-                          <p style={{ margin: '0 0 2px', fontSize: '13px', fontWeight: 600, color: styles.heading }}>{m.title}</p>
-                          <p style={{ margin: 0, fontSize: '11px', color: styles.subtext }}>{m.time}</p>
-                        </div>
-                        <button onClick={() => navigate('/hr-calendar')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: styles.subtext }}>
-                          <MoreVertical size={14} />
-                        </button>
-                      </div>
-                    ))
+                      );
+                    })
                   )}
                 </div>
 
                 {/* Quick Action Buttons */}
                 <div style={{ marginTop: '16px', display: 'flex', gap: '8px' }}>
                   <button
+                    onClick={() => navigate('/hr-calendar')}
+                    style={{
+                      flex: 1, padding: '10px', borderRadius: '10px',
+                      background: isUniverse ? 'linear-gradient(135deg, #6366F1, #8B5CF6)' : '#2563EB', color: '#FFFFFF !important', border: 'none',
+                      fontSize: '12px', fontWeight: 700, cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px'
+                    }}
+                  >
+                    <Calendar size={14} /> Schedule Meeting
+                  </button>
+                  <button
                     onClick={() => navigate('/jobs')}
                     style={{
                       flex: 1, padding: '10px', borderRadius: '10px',
-                      background: isUniverse ? 'linear-gradient(135deg, #6366F1, #8B5CF6)' : '#2563EB', color: '#FFF', border: 'none',
+                      background: isUniverse ? 'rgba(255,255,255,0.06)' : '#F1F5F9',
+                      border: styles.cardBorder,
+                      color: styles.heading,
                       fontSize: '12px', fontWeight: 600, cursor: 'pointer',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px'
                     }}
                   >
                     <Plus size={14} /> Post Job
-                  </button>
-                  <button
-                    onClick={() => navigate('/copilot')}
-                    style={{
-                      flex: 1, padding: '10px', borderRadius: '10px',
-                      background: isUniverse ? 'linear-gradient(135deg, #06B6D4, #3B82F6)' : '#7C3AED', color: '#FFF', border: 'none',
-                      fontSize: '12px', fontWeight: 600, cursor: 'pointer',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px'
-                    }}
-                  >
-                    <Bot size={14} /> AI Copilot
                   </button>
                 </div>
               </div>

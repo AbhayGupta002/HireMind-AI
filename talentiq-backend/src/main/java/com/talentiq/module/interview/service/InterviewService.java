@@ -17,12 +17,17 @@ public interface InterviewService {
     void sendSelectionEmail(Long hrUserId, InterviewSlotDto.SelectionEmailRequest request);
 
     /**
-     * Get all upcoming (non-cancelled) interview slots for the HR user.
+     * Get all interview slots for the HR user.
      */
     List<InterviewSlotDto.Response> getCalendar(Long hrUserId);
 
     /**
-     * Update status of an interview slot (CONFIRMED / CANCELLED).
+     * Update status of an interview slot (CONFIRMED / CANCELLED / COMPLETED).
      */
     InterviewSlotDto.Response updateStatus(Long slotId, Long hrUserId, InterviewSlotDto.StatusUpdateRequest request);
+
+    /**
+     * Delete a future meeting or deactivate/complete an expired/past meeting.
+     */
+    InterviewSlotDto.Response deleteOrDeactivateSlot(Long slotId, Long hrUserId);
 }

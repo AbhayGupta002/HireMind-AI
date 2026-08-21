@@ -30,7 +30,7 @@ public class InterviewController {
             @AuthenticationPrincipal UserPrincipal principal,
             @Valid @RequestBody InterviewSlotDto.ScheduleRequest request) {
         InterviewSlotDto.Response slot = interviewService.scheduleInterview(principal.getId(), request);
-        return ResponseEntity.ok(ApiResponse.success(slot));
+        return ResponseEntity.ok(ApiResponse.success("Interview scheduled successfully", slot));
     }
 
     @PostMapping("/select")
@@ -45,7 +45,7 @@ public class InterviewController {
 
     @GetMapping("/calendar")
     @PreAuthorize("hasRole('HR')")
-    @Operation(summary = "Get HR's upcoming interview calendar slots")
+    @Operation(summary = "Get HR's upcoming and past interview calendar slots")
     public ResponseEntity<ApiResponse<List<InterviewSlotDto.Response>>> getCalendar(
             @AuthenticationPrincipal UserPrincipal principal) {
         List<InterviewSlotDto.Response> slots = interviewService.getCalendar(principal.getId());
@@ -54,12 +54,25 @@ public class InterviewController {
 
     @PutMapping("/{id}/status")
     @PreAuthorize("hasRole('HR')")
-    @Operation(summary = "Update interview slot status (CONFIRMED / CANCELLED)")
+    @Operation(summary = "Update interview slot status (CONFIRMED / CANCELLED / COMPLETED)")
     public ResponseEntity<ApiResponse<InterviewSlotDto.Response>> updateStatus(
             @PathVariable Long id,
             @AuthenticationPrincipal UserPrincipal principal,
             @Valid @RequestBody InterviewSlotDto.StatusUpdateRequest request) {
         InterviewSlotDto.Response updated = interviewService.updateStatus(id, principal.getId(), request);
-        return ResponseEntity.ok(ApiResponse.success(updated));
+        return ResponseEntity.ok(ApiResponse.success("Interview status updated successfully", updated));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('HR')")
+    @Operation(summary = "Delete future interview slot or deactivate past completed meeting")
+    public ResponseEntity<ApiResponse<InterviewSlotDto.Response>> deleteMeeting(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserPrincipal principal) {
+        InterviewSlotDto.Response result = interviewService.deleteOrDeactivateSlot(id, principal.getId());
+        if (result != null) {
+            return ResponseEntity.ok(ApiResponse.success("Meeting time is over; meeting marked as COMPLETED/DEACTIVATED in history.", result));
+        }
+        return ResponseEntity.ok(ApiResponse.success("Upcoming meeting successfully deleted.", null));
     }
 }

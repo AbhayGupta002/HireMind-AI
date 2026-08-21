@@ -37,59 +37,96 @@ public class InterviewServiceImpl implements InterviewService {
 
     @Override
     public InterviewSlotDto.Response scheduleInterview(Long hrUserId, InterviewSlotDto.ScheduleRequest request) {
-        JobApplication application = applicationRepository.findById(request.getApplicationId())
-                .orElseThrow(() -> new ResourceNotFoundException("Application not found: " + request.getApplicationId()));
-
         User hrUser = userRepository.findById(hrUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("HR user not found: " + hrUserId));
 
-        User candidateUser = userRepository.findById(application.getCandidate().getUser().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Candidate user not found"));
+        InterviewSlot slot;
 
-        InterviewSlot slot = InterviewSlot.builder()
-                .applicationId(request.getApplicationId())
-                .hrUserId(hrUserId)
-                .hrName(hrUser.getFullName())
-                .candidateUserId(candidateUser.getId())
-                .candidateName(candidateUser.getFullName())
-                .candidateEmail(candidateUser.getEmail())
-                .jobTitle(application.getJob().getTitle())
-                .scheduledAt(request.getScheduledAt())
-                .durationMinutes(request.getDurationMinutes())
-                .meetingLink(request.getMeetingLink())
-                .notes(request.getNotes())
-                .status("PENDING")
-                .build();
+        if (request.getApplicationId() != null && request.getApplicationId() > 0) {
+            JobApplication application = applicationRepository.findById(request.getApplicationId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Application not found: " + request.getApplicationId()));
+
+            User candidateUser = userRepository.findById(application.getCandidate().getUser().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Candidate user not found"));
+
+            slot = InterviewSlot.builder()
+                    .applicationId(request.getApplicationId())
+                    .hrUserId(hrUserId)
+                    .hrName(hrUser.getFullName())
+                    .candidateUserId(candidateUser.getId())
+                    .candidateName(candidateUser.getFullName())
+                    .candidateEmail(candidateUser.getEmail())
+                    .jobTitle(application.getJob().getTitle())
+                    .scheduledAt(request.getScheduledAt())
+                    .durationMinutes(request.getDurationMinutes())
+                    .meetingLink(request.getMeetingLink())
+                    .notes(request.getNotes())
+                    .status("PENDING")
+                    .build();
+
+            // Send interview schedule email to candidate
+            mailService.sendInterviewScheduleEmail(
+                    candidateUser.getEmail(),
+                    candidateUser.getFullName(),
+                    application.getJob().getTitle(),
+                    request.getScheduledAt(),
+                    request.getMeetingLink()
+            );
+
+            // Save in-app notification for candidate
+            Notification notification = Notification.builder()
+                    .user(candidateUser)
+                    .title("Interview Scheduled 🎉")
+                    .message("Your interview for " + application.getJob().getTitle() + " has been scheduled by " + hrUser.getFullName() + ".")
+                    .type("INTERVIEW_SCHEDULED")
+                    .linkUrl("/my-applications")
+                    .build();
+            notificationRepository.save(notification);
+
+            // Push real-time WebSocket notification to candidate
+            messagingTemplate.convertAndSendToUser(
+                    String.valueOf(candidateUser.getId()),
+                    "/queue/notifications",
+                    notification
+            );
+        } else {
+            // Direct / custom meeting
+            String candName = (request.getCandidateName() != null && !request.getCandidateName().isBlank())
+                    ? request.getCandidateName().trim()
+                    : "Candidate";
+            String candEmail = (request.getCandidateEmail() != null) ? request.getCandidateEmail().trim() : "";
+            String jobTitle = (request.getJobTitle() != null && !request.getJobTitle().isBlank())
+                    ? request.getJobTitle().trim()
+                    : "General Interview";
+
+            slot = InterviewSlot.builder()
+                    .applicationId(0L)
+                    .hrUserId(hrUserId)
+                    .hrName(hrUser.getFullName())
+                    .candidateUserId(0L)
+                    .candidateName(candName)
+                    .candidateEmail(candEmail)
+                    .jobTitle(jobTitle)
+                    .scheduledAt(request.getScheduledAt())
+                    .durationMinutes(request.getDurationMinutes())
+                    .meetingLink(request.getMeetingLink())
+                    .notes(request.getNotes())
+                    .status("PENDING")
+                    .build();
+
+            if (!candEmail.isBlank()) {
+                mailService.sendInterviewScheduleEmail(
+                        candEmail,
+                        candName,
+                        jobTitle,
+                        request.getScheduledAt(),
+                        request.getMeetingLink()
+                );
+            }
+        }
 
         InterviewSlot saved = slotRepository.save(slot);
-
-        // Send interview schedule email to candidate
-        mailService.sendInterviewScheduleEmail(
-                candidateUser.getEmail(),
-                candidateUser.getFullName(),
-                application.getJob().getTitle(),
-                request.getScheduledAt(),
-                request.getMeetingLink()
-        );
-
-        // Save in-app notification for candidate
-        Notification notification = Notification.builder()
-                .user(candidateUser)
-                .title("Interview Scheduled 🎉")
-                .message("Your interview for " + application.getJob().getTitle() + " has been scheduled by " + hrUser.getFullName() + ".")
-                .type("INTERVIEW_SCHEDULED")
-                .linkUrl("/my-applications")
-                .build();
-        notificationRepository.save(notification);
-
-        // Push real-time WebSocket notification to candidate
-        messagingTemplate.convertAndSendToUser(
-                String.valueOf(candidateUser.getId()),
-                "/queue/notifications",
-                notification
-        );
-
-        log.info("Interview scheduled: app={} at={} by HR={}", request.getApplicationId(), request.getScheduledAt(), hrUserId);
+        log.info("Interview scheduled: slotId={} at={} by HR={}", saved.getId(), request.getScheduledAt(), hrUserId);
         return toResponse(saved);
     }
 
@@ -140,9 +177,7 @@ public class InterviewServiceImpl implements InterviewService {
     @Transactional(readOnly = true)
     public List<InterviewSlotDto.Response> getCalendar(Long hrUserId) {
         return slotRepository
-                .findByHrUserIdAndScheduledAtAfterAndStatusNotOrderByScheduledAtAsc(
-                        hrUserId, Instant.now().minusSeconds(86400), "CANCELLED"
-                )
+                .findByHrUserIdOrderByScheduledAtDesc(hrUserId)
                 .stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
@@ -159,6 +194,29 @@ public class InterviewServiceImpl implements InterviewService {
 
         slot.setStatus(request.getStatus());
         return toResponse(slotRepository.save(slot));
+    }
+
+    @Override
+    public InterviewSlotDto.Response deleteOrDeactivateSlot(Long slotId, Long hrUserId) {
+        InterviewSlot slot = slotRepository.findById(slotId)
+                .orElseThrow(() -> new ResourceNotFoundException("Interview slot not found: " + slotId));
+
+        if (!slot.getHrUserId().equals(hrUserId)) {
+            throw new ForbiddenException("You do not own this interview slot");
+        }
+
+        // If meeting time has passed (meeting is over/successful) -> Deactivate / mark as COMPLETED
+        if (slot.getScheduledAt().isBefore(Instant.now())) {
+            slot.setStatus("COMPLETED");
+            InterviewSlot saved = slotRepository.save(slot);
+            log.info("Interview {} time has passed; marked as COMPLETED/DEACTIVATED", slotId);
+            return toResponse(saved);
+        } else {
+            // Future meeting -> Delete from database
+            slotRepository.delete(slot);
+            log.info("Future interview {} deleted by HR {}", slotId, hrUserId);
+            return null;
+        }
     }
 
     private InterviewSlotDto.Response toResponse(InterviewSlot slot) {
