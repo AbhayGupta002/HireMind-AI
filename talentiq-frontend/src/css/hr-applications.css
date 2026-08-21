@@ -1,0 +1,216 @@
+/* ============================================================
+   TalentIQ — HR Applications Page Styles
+   ============================================================ */
+
+.hr-apps-container {
+  max-width: 1140px;
+  margin: 40px auto;
+  padding: 0 24px;
+}
+
+.hr-apps-header {
+  margin-bottom: 32px;
+}
+
+.hr-apps-badge {
+  margin-bottom: 12px;
+  width: fit-content;
+}
+
+.hr-apps-title {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.hr-apps-subtitle {
+  color: var(--text-muted);
+}
+
+.hr-apps-alert-success {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34D399;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Filter Controls ─────────────────────────────────────── */
+.hr-apps-filter-bar {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.hr-apps-search-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 280px;
+}
+
+.hr-apps-search-icon {
+  position: absolute;
+  left: 16px;
+  top: 16px;
+}
+
+.hr-apps-search-input {
+  padding-left: 48px;
+  height: 50px;
+}
+
+.hr-apps-stage-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.hr-apps-stage-btn {
+  font-size: 12px;
+  padding: 10px 14px;
+}
+
+/* ── Applications List ───────────────────────────────────── */
+.hr-apps-loading {
+  text-align: center;
+  padding: 60px;
+  color: var(--text-muted);
+}
+
+.hr-apps-empty {
+  padding: 60px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.hr-apps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.hr-app-card {
+  padding: 28px;
+}
+
+.hr-app-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.hr-app-name-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.hr-app-candidate-name {
+  font-size: 22px;
+  color: #FFF;
+}
+
+.hr-app-score-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  background: rgba(15, 23, 42, 0.8);
+}
+
+.hr-app-candidate-headline {
+  font-size: 14px;
+  color: var(--primary-cyan);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.hr-app-candidate-meta {
+  display: flex;
+  gap: 20px;
+  color: var(--text-muted);
+  font-size: 13px;
+  flex-wrap: wrap;
+}
+
+.hr-app-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hr-app-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.hr-app-action-btn {
+  font-size: 13px;
+  display: flex;
+  gap: 8px;
+}
+
+.hr-app-skills-row {
+  margin-bottom: 16px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.hr-app-cover-box {
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid var(--border-subtle);
+  font-size: 13px;
+  color: var(--text-main);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.hr-app-cover-heading {
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.hr-app-stage-pipeline {
+  padding-top: 16px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.hr-app-stage-current {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.hr-app-stage-current-badge {
+  margin-left: 6px;
+}
+
+.hr-app-stage-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.hr-app-stage-label {
+  font-size: 12px;
+  color: var(--text-muted);
+}

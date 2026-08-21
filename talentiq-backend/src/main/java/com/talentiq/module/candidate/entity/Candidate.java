@@ -5,6 +5,7 @@ import com.talentiq.common.enums.ExperienceLevel;
 import com.talentiq.module.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -82,30 +83,37 @@ public class Candidate extends AuditEntity {
     private Integer profileCompletion = 0;
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 25)
     @Builder.Default
     private List<CandidateSkill> skills = new ArrayList<>();
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 25)
     @Builder.Default
     private List<CandidateExperience> experiences = new ArrayList<>();
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 25)
     @Builder.Default
     private List<CandidateEducation> educations = new ArrayList<>();
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 25)
     @Builder.Default
     private List<CandidateProject> projects = new ArrayList<>();
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 25)
     @Builder.Default
     private List<CandidateCertification> certifications = new ArrayList<>();
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 25)
     @Builder.Default
     private List<CandidateLanguage> languages = new ArrayList<>();
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 25)
     @Builder.Default
     private List<CandidateAchievement> achievements = new ArrayList<>();
 

@@ -4,6 +4,7 @@ import com.talentiq.module.company.entity.Company;
 import com.talentiq.module.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -69,6 +70,7 @@ public class AiConversation {
     private Instant updatedAt = Instant.now();
 
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 25)
     @Builder.Default
     private List<AiMessage> messages = new ArrayList<>();
 

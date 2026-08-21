@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import { Bot, Send, Sparkles, UserCheck, Briefcase, Settings } from 'lucide-react';
+import '../css/hr-copilot.css';
 
 interface ChatMessage {
   id: number;
@@ -77,46 +78,43 @@ export const HrCopilot: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: '1140px', margin: '40px auto', padding: '0 24px', height: 'calc(100vh - 150px)', display: 'flex', gap: '24px' }}>
+    <div className="copilot-container">
       {/* Context Sidebar */}
-      <div className="glass-panel" style={{ width: '300px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div className="glass-panel copilot-sidebar">
         <div>
-          <h3 style={{ fontSize: '16px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <h3 className="copilot-sidebar-title">
             <Bot size={18} color="var(--primary-cyan)" /> Copilot Context
           </h3>
-          <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '16px' }}>Select active RAG context mode</p>
+          <p className="copilot-sidebar-subtitle">Select active RAG context mode</p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div className="copilot-mode-btn-group">
             <button
-              className={`btn ${contextType === 'GENERAL' ? 'btn-primary' : 'btn-secondary'}`}
+              className={`btn ${contextType === 'GENERAL' ? 'btn-primary' : 'btn-secondary'} copilot-mode-btn`}
               onClick={() => setContextType('GENERAL')}
-              style={{ justifyContent: 'flex-start', fontSize: '13px' }}
             >
               <Sparkles size={16} /> General Assistant
             </button>
             <button
-              className={`btn ${contextType === 'CANDIDATE' ? 'btn-primary' : 'btn-secondary'}`}
+              className={`btn ${contextType === 'CANDIDATE' ? 'btn-primary' : 'btn-secondary'} copilot-mode-btn`}
               onClick={() => setContextType('CANDIDATE')}
-              style={{ justifyContent: 'flex-start', fontSize: '13px' }}
             >
               <UserCheck size={16} /> Active Candidate Context
             </button>
             <button
-              className={`btn ${contextType === 'JOB' ? 'btn-primary' : 'btn-secondary'}`}
+              className={`btn ${contextType === 'JOB' ? 'btn-primary' : 'btn-secondary'} copilot-mode-btn`}
               onClick={() => setContextType('JOB')}
-              style={{ justifyContent: 'flex-start', fontSize: '13px' }}
             >
               <Briefcase size={16} /> Active Job Posting Context
             </button>
           </div>
         </div>
 
-        <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '20px' }}>
-          <h4 style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <div className="copilot-settings-box">
+          <h4 className="copilot-settings-heading">
             <Settings size={14} /> Model Settings
           </h4>
-          <label style={{ fontSize: '11px', color: 'var(--text-dim)', display: 'block', marginBottom: '4px' }}>Preferred Model</label>
-          <select className="input-field" style={{ padding: '8px', fontSize: '12px' }} value={preferredModel} onChange={(e) => setPreferredModel(e.target.value)}>
+          <label className="copilot-settings-label">Preferred Model</label>
+          <select className="input-field copilot-settings-select" value={preferredModel} onChange={(e) => setPreferredModel(e.target.value)}>
             <option value="gpt-4o">OpenAI GPT-4o (Default)</option>
             <option value="gemini-1.5-pro">Google Gemini 1.5 Pro</option>
             <option value="claude-3-5-sonnet">Anthropic Claude 3.5 Sonnet</option>
@@ -125,46 +123,35 @@ export const HrCopilot: React.FC = () => {
       </div>
 
       {/* Main Chat Panel */}
-      <div className="glass-panel" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <div className="glass-panel copilot-chat-panel">
         {/* Header */}
-        <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--accent-emerald)', boxShadow: '0 0 8px var(--accent-emerald)' }} />
-            <span style={{ fontSize: '15px', fontWeight: 600 }}>HR Copilot Active Session ({contextType} MODE)</span>
+        <div className="copilot-chat-header">
+          <div className="copilot-status-indicator">
+            <div className="copilot-status-dot" />
+            <span className="copilot-header-title">HR Copilot Active Session ({contextType} MODE)</span>
           </div>
           <span className="badge badge-cyan">{preferredModel}</span>
         </div>
 
         {/* Messages Stream */}
-        <div style={{ flex: 1, padding: '24px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className="copilot-messages-stream">
           {messages.map(msg => (
             <div
               key={msg.id}
-              style={{
-                alignSelf: msg.role === 'USER' ? 'flex-end' : 'flex-start',
-                maxWidth: '80%',
-                padding: '14px 18px',
-                borderRadius: '16px',
-                background: msg.role === 'USER' ? 'var(--gradient-brand)' : 'rgba(30, 41, 59, 0.8)',
-                color: '#FFF',
-                fontSize: '14px',
-                lineHeight: '1.6',
-                border: msg.role === 'USER' ? 'none' : '1px solid var(--border-subtle)',
-                boxShadow: msg.role === 'USER' ? 'var(--shadow-glow)' : 'none'
-              }}
+              className={`copilot-msg-bubble ${msg.role.toLowerCase()}`}
             >
               {msg.content}
             </div>
           ))}
           {loading && (
-            <div style={{ alignSelf: 'flex-start', padding: '12px 18px', borderRadius: '16px', background: 'rgba(30, 41, 59, 0.8)', fontSize: '13px', color: 'var(--text-muted)' }}>
+            <div className="copilot-typing-bubble">
               AI Copilot is thinking...
             </div>
           )}
         </div>
 
         {/* Input Bar */}
-        <form onSubmit={handleSend} style={{ padding: '16px 24px', borderTop: '1px solid var(--border-subtle)', display: 'flex', gap: '12px' }}>
+        <form onSubmit={handleSend} className="copilot-input-bar">
           <input
             type="text"
             className="input-field"

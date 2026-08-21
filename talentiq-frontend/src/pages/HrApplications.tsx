@@ -12,6 +12,7 @@ import {
   Mail, 
   Search 
 } from 'lucide-react';
+import '../css/hr-applications.css';
 
 interface ApplicationItem {
   id: number;
@@ -158,46 +159,40 @@ export const HrApplications: React.FC = () => {
   });
 
   return (
-    <div style={{ maxWidth: '1140px', margin: '40px auto', padding: '0 24px' }}>
+    <div className="hr-apps-container">
       {/* Header */}
-      <div style={{ marginBottom: '32px' }}>
-        <div className="badge badge-indigo" style={{ marginBottom: '12px', width: 'fit-content' }}>
+      <div className="hr-apps-header">
+        <div className="badge badge-indigo hr-apps-badge">
           <Users size={14} /> HR Recruiter Portal
         </div>
-        <h2 style={{ fontSize: '32px', marginBottom: '8px' }}>Candidate Applicants & Resume Verification</h2>
-        <p style={{ color: 'var(--text-muted)' }}>Review candidate profiles, AI match scores, stage status, and download resumes</p>
+        <h2 className="hr-apps-title">Candidate Applicants & Resume Verification</h2>
+        <p className="hr-apps-subtitle">Review candidate profiles, AI match scores, stage status, and download resumes</p>
 
         {successMessage && (
-          <div style={{
-            marginTop: '16px', padding: '14px', borderRadius: '10px',
-            background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)',
-            color: '#34D399', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '8px'
-          }}>
+          <div className="hr-apps-alert-success">
             <CheckCircle2 size={18} /> {successMessage}
           </div>
         )}
 
         {/* Filter Controls */}
-        <div style={{ display: 'flex', gap: '16px', marginTop: '24px', flexWrap: 'wrap' }}>
-          <div style={{ position: 'relative', flex: 1, minWidth: '280px' }}>
-            <Search size={18} color="var(--text-muted)" style={{ position: 'absolute', left: '16px', top: '16px' }} />
+        <div className="hr-apps-filter-bar">
+          <div className="hr-apps-search-wrapper">
+            <Search size={18} color="var(--text-muted)" className="hr-apps-search-icon" />
             <input
               type="text"
-              className="input-field"
+              className="input-field hr-apps-search-input"
               placeholder="Search by candidate name, email, or job title..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              style={{ paddingLeft: '48px', height: '50px' }}
             />
           </div>
 
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <div className="hr-apps-stage-filters">
             {['ALL', 'APPLIED', 'SCREENED', 'INTERVIEWING', 'OFFERED', 'REJECTED'].map(stage => (
               <button
                 key={stage}
                 onClick={() => setStageFilter(stage)}
-                className={`btn ${stageFilter === stage ? 'btn-primary' : 'btn-secondary'}`}
-                style={{ fontSize: '12px', padding: '10px 14px' }}
+                className={`btn ${stageFilter === stage ? 'btn-primary' : 'btn-secondary'} hr-apps-stage-btn`}
               >
                 {stage}
               </button>
@@ -208,58 +203,56 @@ export const HrApplications: React.FC = () => {
 
       {/* Applications List */}
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '60px', color: 'var(--text-muted)' }}>Loading candidate applications...</div>
+        <div className="hr-apps-loading">Loading candidate applications...</div>
       ) : filteredApps.length === 0 ? (
-        <div className="glass-panel" style={{ padding: '60px', textAlign: 'center', color: 'var(--text-muted)' }}>
+        <div className="glass-panel hr-apps-empty">
           No candidate applications found for the selected filter.
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div className="hr-apps-list">
           {filteredApps.map(app => {
             const candidate = app.candidate;
             const score = app.aiMatchScore || 0;
             const scoreColor = score >= 85 ? 'var(--accent-emerald)' : score >= 65 ? 'var(--primary-cyan)' : 'var(--accent-amber)';
 
             return (
-              <div key={app.id} className="glass-panel" style={{ padding: '28px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginBottom: '20px' }}>
+              <div key={app.id} className="glass-panel hr-app-card">
+                <div className="hr-app-card-top">
                   {/* Candidate Identity Card */}
                   <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
-                      <h3 style={{ fontSize: '22px', color: '#FFF' }}>{candidate.firstName} {candidate.lastName}</h3>
-                      <span style={{
-                        padding: '4px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: 700,
-                        background: 'rgba(15, 23, 42, 0.8)', border: `1px solid ${scoreColor}`, color: scoreColor
-                      }}>
+                    <div className="hr-app-name-row">
+                      <h3 className="hr-app-candidate-name">{candidate.firstName} {candidate.lastName}</h3>
+                      <span
+                        className="hr-app-score-badge"
+                        style={{ border: `1px solid ${scoreColor}`, color: scoreColor }}
+                      >
                         ⚡ {score}% AI Match
                       </span>
                     </div>
 
-                    <div style={{ fontSize: '14px', color: 'var(--primary-cyan)', fontWeight: 600, marginBottom: '12px' }}>
+                    <div className="hr-app-candidate-headline">
                       {candidate.currentTitle || 'Software Candidate'} · {candidate.yearsExperience || 0} years experience
                     </div>
 
-                    <div style={{ display: 'flex', gap: '20px', color: 'var(--text-muted)', fontSize: '13px', flexWrap: 'wrap' }}>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Mail size={14} /> {candidate.email}</span>
-                      {candidate.phone && <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Phone size={14} /> {candidate.phone}</span>}
-                      {candidate.location && <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><MapPin size={14} /> {candidate.location}</span>}
-                      <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Briefcase size={14} color="var(--primary-cyan)" /> Applied for: <strong>{app.job.title}</strong></span>
+                    <div className="hr-app-candidate-meta">
+                      <span className="hr-app-meta-item"><Mail size={14} /> {candidate.email}</span>
+                      {candidate.phone && <span className="hr-app-meta-item"><Phone size={14} /> {candidate.phone}</span>}
+                      {candidate.location && <span className="hr-app-meta-item"><MapPin size={14} /> {candidate.location}</span>}
+                      <span className="hr-app-meta-item"><Briefcase size={14} color="var(--primary-cyan)" /> Applied for: <strong>{app.job.title}</strong></span>
                     </div>
                   </div>
 
                   {/* Resume & Copilot Actions */}
-                  <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                  <div className="hr-app-actions">
                     <button
                       onClick={() => handleDownloadResume(app.resumeId)}
-                      className="btn btn-secondary"
-                      style={{ fontSize: '13px', display: 'flex', gap: '8px' }}
+                      className="btn btn-secondary hr-app-action-btn"
                     >
                       <Download size={16} color="var(--primary-cyan)" /> Download Resume PDF
                     </button>
                     <button
                       onClick={() => navigate('/copilot')}
-                      className="btn btn-secondary"
-                      style={{ fontSize: '13px', display: 'flex', gap: '8px' }}
+                      className="btn btn-secondary hr-app-action-btn"
                     >
                       <Bot size={16} color="var(--primary-cyan)" /> AI Copilot Evaluation
                     </button>
@@ -268,7 +261,7 @@ export const HrApplications: React.FC = () => {
 
                 {/* Candidate Skills Pills */}
                 {candidate.skills && candidate.skills.length > 0 && (
-                  <div style={{ marginBottom: '16px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  <div className="hr-app-skills-row">
                     {candidate.skills.map((s, idx) => (
                       <span key={idx} className="badge badge-cyan">{s.skillName}</span>
                     ))}
@@ -277,27 +270,20 @@ export const HrApplications: React.FC = () => {
 
                 {/* Cover Letter Box */}
                 {app.coverLetter && (
-                  <div style={{
-                    padding: '14px 18px', borderRadius: '10px', background: 'rgba(15, 23, 42, 0.5)',
-                    border: '1px solid var(--border-subtle)', fontSize: '13px', color: 'var(--text-main)',
-                    lineHeight: '1.6', marginBottom: '20px'
-                  }}>
-                    <strong style={{ color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Candidate Cover Letter:</strong>
+                  <div className="hr-app-cover-box">
+                    <strong className="hr-app-cover-heading">Candidate Cover Letter:</strong>
                     "{app.coverLetter}"
                   </div>
                 )}
 
                 {/* Application Stage Update Pipeline */}
-                <div style={{
-                  paddingTop: '16px', borderTop: '1px solid var(--border-subtle)',
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px'
-                }}>
-                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                    Current Pipeline Stage: <span className="badge badge-indigo" style={{ marginLeft: '6px' }}>{app.status}</span>
+                <div className="hr-app-stage-pipeline">
+                  <div className="hr-app-stage-current">
+                    Current Pipeline Stage: <span className="badge badge-indigo hr-app-stage-current-badge">{app.status}</span>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Move Stage:</span>
+                  <div className="hr-app-stage-actions">
+                    <span className="hr-app-stage-label">Move Stage:</span>
                     <button
                       onClick={() => handleUpdateStatus(app.id, 'SCREENED')}
                       disabled={updatingId === app.id}

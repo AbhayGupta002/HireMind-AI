@@ -10,7 +10,7 @@ FROM maven:3.9.8-eclipse-temurin-21 AS builder
 WORKDIR /build
 
 # Cache dependencies first (layer optimization)
-COPY ../pom.xml .
+COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
 # Copy source and build

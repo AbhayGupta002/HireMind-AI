@@ -10,11 +10,12 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       pool-name: TalentIQ-HikariPool-Prod
-      minimum-idle: 5
-      maximum-pool-size: 30
+      minimum-idle: 10
+      maximum-pool-size: 50
       idle-timeout: 30000
-      connection-timeout: 20000
+      connection-timeout: 10000
       max-lifetime: 1800000
+      leak-detection-threshold: 60000
       connection-test-query: SELECT 1
 
   # ── JPA ───────────────────────────────────────────────────
@@ -34,9 +35,9 @@ spring:
         enabled: ${REDIS_SSL:false}
       lettuce:
         pool:
-          max-active: 20
-          max-idle: 20
-          min-idle: 5
+          max-active: 32
+          max-idle: 16
+          min-idle: 8
 
   # ── Mail ──────────────────────────────────────────────────
   mail:

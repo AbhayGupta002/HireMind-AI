@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Sparkles, User, Building2, ShieldCheck, LogIn, ArrowRight } from 'lucide-react';
+import '../css/login.css';
 
 type LoginRoleMode = 'CANDIDATE' | 'HR' | 'ADMIN';
 
@@ -10,24 +11,16 @@ export const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const [selectedRole, setSelectedRole] = useState<LoginRoleMode>('CANDIDATE');
-  const [email, setEmail] = useState('candidate@example.com');
-  const [password, setPassword] = useState('Password123!');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleRoleSelect = (role: LoginRoleMode) => {
     setSelectedRole(role);
     setError('');
-    if (role === 'CANDIDATE') {
-      setEmail('candidate@example.com');
-      setPassword('Password123!');
-    } else if (role === 'HR') {
-      setEmail('hr@techcorp.com');
-      setPassword('Password123!');
-    } else if (role === 'ADMIN') {
-      setEmail('admin@talentiq.ai');
-      setPassword('Admin@123!');
-    }
+    setEmail('');
+    setPassword('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,7 +29,7 @@ export const Login: React.FC = () => {
     setLoading(true);
     try {
       await login({ email, password });
-      const savedUser = JSON.parse(sessionStorage.getItem('user') || localStorage.getItem('user') || '{}');
+      const savedUser = JSON.parse(localStorage.getItem('user') || '{}');
       const roles = savedUser.roles || [];
       const userIsHr = roles.includes('ROLE_HR') || roles.includes('HR') || selectedRole === 'HR';
       const userIsAdmin = roles.includes('ROLE_SUPER_ADMIN') || roles.includes('SUPER_ADMIN') || selectedRole === 'ADMIN';
@@ -56,54 +49,23 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div style={{
-      maxWidth: '520px',
-      margin: '60px auto',
-      padding: '0 24px'
-    }}>
-      <div className="glass-panel" style={{ padding: '36px' }}>
+    <div className="login-container">
+      <div className="glass-panel login-card">
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-          <div style={{
-            width: '56px', height: '56px', borderRadius: '16px', background: 'var(--gradient-brand)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px',
-            boxShadow: 'var(--shadow-glow)'
-          }}>
+        <div className="login-header">
+          <div className="login-icon-badge">
             <Sparkles size={28} color="#FFF" />
           </div>
-          <h2 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '6px' }}>Sign In to TalentIQ</h2>
-          <p style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Select your portal account type to sign in</p>
+          <h2 className="login-title">Sign In to TalentIQ</h2>
+          <p className="login-subtitle">Select your portal account type to sign in</p>
         </div>
 
         {/* Explicit Role Selector Tabs */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr 1fr',
-          gap: '8px',
-          padding: '6px',
-          background: 'rgba(15, 23, 42, 0.6)',
-          borderRadius: '12px',
-          border: '1px solid var(--border-subtle)',
-          marginBottom: '24px'
-        }}>
+        <div className="login-role-tabs">
           <button
             type="button"
             onClick={() => handleRoleSelect('CANDIDATE')}
-            style={{
-              padding: '12px 8px',
-              borderRadius: '8px',
-              border: 'none',
-              cursor: 'pointer',
-              background: selectedRole === 'CANDIDATE' ? 'var(--gradient-brand)' : 'transparent',
-              color: selectedRole === 'CANDIDATE' ? '#FFF' : 'var(--text-muted)',
-              fontSize: '13px',
-              fontWeight: 700,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '6px',
-              transition: 'all 0.3s ease'
-            }}
+            className={`login-role-tab ${selectedRole === 'CANDIDATE' ? 'active-candidate' : ''}`}
           >
             <User size={18} color={selectedRole === 'CANDIDATE' ? '#FFF' : 'var(--primary-cyan)'} />
             <span>Candidate</span>
@@ -112,21 +74,7 @@ export const Login: React.FC = () => {
           <button
             type="button"
             onClick={() => handleRoleSelect('HR')}
-            style={{
-              padding: '12px 8px',
-              borderRadius: '8px',
-              border: 'none',
-              cursor: 'pointer',
-              background: selectedRole === 'HR' ? 'var(--gradient-indigo-violet)' : 'transparent',
-              color: selectedRole === 'HR' ? '#FFF' : 'var(--text-muted)',
-              fontSize: '13px',
-              fontWeight: 700,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '6px',
-              transition: 'all 0.3s ease'
-            }}
+            className={`login-role-tab ${selectedRole === 'HR' ? 'active-hr' : ''}`}
           >
             <Building2 size={18} color={selectedRole === 'HR' ? '#FFF' : 'var(--primary-indigo)'} />
             <span>HR Recruiter</span>
@@ -135,21 +83,7 @@ export const Login: React.FC = () => {
           <button
             type="button"
             onClick={() => handleRoleSelect('ADMIN')}
-            style={{
-              padding: '12px 8px',
-              borderRadius: '8px',
-              border: 'none',
-              cursor: 'pointer',
-              background: selectedRole === 'ADMIN' ? 'linear-gradient(135deg, #F43F5E 0%, #E11D48 100%)' : 'transparent',
-              color: selectedRole === 'ADMIN' ? '#FFF' : 'var(--text-muted)',
-              fontSize: '13px',
-              fontWeight: 700,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '6px',
-              transition: 'all 0.3s ease'
-            }}
+            className={`login-role-tab ${selectedRole === 'ADMIN' ? 'active-admin' : ''}`}
           >
             <ShieldCheck size={18} color={selectedRole === 'ADMIN' ? '#FFF' : 'var(--accent-rose)'} />
             <span>Admin</span>
@@ -157,39 +91,28 @@ export const Login: React.FC = () => {
         </div>
 
         {/* Selected Role Context Banner */}
-        <div style={{
-          padding: '12px 16px',
-          borderRadius: '8px',
-          marginBottom: '20px',
-          background: selectedRole === 'CANDIDATE' ? 'rgba(6, 182, 212, 0.08)' : selectedRole === 'HR' ? 'rgba(99, 102, 241, 0.08)' : 'rgba(244, 63, 94, 0.08)',
-          border: `1px solid ${selectedRole === 'CANDIDATE' ? 'rgba(6, 182, 212, 0.2)' : selectedRole === 'HR' ? 'rgba(99, 102, 241, 0.2)' : 'rgba(244, 63, 94, 0.2)'}`,
-          fontSize: '13px',
-          color: 'var(--text-muted)'
-        }}>
+        <div className={`login-role-banner ${selectedRole.toLowerCase()}`}>
           {selectedRole === 'CANDIDATE' && (
-            <>🎯 Logging in as <strong style={{ color: 'var(--primary-cyan)' }}>Candidate</strong> — Access AI resume scoring, job applications, and portfolio showcase.</>
+            <>🎯 Logging in as <strong>Candidate</strong> — Access AI resume scoring, job applications, and portfolio showcase.</>
           )}
           {selectedRole === 'HR' && (
-            <>🏢 Logging in as <strong style={{ color: 'var(--primary-indigo)' }}>HR Recruiter</strong> — Access job posting modal, RAG AI Copilot, and candidate analytics.</>
+            <>🏢 Logging in as <strong>HR Recruiter</strong> — Access job posting modal, RAG AI Copilot, and candidate analytics.</>
           )}
           {selectedRole === 'ADMIN' && (
-            <>🛡️ Logging in as <strong style={{ color: 'var(--accent-rose)' }}>Super Admin</strong> — Access user lockouts, company verification approvals, and platform telemetry.</>
+            <>🛡️ Logging in as <strong>Super Admin</strong> — Access user lockouts, company verification approvals, and platform telemetry.</>
           )}
         </div>
 
         {error && (
-          <div style={{
-            padding: '12px', borderRadius: '8px', background: 'rgba(244, 63, 94, 0.15)',
-            border: '1px solid rgba(244, 63, 94, 0.3)', color: '#FDA4AF', fontSize: '13px', marginBottom: '20px'
-          }}>
+          <div className="login-error-alert">
             ⚠️ {error}
           </div>
         )}
 
         {/* Login Form */}
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-          <div>
-            <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px', color: 'var(--text-muted)' }}>
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="login-form-group">
+            <label className="login-label">
               Email Address
             </label>
             <input
@@ -202,8 +125,8 @@ export const Login: React.FC = () => {
             />
           </div>
 
-          <div>
-            <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px', color: 'var(--text-muted)' }}>
+          <div className="login-form-group">
+            <label className="login-label">
               Password
             </label>
             <input
@@ -218,25 +141,19 @@ export const Login: React.FC = () => {
 
           <button
             type="submit"
-            className="btn btn-primary"
+            className={`btn btn-primary login-submit-btn ${selectedRole.toLowerCase()}`}
             disabled={loading}
-            style={{
-              padding: '14px',
-              fontSize: '15px',
-              fontWeight: 700,
-              background: selectedRole === 'HR' ? 'var(--gradient-indigo-violet)' : selectedRole === 'ADMIN' ? 'linear-gradient(135deg, #F43F5E 0%, #E11D48 100%)' : undefined
-            }}
           >
             {loading ? 'Authenticating...' : (
-              <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <span className="login-btn-content">
                 <LogIn size={18} /> Sign In as {selectedRole === 'CANDIDATE' ? 'Candidate' : selectedRole === 'HR' ? 'HR Recruiter' : 'Super Admin'} <ArrowRight size={16} />
               </span>
             )}
           </button>
         </form>
 
-        <div style={{ textAlign: 'center', marginTop: '24px', fontSize: '13px', color: 'var(--text-muted)' }}>
-          Need a new account? <Link to="/register" style={{ color: 'var(--primary-cyan)', textDecoration: 'none', fontWeight: 600 }}>Create {selectedRole === 'HR' ? 'HR Recruiter' : 'Candidate'} Account</Link>
+        <div className="login-footer">
+          Need a new account? <Link to="/register" className="login-footer-link">Create {selectedRole === 'HR' ? 'HR Recruiter' : 'Candidate'} Account</Link>
         </div>
       </div>
     </div>

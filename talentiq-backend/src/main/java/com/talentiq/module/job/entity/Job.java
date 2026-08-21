@@ -8,6 +8,7 @@ import com.talentiq.module.company.entity.Company;
 import com.talentiq.module.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -129,6 +130,7 @@ public class Job extends AuditEntity {
     private String embeddingHash;
 
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 25)
     @Builder.Default
     private List<JobSkill> requiredSkills = new ArrayList<>();
 

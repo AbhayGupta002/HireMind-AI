@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import { ShieldCheck, Users, Building2, Lock, Unlock, CheckCircle2, XCircle } from 'lucide-react';
+import '../css/admin-portal.css';
 
 interface PlatformMetrics {
   totalUsers: number;
@@ -99,54 +100,54 @@ export const AdminPortal: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: '1140px', margin: '40px auto', padding: '0 24px' }}>
-      <div style={{ marginBottom: '32px' }}>
-        <div className="badge badge-rose" style={{ marginBottom: '12px' }}>
+    <div className="admin-container">
+      <div className="admin-header">
+        <div className="badge badge-rose admin-badge">
           <ShieldCheck size={14} /> Platform Security & Administration
         </div>
-        <h2 style={{ fontSize: '32px', marginBottom: '8px' }}>Super Admin Control Panel</h2>
-        <p style={{ color: 'var(--text-muted)' }}>System health telemetry, user account lockouts, and company verification workflows</p>
+        <h2 className="admin-title">Super Admin Control Panel</h2>
+        <p className="admin-subtitle">System health telemetry, user account lockouts, and company verification workflows</p>
       </div>
 
       {loading || !metrics ? (
-        <div style={{ textAlign: 'center', padding: '60px', color: 'var(--text-muted)' }}>Loading system telemetry...</div>
+        <div className="admin-loading">Loading system telemetry...</div>
       ) : (
         <>
           {/* Top Platform Metrics */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '32px' }}>
-            <div className="glass-card" style={{ padding: '20px' }}>
-              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Total Users</div>
-              <div style={{ fontSize: '28px', fontWeight: 800 }}>{metrics.totalUsers}</div>
+          <div className="admin-metrics-grid">
+            <div className="glass-card admin-metric-card">
+              <div className="admin-metric-label">Total Users</div>
+              <div className="admin-metric-value">{metrics.totalUsers}</div>
             </div>
 
-            <div className="glass-card" style={{ padding: '20px' }}>
-              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Active Companies</div>
-              <div style={{ fontSize: '28px', fontWeight: 800, color: 'var(--primary-cyan)' }}>{metrics.totalCompanies}</div>
+            <div className="glass-card admin-metric-card">
+              <div className="admin-metric-label">Active Companies</div>
+              <div className="admin-metric-value cyan">{metrics.totalCompanies}</div>
             </div>
 
-            <div className="glass-card" style={{ padding: '20px' }}>
-              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Pending Verifications</div>
-              <div style={{ fontSize: '28px', fontWeight: 800, color: 'var(--accent-amber)' }}>{metrics.pendingCompanies}</div>
+            <div className="glass-card admin-metric-card">
+              <div className="admin-metric-label">Pending Verifications</div>
+              <div className="admin-metric-value amber">{metrics.pendingCompanies}</div>
             </div>
 
-            <div className="glass-card" style={{ padding: '20px' }}>
-              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Total Applications</div>
-              <div style={{ fontSize: '28px', fontWeight: 800, color: 'var(--primary-indigo)' }}>{metrics.totalApplications}</div>
+            <div className="glass-card admin-metric-card">
+              <div className="admin-metric-label">Total Applications</div>
+              <div className="admin-metric-value indigo">{metrics.totalApplications}</div>
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+          <div className="admin-panels-grid">
             {/* User Lockout Controls */}
-            <div className="glass-panel" style={{ padding: '24px' }}>
-              <h3 style={{ fontSize: '18px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="glass-panel admin-panel">
+              <h3 className="admin-panel-title">
                 <Users size={18} color="var(--primary-cyan)" /> User Account Controls
               </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div className="admin-items-list">
                 {users.map(u => (
-                  <div key={u.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(15, 23, 42, 0.5)', borderRadius: '8px' }}>
+                  <div key={u.id} className="admin-list-item">
                     <div>
-                      <div style={{ fontSize: '14px', fontWeight: 600 }}>{u.firstName} {u.lastName}</div>
-                      <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{u.email}</div>
+                      <div className="admin-item-primary">{u.firstName} {u.lastName}</div>
+                      <div className="admin-item-secondary">{u.email}</div>
                     </div>
                     <button
                       onClick={() => handleToggleUserStatus(u.id, u.status)}
@@ -160,21 +161,21 @@ export const AdminPortal: React.FC = () => {
             </div>
 
             {/* Pending Company Verifications */}
-            <div className="glass-panel" style={{ padding: '24px' }}>
-              <h3 style={{ fontSize: '18px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="glass-panel admin-panel">
+              <h3 className="admin-panel-title">
                 <Building2 size={18} color="var(--accent-amber)" /> Pending Company Approvals
               </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div className="admin-items-list">
                 {pendingCompanies.length === 0 ? (
-                  <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>No companies pending approval</p>
+                  <p className="admin-empty-text">No companies pending approval</p>
                 ) : (
                   pendingCompanies.map(c => (
-                    <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(15, 23, 42, 0.5)', borderRadius: '8px' }}>
+                    <div key={c.id} className="admin-list-item">
                       <div>
-                        <div style={{ fontSize: '14px', fontWeight: 600 }}>{c.name}</div>
-                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{c.industry} · {c.website}</div>
+                        <div className="admin-item-primary">{c.name}</div>
+                        <div className="admin-item-secondary">{c.industry} · {c.website}</div>
                       </div>
-                      <div style={{ display: 'flex', gap: '6px' }}>
+                      <div className="admin-item-btn-group">
                         <button onClick={() => handleVerifyCompany(c.id, true)} className="btn btn-primary btn-sm">
                           <CheckCircle2 size={12} /> Approve
                         </button>

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { apiClient } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { Search, MapPin, Building, DollarSign, CheckCircle2, Plus, X, Sparkles, Filter, Rocket } from 'lucide-react';
+import '../css/jobs-list.css';
 
 interface JobItem {
   id: number;
@@ -79,15 +80,7 @@ const StarCanvas: React.FC = () => {
   return (
     <canvas
       ref={canvasRef}
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        pointerEvents: 'none',
-        zIndex: 0,
-      }}
+      className="jobs-star-canvas"
     />
   );
 };
@@ -283,122 +276,31 @@ export const JobsList: React.FC = () => {
   });
 
   return (
-    <div style={{ position: 'relative', minHeight: '100vh', background: '#06071A', color: '#F8FAFC', paddingBottom: '80px', overflowX: 'hidden' }}>
-      <style>{`
-        @keyframes floatPlanet {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-12px) rotate(5deg); }
-        }
-        @keyframes orbitRotate {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        @keyframes pulseGlow {
-          0%, 100% { opacity: 0.4; transform: scale(1); }
-          50% { opacity: 0.8; transform: scale(1.1); }
-        }
-        .cosmic-card {
-          background: rgba(15, 23, 42, 0.75);
-          backdrop-filter: blur(16px);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 18px;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .cosmic-card:hover {
-          transform: translateY(-4px) scale(1.01);
-          border-color: rgba(124, 58, 237, 0.4);
-          box-shadow: 0 12px 30px rgba(124, 58, 237, 0.2), 0 0 0 1px rgba(124, 58, 237, 0.2);
-        }
-        .cosmic-btn-primary {
-          background: linear-gradient(135deg, #7C3AED 0%, #DB2777 100%);
-          border: none;
-          color: #FFF;
-          font-weight: 700;
-          border-radius: 12px;
-          cursor: pointer;
-          transition: all 0.25s ease;
-          box-shadow: 0 4px 20px rgba(124, 58, 237, 0.35);
-        }
-        .cosmic-btn-primary:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 28px rgba(124, 58, 237, 0.55);
-        }
-        .cosmic-pill {
-          background: rgba(124, 58, 237, 0.12);
-          border: 1px solid rgba(124, 58, 237, 0.3);
-          color: #A78BFA;
-          border-radius: 999px;
-          padding: 6px 14px;
-          font-size: 12px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
-        .cosmic-pill:hover, .cosmic-pill.active {
-          background: rgba(124, 58, 237, 0.3);
-          color: #FFF;
-          border-color: #7C3AED;
-        }
-      `}</style>
-
+    <div className="jobs-page-wrapper">
       {/* Star Canvas */}
       <StarCanvas />
 
       {/* Cosmic Background Orbs */}
-      <div style={{
-        position: 'fixed', top: '15%', right: '8%', width: '450px', height: '450px',
-        borderRadius: '50%', background: 'radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, transparent 70%)',
-        pointerEvents: 'none', zIndex: 1, animation: 'pulseGlow 7s ease-in-out infinite',
-      }} />
-      <div style={{
-        position: 'fixed', bottom: '15%', left: '5%', width: '400px', height: '400px',
-        borderRadius: '50%', background: 'radial-gradient(circle, rgba(6, 182, 212, 0.12) 0%, transparent 70%)',
-        pointerEvents: 'none', zIndex: 1, animation: 'pulseGlow 9s ease-in-out infinite 2s',
-      }} />
+      <div className="jobs-orb-top-right" />
+      <div className="jobs-orb-bottom-left" />
 
-      <div style={{ position: 'relative', zIndex: 2, maxWidth: '1200px', margin: '0 auto', padding: '40px 24px 0' }}>
-        
+      <div className="jobs-content-container">
         {/* 🚀 Cosmic Header Hero Section */}
-        <div style={{
-          position: 'relative',
-          padding: '48px 40px',
-          borderRadius: '24px',
-          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.5) 100%)',
-          backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          boxShadow: '0 20px 50px rgba(0,0,0,0.4)',
-          marginBottom: '36px',
-          overflow: 'hidden',
-        }}>
+        <div className="jobs-hero-panel">
           {/* Orbital Decorative Ring */}
-          <div style={{
-            position: 'absolute', top: '-60px', right: '-40px', width: '260px', height: '260px',
-            borderRadius: '50%', border: '1px dashed rgba(124, 58, 237, 0.3)',
-            animation: 'orbitRotate 25s linear infinite', pointerEvents: 'none',
-          }}>
-            <div style={{
-              position: 'absolute', top: '20px', left: '20px', width: '12px', height: '12px',
-              borderRadius: '50%', background: '#06B6D4', boxShadow: '0 0 10px #06B6D4',
-            }} />
+          <div className="jobs-orbital-ring">
+            <div className="jobs-orbital-dot" />
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
+          <div className="jobs-hero-content">
             <div>
-              <div style={{
-                display: 'inline-flex', alignItems: 'center', gap: '8px',
-                padding: '6px 14px', borderRadius: '999px',
-                background: 'rgba(124, 58, 237, 0.15)', border: '1px solid rgba(124, 58, 237, 0.35)',
-                color: '#A78BFA', fontSize: '12px', fontWeight: 600, marginBottom: '16px',
-              }}>
+              <div className="jobs-badge-tag">
                 <Sparkles size={14} /> Cosmic Tech Opportunities
               </div>
-              <h1 style={{ fontSize: '38px', fontWeight: 900, marginBottom: '10px', letterSpacing: '-0.02em' }}>
-                Explore <span style={{
-                  background: 'linear-gradient(90deg, #7C3AED, #DB2777, #06B6D4)',
-                  WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-                }}>Active Career Horizons</span> 🪐
+              <h1 className="jobs-hero-title">
+                Explore <span className="jobs-gradient-text">Active Career Horizons</span> 🪐
               </h1>
-              <p style={{ color: '#94A3B8', fontSize: '15px', maxWidth: '620px', lineHeight: 1.6 }}>
+              <p className="jobs-hero-desc">
                 {isHr || isAdmin
                   ? 'Manage your corporate postings, recruit top engineering talent, or launch new career orbits.'
                   : 'Discover high-impact software, AI, and cloud roles matched directly with your technical profile.'}
@@ -408,8 +310,7 @@ export const JobsList: React.FC = () => {
             {(isHr || isAdmin) && (
               <button
                 onClick={() => setShowPostModal(true)}
-                className="cosmic-btn-primary"
-                style={{ padding: '14px 26px', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}
+                className="cosmic-btn-primary jobs-post-btn-hero"
               >
                 <Plus size={18} /> Post New Job
               </button>
@@ -418,54 +319,30 @@ export const JobsList: React.FC = () => {
 
           {/* Success Banner Alert */}
           {successMessage && (
-            <div style={{
-              marginTop: '24px', padding: '14px 20px', borderRadius: '12px',
-              background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.35)',
-              color: '#34D399', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '10px',
-            }}>
+            <div className="jobs-alert-success">
               <CheckCircle2 size={18} /> {successMessage}
             </div>
           )}
         </div>
 
         {/* 🔍 Search & Filter Bar */}
-        <div style={{
-          background: 'rgba(15, 23, 42, 0.7)',
-          backdropFilter: 'blur(16px)',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          borderRadius: '20px',
-          padding: '20px 24px',
-          marginBottom: '32px',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
-        }}>
-          <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', marginBottom: '16px' }}>
-            <div style={{ position: 'relative', flex: 1, minWidth: '280px' }}>
-              <Search size={18} color="#94A3B8" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)' }} />
+        <div className="jobs-filter-panel">
+          <div className="jobs-search-row">
+            <div className="jobs-search-wrapper">
+              <Search size={18} color="#94A3B8" className="jobs-search-icon" />
               <input
                 type="text"
                 placeholder="Search job title, company, or skills (e.g. Java, Python, React)..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                style={{
-                  width: '100%',
-                  height: '48px',
-                  paddingLeft: '48px',
-                  paddingRight: '16px',
-                  borderRadius: '12px',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  background: 'rgba(9, 13, 22, 0.6)',
-                  color: '#F8FAFC',
-                  fontSize: '14px',
-                  outline: 'none',
-                  boxSizing: 'border-box',
-                }}
+                className="jobs-search-input"
               />
             </div>
           </div>
 
           {/* Planet Pills Filter Row */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '12px', color: '#94A3B8', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <div className="jobs-pills-row">
+            <span className="jobs-filter-label">
               <Filter size={14} /> Filter Orbit:
             </span>
             {[
@@ -488,80 +365,64 @@ export const JobsList: React.FC = () => {
 
         {/* 📋 Jobs List Grid */}
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '80px', color: '#94A3B8', fontSize: '16px' }}>
-            <Sparkles size={24} style={{ animation: 'spin-slow 3s linear infinite', marginBottom: '12px' }} />
+          <div className="jobs-loading">
+            <Sparkles size={24} className="jobs-loading-icon" />
             <div>Scanning job orbits...</div>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div className="jobs-list-container">
             {filteredJobs.length === 0 ? (
-              <div className="cosmic-card" style={{ padding: '60px', textAlign: 'center', color: '#94A3B8' }}>
-                <Rocket size={36} color="#7C3AED" style={{ marginBottom: '12px' }} />
-                <h3 style={{ fontSize: '18px', color: '#F8FAFC', marginBottom: '6px' }}>No Orbiting Roles Found</h3>
-                <p style={{ fontSize: '14px' }}>Try adjusting your keywords or clearing selected filters.</p>
+              <div className="cosmic-card jobs-empty-card">
+                <Rocket size={36} color="#7C3AED" className="jobs-empty-icon" />
+                <h3 className="jobs-empty-title">No Orbiting Roles Found</h3>
+                <p>Try adjusting your keywords or clearing selected filters.</p>
               </div>
             ) : (
               filteredJobs.map(job => {
                 const isApplied = appliedJobIds.includes(job.id);
                 return (
-                  <div key={job.id} className="cosmic-card" style={{ padding: '28px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
-                    <div style={{ flex: 1, minWidth: '280px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', flexWrap: 'wrap' }}>
-                        <h3 style={{ fontSize: '22px', fontWeight: 800, color: '#FFF' }}>{job.title}</h3>
+                  <div key={job.id} className="cosmic-card jobs-item-card">
+                    <div className="jobs-item-main">
+                      <div className="jobs-item-title-row">
+                        <h3 className="jobs-item-title">{job.title}</h3>
                         {job.remote && (
-                          <span style={{
-                            padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: 700,
-                            background: 'rgba(6, 182, 212, 0.15)', border: '1px solid rgba(6, 182, 212, 0.35)', color: '#06B6D4',
-                          }}>
+                          <span className="jobs-badge-remote">
                             🚀 Remote
                           </span>
                         )}
                         {job.hybrid && (
-                          <span style={{
-                            padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: 700,
-                            background: 'rgba(99, 102, 241, 0.15)', border: '1px solid rgba(99, 102, 241, 0.35)', color: '#A78BFA',
-                          }}>
+                          <span className="jobs-badge-hybrid">
                             🪐 Hybrid
                           </span>
                         )}
-                        <span style={{
-                          padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: 700,
-                          background: 'rgba(219, 39, 119, 0.15)', border: '1px solid rgba(219, 39, 119, 0.35)', color: '#F472B6',
-                        }}>
+                        <span className="jobs-badge-level">
                           {job.experienceLevel}
                         </span>
                       </div>
 
-                      <div style={{ display: 'flex', gap: '24px', color: '#94A3B8', fontSize: '13.5px', marginBottom: '16px', flexWrap: 'wrap' }}>
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#F8FAFC', fontWeight: 600 }}>
+                      <div className="jobs-meta-row">
+                        <span className="jobs-company-name">
                           <Building size={15} color="#06B6D4" /> {job.company.name}
                         </span>
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span className="jobs-location-name">
                           <MapPin size={15} color="#A78BFA" /> {job.location}
                         </span>
                         {job.salaryMin && (
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#34D399', fontWeight: 700 }}>
+                          <span className="jobs-salary-text">
                             <DollarSign size={15} /> ${(job.salaryMin / 1000).toFixed(0)}k - ${(job.salaryMax! / 1000).toFixed(0)}k / yr
                           </span>
                         )}
                       </div>
 
                       {job.description && (
-                        <p style={{
-                          color: '#94A3B8', fontSize: '13.5px', lineHeight: '1.6', marginBottom: '16px',
-                          display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'
-                        }}>
+                        <p className="jobs-desc-snippet">
                           {job.description}
                         </p>
                       )}
 
-                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                      <div className="jobs-skills-row">
                         {job.requiredSkills?.map((skill, idx) => (
-                          <span key={idx} style={{
-                            fontSize: '11px', fontWeight: 600, padding: '5px 12px', borderRadius: '8px',
-                            background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(255, 255, 255, 0.1)',
-                            color: '#CBD5E1'
-                          }}>
+                          <span key={idx} className="jobs-skill-chip">
                             ⚡ {skill.skillName}
                           </span>
                         ))}
@@ -570,19 +431,14 @@ export const JobsList: React.FC = () => {
 
                     <div>
                       {isApplied ? (
-                        <span style={{
-                          padding: '12px 24px', borderRadius: '12px', fontSize: '14px', fontWeight: 700,
-                          background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.35)', color: '#34D399',
-                          display: 'inline-flex', alignItems: 'center', gap: '8px'
-                        }}>
+                        <span className="jobs-applied-badge">
                           <CheckCircle2 size={16} /> Applied
                         </span>
                       ) : (
                         <button
                           onClick={() => handleApply(job.id)}
-                          className="cosmic-btn-primary"
+                          className="cosmic-btn-primary jobs-apply-btn"
                           disabled={applyingJobId === job.id}
-                          style={{ padding: '14px 28px', fontSize: '14px' }}
                         >
                           {applyingJobId === job.id ? 'Submitting Orbit...' : 'Apply Now 🚀'}
                         </button>
@@ -597,38 +453,32 @@ export const JobsList: React.FC = () => {
 
         {/* 🏢 HR Post Job Modal */}
         {showPostModal && (
-          <div style={{
-            position: 'fixed', inset: 0, background: 'rgba(6, 7, 26, 0.85)', backdropFilter: 'blur(12px)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 500, padding: '20px'
-          }}>
-            <div className="cosmic-card" style={{
-              width: '100%', maxWidth: '680px', maxHeight: '90vh', overflowY: 'auto',
-              padding: '32px', background: 'rgba(15, 23, 42, 0.95)', border: '1px solid rgba(124, 58, 237, 0.3)',
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                <h3 style={{ fontSize: '22px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '10px', color: '#FFF' }}>
+          <div className="jobs-modal-overlay">
+            <div className="cosmic-card jobs-modal-card">
+              <div className="jobs-modal-header">
+                <h3 className="jobs-modal-title">
                   <Rocket color="#06B6D4" size={24} /> Post New Orbit Role
                 </h3>
-                <button onClick={() => setShowPostModal(false)} style={{ background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer' }}>
+                <button onClick={() => setShowPostModal(false)} className="jobs-modal-close-btn">
                   <X size={20} />
                 </button>
               </div>
 
               {postError && (
-                <div style={{ padding: '12px', borderRadius: '8px', background: 'rgba(239, 68, 68, 0.15)', color: '#FCA5A5', fontSize: '13px', marginBottom: '16px' }}>
+                <div className="jobs-modal-error">
                   ⚠️ {postError}
                 </div>
               )}
 
-              <form onSubmit={handlePostJob} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <form onSubmit={handlePostJob} className="jobs-modal-form">
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#94A3B8', marginBottom: '6px' }}>Job Title *</label>
+                  <label className="jobs-modal-label">Job Title *</label>
                   <input type="text" className="input-field" required placeholder="e.g. Senior Microservices Architect" value={title} onChange={(e) => setTitle(e.target.value)} />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="jobs-modal-row-2col">
                   <div>
-                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#94A3B8', marginBottom: '6px' }}>Job Type *</label>
+                    <label className="jobs-modal-label">Job Type *</label>
                     <select className="input-field" value={jobType} onChange={(e) => setJobType(e.target.value)}>
                       <option value="FULL_TIME">Full-Time</option>
                       <option value="PART_TIME">Part-Time</option>
@@ -639,7 +489,7 @@ export const JobsList: React.FC = () => {
                     </select>
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#94A3B8', marginBottom: '6px' }}>Experience Level *</label>
+                    <label className="jobs-modal-label">Experience Level *</label>
                     <select className="input-field" value={experienceLevel} onChange={(e) => setExperienceLevel(e.target.value)}>
                       <option value="ENTRY">Entry Level (0-1 yrs)</option>
                       <option value="JUNIOR">Junior (1-3 yrs)</option>
@@ -651,43 +501,43 @@ export const JobsList: React.FC = () => {
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', alignItems: 'center' }}>
+                <div className="jobs-modal-row-3col">
                   <div>
-                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#94A3B8', marginBottom: '6px' }}>Location</label>
+                    <label className="jobs-modal-label">Location</label>
                     <input type="text" className="input-field" placeholder="e.g. San Francisco, CA" value={location} onChange={(e) => setLocation(e.target.value)} />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#94A3B8', marginBottom: '6px' }}>Min Salary ($/yr)</label>
+                    <label className="jobs-modal-label">Min Salary ($/yr)</label>
                     <input type="number" className="input-field" placeholder="130000" value={salaryMin} onChange={(e) => setSalaryMin(e.target.value)} />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#94A3B8', marginBottom: '6px' }}>Max Salary ($/yr)</label>
+                    <label className="jobs-modal-label">Max Salary ($/yr)</label>
                     <input type="number" className="input-field" placeholder="180000" value={salaryMax} onChange={(e) => setSalaryMax(e.target.value)} />
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '24px' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', cursor: 'pointer', color: '#94A3B8' }}>
+                <div className="jobs-modal-checkbox-row">
+                  <label className="jobs-modal-checkbox-label">
                     <input type="checkbox" checked={remote} onChange={(e) => setRemote(e.target.checked)} /> Remote Position
                   </label>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', cursor: 'pointer', color: '#94A3B8' }}>
+                  <label className="jobs-modal-checkbox-label">
                     <input type="checkbox" checked={hybrid} onChange={(e) => setHybrid(e.target.checked)} /> Hybrid Position
                   </label>
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#94A3B8', marginBottom: '6px' }}>Required Skills (comma separated) *</label>
+                  <label className="jobs-modal-label">Required Skills (comma separated) *</label>
                   <input type="text" className="input-field" required placeholder="e.g. Java 17, Spring Boot, Kafka, Docker, PostgreSQL" value={skillsInput} onChange={(e) => setSkillsInput(e.target.value)} />
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#94A3B8', marginBottom: '6px' }}>Job Description *</label>
+                  <label className="jobs-modal-label">Job Description *</label>
                   <textarea className="input-field" rows={3} required placeholder="Detailed role responsibilities, team structure, and impact..." value={description} onChange={(e) => setDescription(e.target.value)} />
                 </div>
 
-                <div style={{ display: 'flex', gap: '12px', marginTop: '12px' }}>
-                  <button type="button" onClick={() => setShowPostModal(false)} className="btn btn-secondary" style={{ flex: 1 }}>Cancel</button>
-                  <button type="submit" className="cosmic-btn-primary" disabled={postLoading} style={{ flex: 2, padding: '12px' }}>
+                <div className="jobs-modal-actions">
+                  <button type="button" onClick={() => setShowPostModal(false)} className="btn btn-secondary jobs-modal-cancel-btn">Cancel</button>
+                  <button type="submit" className="cosmic-btn-primary jobs-modal-submit-btn" disabled={postLoading}>
                     {postLoading ? 'Publishing...' : 'Publish Job Posting Live 🚀'}
                   </button>
                 </div>

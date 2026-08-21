@@ -1,0 +1,130 @@
+/* ============================================================
+   TalentIQ — Portfolio Builder Page Styles
+   ============================================================ */
+
+.portfolio-container {
+  max-width: 1140px;
+  margin: 40px auto;
+  padding: 0 24px;
+}
+
+.portfolio-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.portfolio-title {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.portfolio-subtitle {
+  color: var(--text-muted);
+}
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+}
+
+.portfolio-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.portfolio-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.portfolio-stats {
+  display: flex;
+  gap: 12px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.portfolio-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.portfolio-item-title {
+  font-size: 20px;
+  margin-bottom: 8px;
+  color: #FFF;
+}
+
+.portfolio-item-desc {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.portfolio-links-row {
+  display: flex;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.portfolio-link-btn {
+  flex: 1;
+}
+
+/* ── Modal ───────────────────────────────────────────────── */
+.portfolio-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 13, 22, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+  padding: 20px;
+}
+
+.portfolio-modal-content {
+  width: 100%;
+  max-width: 500px;
+  padding: 32px;
+  background: var(--bg-glass-heavy);
+}
+
+.portfolio-modal-title {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.portfolio-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.portfolio-field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.portfolio-modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.portfolio-modal-btn {
+  flex: 1;
+}

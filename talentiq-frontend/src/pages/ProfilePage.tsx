@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { apiClient } from '../api/client';
 import { User as UserIcon, Upload, CheckCircle2, Sparkles } from 'lucide-react';
+import '../css/profile-page.css';
 
 interface ParsedResult {
   candidateName?: string;
@@ -61,30 +62,30 @@ export const ProfilePage: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: '900px', margin: '40px auto', padding: '0 24px' }}>
-      <div style={{ marginBottom: '32px' }}>
-        <h2 style={{ fontSize: '32px', marginBottom: '8px' }}>User Account Profile</h2>
-        <p style={{ color: 'var(--text-muted)' }}>Manage your personal details and test AI Resume Text Parser</p>
+    <div className="profile-container">
+      <div className="profile-header">
+        <h2 className="profile-title">User Account Profile</h2>
+        <p className="profile-subtitle">Manage your personal details and test AI Resume Text Parser</p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+      <div className="profile-grid">
         {/* Profile Card */}
-        <div className="glass-panel" style={{ padding: '32px' }}>
-          <h3 style={{ fontSize: '20px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="glass-panel profile-card">
+          <h3 className="profile-card-heading">
             <UserIcon size={20} color="var(--primary-cyan)" /> Personal Account
           </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div className="profile-field-list">
             <div>
-              <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Full Name</label>
-              <div style={{ fontSize: '16px', fontWeight: 600 }}>{user?.firstName} {user?.lastName}</div>
+              <label className="profile-field-label">Full Name</label>
+              <div className="profile-field-value">{user?.firstName} {user?.lastName}</div>
             </div>
             <div>
-              <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Email Address</label>
-              <div style={{ fontSize: '16px', fontWeight: 600 }}>{user?.email}</div>
+              <label className="profile-field-label">Email Address</label>
+              <div className="profile-field-value">{user?.email}</div>
             </div>
             <div>
-              <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Account Roles</label>
-              <div style={{ marginTop: '6px', display: 'flex', gap: '6px' }}>
+              <label className="profile-field-label">Account Roles</label>
+              <div className="profile-roles-container">
                 {user?.roles?.map(role => (
                   <span key={role} className="badge badge-indigo">{role}</span>
                 ))}
@@ -94,25 +95,25 @@ export const ProfilePage: React.FC = () => {
         </div>
 
         {/* AI Resume Upload & Parser Bench */}
-        <div className="glass-panel" style={{ padding: '32px' }}>
-          <h3 style={{ fontSize: '20px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="glass-panel profile-card">
+          <h3 className="profile-card-heading">
             <Sparkles size={20} color="var(--primary-cyan)" /> AI Resume Upload Parser
           </h3>
 
           {message && (
-            <div style={{ padding: '10px', borderRadius: '8px', background: 'rgba(16, 185, 129, 0.15)', color: '#34D399', fontSize: '13px', marginBottom: '16px' }}>
+            <div className="profile-alert-success">
               <CheckCircle2 size={14} /> {message}
             </div>
           )}
 
-          <form onSubmit={handleUploadResume} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ border: '2px dashed var(--border-subtle)', borderRadius: '12px', padding: '24px', textAlign: 'center', background: 'rgba(15, 23, 42, 0.4)' }}>
-              <Upload size={32} color="var(--primary-cyan)" style={{ marginBottom: '12px' }} />
-              <input type="file" accept=".pdf,.docx" onChange={handleFileChange} style={{ display: 'none' }} id="resume-file" />
-              <label htmlFor="resume-file" className="btn btn-secondary btn-sm" style={{ cursor: 'pointer', margin: '0 auto' }}>
+          <form onSubmit={handleUploadResume} className="profile-upload-form">
+            <div className="profile-dropzone">
+              <Upload size={32} color="var(--primary-cyan)" className="profile-upload-icon" />
+              <input type="file" accept=".pdf,.docx" onChange={handleFileChange} className="profile-file-input" id="resume-file" />
+              <label htmlFor="resume-file" className="btn btn-secondary btn-sm profile-file-label">
                 Choose PDF or DOCX
               </label>
-              {selectedFile && <div style={{ fontSize: '12px', color: 'var(--primary-cyan)', marginTop: '8px' }}>{selectedFile.name}</div>}
+              {selectedFile && <div className="profile-filename">{selectedFile.name}</div>}
             </div>
 
             <button type="submit" className="btn btn-primary" disabled={!selectedFile || uploading}>
@@ -121,9 +122,9 @@ export const ProfilePage: React.FC = () => {
           </form>
 
           {parsedData && (
-            <div style={{ marginTop: '24px', paddingTop: '16px', borderTop: '1px solid var(--border-subtle)' }}>
-              <h4 style={{ fontSize: '14px', marginBottom: '8px', color: 'var(--accent-emerald)' }}>Parsed Skill Matrix</h4>
-              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            <div className="profile-parsed-matrix">
+              <h4 className="profile-parsed-heading">Parsed Skill Matrix</h4>
+              <div className="profile-skills-pills">
                 {parsedData.skillsExtracted?.map(s => (
                   <span key={s} className="badge badge-cyan">{s}</span>
                 ))}

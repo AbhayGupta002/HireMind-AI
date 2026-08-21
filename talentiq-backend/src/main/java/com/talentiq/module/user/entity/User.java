@@ -5,6 +5,7 @@ import com.talentiq.common.enums.Role;
 import com.talentiq.common.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -83,7 +84,7 @@ public class User extends AuditEntity {
     @Column(name = "locked_until")
     private Instant lockedUntil;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -91,6 +92,7 @@ public class User extends AuditEntity {
     )
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, length = 30)
+    @BatchSize(size = 50)
     @Builder.Default
     private Set<Role> roles = new HashSet<>();
 

@@ -4,6 +4,7 @@ import com.talentiq.common.audit.AuditEntity;
 import com.talentiq.module.candidate.entity.Candidate;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +71,7 @@ public class Portfolio extends AuditEntity {
     private Integer likesCount = 0;
 
     @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 25)
     @Builder.Default
     private List<PortfolioItem> items = new ArrayList<>();
 

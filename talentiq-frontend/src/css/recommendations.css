@@ -1,0 +1,181 @@
+/* ============================================================
+   TalentIQ — Recommendations Page Styles
+   ============================================================ */
+
+.recs-container {
+  max-width: 1140px;
+  margin: 40px auto;
+  padding: 0 24px;
+}
+
+.recs-header {
+  margin-bottom: 32px;
+}
+
+.recs-tag {
+  margin-bottom: 12px;
+}
+
+.recs-title {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.recs-subtitle {
+  color: var(--text-muted);
+}
+
+.recs-loading {
+  text-align: center;
+  padding: 60px;
+  color: var(--text-muted);
+}
+
+.recs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.rec-card {
+  padding: 32px;
+}
+
+.rec-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.rec-job-title {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.rec-company-loc {
+  font-size: 14px;
+  color: var(--primary-cyan);
+}
+
+.rec-score-gauge {
+  padding: 12px 24px;
+  border-radius: 16px;
+  background: var(--gradient-brand);
+  text-align: center;
+  box-shadow: var(--shadow-glow);
+}
+
+.rec-score-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: #FFF;
+}
+
+.rec-score-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.rec-meters-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+  background: rgba(15, 23, 42, 0.5);
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.rec-meter-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.rec-meter-track {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.rec-meter-bar {
+  height: 100%;
+}
+
+.rec-meter-bar.skills {
+  background: var(--primary-cyan);
+}
+
+.rec-meter-bar.experience {
+  background: var(--primary-indigo);
+}
+
+.rec-meter-bar.location {
+  background: var(--primary-violet);
+}
+
+.rec-insights-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.rec-insights-heading-emerald {
+  font-size: 14px;
+  color: var(--accent-emerald);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rec-insights-heading-amber {
+  font-size: 14px;
+  color: var(--accent-amber);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rec-insights-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rec-insight-item {
+  font-size: 13px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rec-bullet-emerald {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-emerald);
+  flex-shrink: 0;
+}
+
+.rec-bullet-amber {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-amber);
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .rec-meters-grid,
+  .rec-insights-grid {
+    grid-template-columns: 1fr;
+  }
+}

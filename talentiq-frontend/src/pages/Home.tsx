@@ -7,6 +7,7 @@ import {
   Star, Users, Briefcase, TrendingUp, Bot,
   ChevronDown, Play
 } from 'lucide-react';
+import '../css/home.css';
 
 /* ─── Types ─── */
 interface Star { x: number; y: number; r: number; opacity: number; speed: number; }
@@ -205,80 +206,6 @@ export const Home: React.FC = () => {
 
   return (
     <div style={{ background: T.bg, minHeight: '100vh', transition: 'background 0.4s ease', position: 'relative', overflow: 'hidden' }}>
-
-      {/* CSS Keyframes */}
-      <style>{`
-        @keyframes floatY {
-          0%, 100% { transform: perspective(800px) rotateY(-5deg) translateY(0px); }
-          50% { transform: perspective(800px) rotateY(-5deg) translateY(-14px); }
-        }
-        @keyframes pulse-glow {
-          0%, 100% { opacity: 0.6; transform: scale(1); }
-          50% { opacity: 1; transform: scale(1.08); }
-        }
-        @keyframes spin-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        @keyframes shimmer {
-          0% { background-position: -200% center; }
-          100% { background-position: 200% center; }
-        }
-        @keyframes slide-up {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes badge-pop {
-          0% { transform: scale(0.85); opacity: 0; }
-          100% { transform: scale(1); opacity: 1; }
-        }
-        .hero-title {
-          animation: slide-up 0.8s ease forwards;
-        }
-        .hero-sub {
-          animation: slide-up 0.8s 0.2s ease forwards;
-          opacity: 0;
-          animation-fill-mode: forwards;
-        }
-        .hero-btns {
-          animation: slide-up 0.8s 0.4s ease forwards;
-          opacity: 0;
-          animation-fill-mode: forwards;
-        }
-        .stat-card:hover {
-          transform: translateY(-4px) scale(1.02) !important;
-        }
-        .feat-card:hover {
-          transform: translateY(-6px) !important;
-          box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important;
-        }
-        .float-card-hover:hover {
-          transform: perspective(800px) rotateY(0deg) scale(1.05) !important;
-        }
-        .theme-btn:hover {
-          transform: scale(1.12);
-        }
-        .cta-primary:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 12px 35px rgba(124,58,237,0.5) !important;
-        }
-        .cta-secondary:hover {
-          border-color: rgba(124,58,237,0.6) !important;
-          transform: translateY(-2px);
-        }
-        .tab-btn:hover {
-          color: #7C3AED !important;
-        }
-        .popular-tag:hover {
-          background: rgba(124,58,237,0.2) !important;
-          color: #A78BFA !important;
-          cursor: pointer;
-        }
-        .search-btn:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 8px 24px rgba(124,58,237,0.5) !important;
-        }
-      `}</style>
 
       {/* Star field */}
       <StarCanvas dark={dark} />

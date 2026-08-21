@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { Client as StompClient } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import '../css/hr-analytics.css';
 
 /* ─── Types ─── */
 interface AnalyticsData {
@@ -279,7 +280,7 @@ export const HrAnalytics: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const token = sessionStorage.getItem('accessToken') || localStorage.getItem('accessToken');
+    const token = localStorage.getItem('token');
     if (!token) return;
 
     const client = new StompClient({

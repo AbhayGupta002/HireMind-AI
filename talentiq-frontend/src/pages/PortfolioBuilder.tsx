@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import { Plus, ExternalLink, GitBranch, Eye, ThumbsUp } from 'lucide-react';
+import '../css/portfolio-builder.css';
 
 interface PortfolioItem {
   id: number;
@@ -90,43 +91,43 @@ export const PortfolioBuilder: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: '1140px', margin: '40px auto', padding: '0 24px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+    <div className="portfolio-container">
+      <div className="portfolio-header">
         <div>
-          <h2 style={{ fontSize: '32px', marginBottom: '8px' }}>Project Portfolio Showcase</h2>
-          <p style={{ color: 'var(--text-muted)' }}>Demonstrate your technical projects, live demos, and GitHub repositories</p>
+          <h2 className="portfolio-title">Project Portfolio Showcase</h2>
+          <p className="portfolio-subtitle">Demonstrate your technical projects, live demos, and GitHub repositories</p>
         </div>
         <button onClick={() => setShowModal(true)} className="btn btn-primary">
           <Plus size={18} /> Add Project
         </button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '24px' }}>
+      <div className="portfolio-grid">
         {portfolios.map(item => (
-          <div key={item.id} className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <div key={item.id} className="glass-panel portfolio-card">
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <div className="portfolio-card-top">
                 <span className="badge badge-indigo">{item.category}</span>
-                <div style={{ display: 'flex', gap: '12px', color: 'var(--text-muted)', fontSize: '12px' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Eye size={14} /> {item.viewsCount}</span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><ThumbsUp size={14} /> {item.likesCount}</span>
+                <div className="portfolio-stats">
+                  <span className="portfolio-stat-item"><Eye size={14} /> {item.viewsCount}</span>
+                  <span className="portfolio-stat-item"><ThumbsUp size={14} /> {item.likesCount}</span>
                 </div>
               </div>
 
-              <h3 style={{ fontSize: '20px', marginBottom: '8px', color: '#FFF' }}>{item.title}</h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '14px', lineHeight: '1.6', marginBottom: '20px' }}>
+              <h3 className="portfolio-item-title">{item.title}</h3>
+              <p className="portfolio-item-desc">
                 {item.description}
               </p>
             </div>
 
-            <div style={{ display: 'flex', gap: '12px', paddingTop: '16px', borderTop: '1px solid var(--border-subtle)' }}>
+            <div className="portfolio-links-row">
               {item.projectUrl && (
-                <a href={item.projectUrl} target="_blank" rel="noreferrer" className="btn btn-secondary btn-sm" style={{ flex: 1 }}>
+                <a href={item.projectUrl} target="_blank" rel="noreferrer" className="btn btn-secondary btn-sm portfolio-link-btn">
                   <ExternalLink size={14} /> Live Demo
                 </a>
               )}
               {item.githubUrl && (
-                <a href={item.githubUrl} target="_blank" rel="noreferrer" className="btn btn-secondary btn-sm" style={{ flex: 1 }}>
+                <a href={item.githubUrl} target="_blank" rel="noreferrer" className="btn btn-secondary btn-sm portfolio-link-btn">
                   <GitBranch size={14} /> GitHub Code
                 </a>
               )}
@@ -136,19 +137,16 @@ export const PortfolioBuilder: React.FC = () => {
       </div>
 
       {showModal && (
-        <div style={{
-          position: 'fixed', inset: 0, background: 'rgba(9, 13, 22, 0.8)', backdropFilter: 'blur(8px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 300, padding: '20px'
-        }}>
-          <div className="glass-panel" style={{ width: '100%', maxWidth: '500px', padding: '32px', background: 'var(--bg-glass-heavy)' }}>
-            <h3 style={{ fontSize: '22px', marginBottom: '20px' }}>Add Portfolio Showcase Project</h3>
-            <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className="portfolio-modal-overlay">
+          <div className="glass-panel portfolio-modal-content">
+            <h3 className="portfolio-modal-title">Add Portfolio Showcase Project</h3>
+            <form onSubmit={handleCreate} className="portfolio-form">
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Project Title</label>
+                <label className="portfolio-field-label">Project Title</label>
                 <input type="text" className="input-field" required value={newTitle} onChange={(e) => setNewTitle(e.target.value)} />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Category</label>
+                <label className="portfolio-field-label">Category</label>
                 <select className="input-field" value={newCategory} onChange={(e) => setNewCategory(e.target.value)}>
                   <option value="WEB">Web Development</option>
                   <option value="AI_ML">AI & Machine Learning</option>
@@ -157,21 +155,21 @@ export const PortfolioBuilder: React.FC = () => {
                 </select>
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Description</label>
+                <label className="portfolio-field-label">Description</label>
                 <textarea className="input-field" rows={3} required value={newDescription} onChange={(e) => setNewDescription(e.target.value)} />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Project URL / Demo</label>
+                <label className="portfolio-field-label">Project URL / Demo</label>
                 <input type="url" className="input-field" value={newProjectUrl} onChange={(e) => setNewProjectUrl(e.target.value)} />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>GitHub Repo URL</label>
+                <label className="portfolio-field-label">GitHub Repo URL</label>
                 <input type="url" className="input-field" value={newGithubUrl} onChange={(e) => setNewGithubUrl(e.target.value)} />
               </div>
 
-              <div style={{ display: 'flex', gap: '12px', marginTop: '12px' }}>
-                <button type="button" onClick={() => setShowModal(false)} className="btn btn-secondary" style={{ flex: 1 }}>Cancel</button>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Save Project</button>
+              <div className="portfolio-modal-actions">
+                <button type="button" onClick={() => setShowModal(false)} className="btn btn-secondary portfolio-modal-btn">Cancel</button>
+                <button type="submit" className="btn btn-primary portfolio-modal-btn">Save Project</button>
               </div>
             </form>
           </div>

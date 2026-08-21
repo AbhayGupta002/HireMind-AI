@@ -10,6 +10,7 @@ import {
   MessageSquare, Users, Briefcase, Settings, LogOut,
   Circle, Sun, Sparkles
 } from 'lucide-react';
+import '../css/hr-messages.css';
 
 /* ─── Types ─── */
 interface Contact {
@@ -35,23 +36,10 @@ interface Message {
 
 /* ─── Sidebar NavItem ─── */
 const NavItem: React.FC<{ icon: React.ReactNode; label: string; active?: boolean; isUniverse?: boolean; onClick?: () => void }> =
-  ({ icon, label, active, isUniverse, onClick }) => (
-    <button onClick={onClick} style={{
-      display: 'flex', alignItems: 'center', gap: '12px', width: '100%',
-      padding: '11px 16px', borderRadius: '10px', border: 'none', cursor: 'pointer',
-      fontSize: '14px', fontWeight: active ? 600 : 400,
-      background: active
-        ? (isUniverse ? 'linear-gradient(135deg,#6366f1,#8b5cf6)' : '#2563EB')
-        : 'transparent',
-      color: active ? '#fff' : (isUniverse ? '#94a3b8' : '#64748b'),
-      transition: 'all 0.2s', textAlign: 'left',
-    }}
-      onMouseEnter={e => {
-        if (!active) (e.currentTarget as HTMLButtonElement).style.background = isUniverse ? 'rgba(99,102,241,0.12)' : '#F1F5F9';
-      }}
-      onMouseLeave={e => {
-        if (!active) (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
-      }}
+  ({ icon, label, active, onClick }) => (
+    <button
+      onClick={onClick}
+      className={`msg-nav-item ${active ? 'active' : ''}`}
     >
       {icon}{label}
     </button>
@@ -118,7 +106,7 @@ const HrMessages: React.FC = () => {
 
   /* ─── Connect WebSocket / STOMP ─── */
   useEffect(() => {
-    const token = sessionStorage.getItem('accessToken') || localStorage.getItem('accessToken');
+    const token = localStorage.getItem('token');
     if (!token) return;
 
     const client = new StompClient({
@@ -338,136 +326,88 @@ const HrMessages: React.FC = () => {
     catch { return ''; }
   };
 
-  // Styles
-  const styles = {
-    bg: isUniverse
-      ? 'radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.12), transparent 40%), #070B19'
-      : '#F8FAFC',
-    sidebarBg: isUniverse ? '#0F172A' : '#FFFFFF',
-    sidebarBorder: isUniverse ? '1px solid rgba(255,255,255,0.08)' : '1px solid #E2E8F0',
-    contactsBg: isUniverse ? 'rgba(15, 23, 42, 0.6)' : '#FFFFFF',
-    contactsBorder: isUniverse ? '1px solid rgba(255,255,255,0.08)' : '1px solid #E2E8F0',
-    headerBg: isUniverse ? 'rgba(15, 23, 42, 0.85)' : '#FFFFFF',
-    headerBorder: isUniverse ? '1px solid rgba(255,255,255,0.08)' : '1px solid #E2E8F0',
-    heading: isUniverse ? '#F8FAFC' : '#1E293B',
-    subtext: isUniverse ? '#94A3B8' : '#64748B',
-    msgOtherBg: isUniverse ? 'rgba(255, 255, 255, 0.08)' : '#F1F5F9',
-    msgOtherText: isUniverse ? '#F8FAFC' : '#1E293B',
-    inputBg: isUniverse ? 'rgba(255, 255, 255, 0.06)' : '#FFFFFF',
-    inputBorder: isUniverse ? '1px solid rgba(255, 255, 255, 0.12)' : '1px solid #E2E8F0',
-    inputText: isUniverse ? '#F8FAFC' : '#1E293B',
-  };
-
   return (
-    <div style={{ display: 'flex', height: '100vh', background: styles.bg, color: styles.heading, fontFamily: "'Inter', sans-serif", overflow: 'hidden' }}>
-
+    <div className={`messages-page-wrapper ${isUniverse ? 'theme-universe' : 'theme-light'}`}>
       <audio ref={remoteAudioRef} autoPlay />
 
       {/* ── Sidebar ── */}
-      <aside style={{
-        width: 220, background: styles.sidebarBg, borderRight: styles.sidebarBorder, padding: '24px 16px',
-        display: 'flex', flexDirection: 'column', flexShrink: 0
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0 8px 28px', cursor: 'pointer' }} onClick={() => navigate('/')}>
-          <div style={{ width: 34, height: 34, borderRadius: 9, background: isUniverse ? 'linear-gradient(135deg,#6366f1,#8b5cf6)' : 'linear-gradient(135deg,#2563eb,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <aside className="msg-sidebar">
+        <div className="msg-sidebar-brand" onClick={() => navigate('/')}>
+          <div className="msg-brand-icon msg-avatar-brand">
             <span style={{ fontSize: 16 }}>🌌</span>
           </div>
-          <span style={{ fontSize: 16, fontWeight: 700, color: styles.heading }}>HireMind AI</span>
+          <span className="msg-brand-name">HireMind AI</span>
         </div>
 
-        <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <nav className="msg-nav-list">
           <NavItem icon={<LayoutDashboard size={17} />} label="Dashboard" isUniverse={isUniverse} onClick={() => navigate('/hr-analytics')} />
           <NavItem icon={<MessageSquare size={17} />} label="Messages" active isUniverse={isUniverse} onClick={() => {}} />
           <NavItem icon={<Calendar size={17} />} label="Calendar" isUniverse={isUniverse} onClick={() => navigate('/hr-calendar')} />
           <NavItem icon={<Users size={17} />} label="Applications" isUniverse={isUniverse} onClick={() => navigate('/hr-applications')} />
           <NavItem icon={<Briefcase size={17} />} label="Jobs" isUniverse={isUniverse} onClick={() => navigate('/jobs')} />
-          <div style={{ height: 1, background: isUniverse ? 'rgba(255,255,255,0.05)' : '#E2E8F0', margin: '8px 0' }} />
+          <div className="msg-nav-divider" />
           <NavItem icon={<Settings size={17} />} label="Settings" isUniverse={isUniverse} onClick={() => {}} />
           <NavItem icon={<LogOut size={17} />} label="Sign Out" isUniverse={isUniverse} onClick={() => { logout(); navigate('/'); }} />
         </nav>
 
-        <div style={{ padding: '12px', background: isUniverse ? 'rgba(99,102,241,0.1)' : '#F1F5F9', borderRadius: 10, border: styles.sidebarBorder }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: styles.heading }}>{user ? `${user.firstName} ${user.lastName}` : 'HR Manager'}</div>
-          <div style={{ fontSize: 10, color: styles.subtext, marginTop: 2 }}>{user?.email || ''}</div>
+        <div className="msg-user-badge">
+          <div className="msg-user-name">{user ? `${user.firstName} ${user.lastName}` : 'HR Manager'}</div>
+          <div className="msg-user-email">{user?.email || ''}</div>
         </div>
       </aside>
 
       {/* ── Contacts Panel ── */}
-      <div style={{
-        width: 300, background: styles.contactsBg, borderRight: styles.contactsBorder,
-        display: 'flex', flexDirection: 'column'
-      }}>
-        <div style={{ padding: '20px 16px 12px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0, color: styles.heading }}>Messages</h2>
+      <div className="msg-contacts-panel">
+        <div className="msg-contacts-header">
+          <div className="msg-contacts-title-row">
+            <h2 className="msg-contacts-title">Messages</h2>
             {/* Theme Toggle Button */}
-            <button onClick={toggleTheme} style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '4px 10px', borderRadius: 16, border: styles.contactsBorder, background: isUniverse ? 'rgba(99,102,241,0.2)' : '#F1F5F9', color: isUniverse ? '#A78BFA' : '#475569', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>
+            <button onClick={toggleTheme} className="msg-theme-btn">
               {isUniverse ? <Sparkles size={12} /> : <Sun size={12} />}
               {isUniverse ? 'Universe' : 'Light'}
             </button>
           </div>
 
-          <div style={{ position: 'relative' }}>
-            <Search size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: styles.subtext }} />
+          <div className="msg-search-wrapper">
+            <Search size={14} className="msg-search-icon" />
             <input
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Search contacts..."
-              style={{
-                width: '100%', padding: '8px 10px 8px 30px', background: styles.inputBg,
-                border: styles.inputBorder, borderRadius: 8, color: styles.inputText,
-                fontSize: 13, outline: 'none', boxSizing: 'border-box'
-              }}
+              className="msg-search-input msg-input-field"
             />
           </div>
         </div>
 
-        <div style={{ flex: 1, overflowY: 'auto', padding: '0 8px' }}>
+        <div className="msg-contacts-scroll">
           {contactsLoading ? (
-            <div style={{ padding: '20px', textAlign: 'center', color: styles.subtext, fontSize: 13 }}>Loading contacts...</div>
+            <div style={{ padding: '20px', textAlign: 'center', color: isUniverse ? '#94A3B8' : '#64748B', fontSize: 13 }}>Loading contacts...</div>
           ) : filteredContacts.length === 0 ? (
-            <div style={{ padding: '32px 16px', textAlign: 'center', color: styles.subtext }}>
+            <div style={{ padding: '32px 16px', textAlign: 'center', color: isUniverse ? '#94A3B8' : '#64748B' }}>
               <MessageSquare size={28} style={{ marginBottom: 8, opacity: 0.4 }} />
               <div style={{ fontSize: 13 }}>No contacts yet</div>
               <div style={{ fontSize: 11, marginTop: 4 }}>Contacts appear after candidates apply</div>
             </div>
           ) : (
             filteredContacts.map(contact => (
-              <button key={contact.userId} onClick={() => setSelectedContact(contact)} style={{
-                width: '100%', display: 'flex', alignItems: 'center', gap: 10,
-                padding: '10px', borderRadius: 10, border: 'none', cursor: 'pointer', textAlign: 'left',
-                background: selectedContact?.userId === contact.userId
-                  ? (isUniverse ? 'rgba(99,102,241,0.2)' : '#E0E7FF')
-                  : 'transparent',
-                marginBottom: 4, transition: 'background 0.15s'
-              }}
-                onMouseEnter={e => {
-                  if (selectedContact?.userId !== contact.userId)
-                    (e.currentTarget as HTMLButtonElement).style.background = isUniverse ? 'rgba(255,255,255,0.04)' : '#F1F5F9';
-                }}
-                onMouseLeave={e => {
-                  if (selectedContact?.userId !== contact.userId)
-                    (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
-                }}
+              <button
+                key={contact.userId}
+                onClick={() => setSelectedContact(contact)}
+                className={`msg-contact-btn ${selectedContact?.userId === contact.userId ? 'selected' : ''}`}
               >
-                <div style={{
-                  width: 40, height: 40, borderRadius: '50%',
-                  background: isUniverse ? 'linear-gradient(135deg,#6366f1,#8b5cf6)' : 'linear-gradient(135deg,#2563eb,#7c3aed)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                  fontSize: 16, fontWeight: 700, color: '#fff'
-                }}>
+                <div className="msg-contact-avatar msg-avatar-brand">
                   {contact.name.charAt(0).toUpperCase()}
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: styles.heading }}>{contact.name}</span>
+                <div className="msg-contact-info">
+                  <div className="msg-contact-top">
+                    <span className="msg-contact-name">{contact.name}</span>
                     {contact.unreadCount > 0 && (
-                      <span style={{ fontSize: 10, background: '#2563eb', color: '#fff', borderRadius: 10, padding: '2px 6px', fontWeight: 700 }}>
+                      <span className="msg-unread-badge">
                         {contact.unreadCount}
                       </span>
                     )}
                   </div>
-                  <div style={{ fontSize: 11, color: styles.subtext, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 2 }}>
+                  <div className="msg-contact-snippet">
                     {contact.lastMessage || contact.email}
                   </div>
                 </div>
@@ -479,21 +419,16 @@ const HrMessages: React.FC = () => {
 
       {/* ── Chat Area ── */}
       {selectedContact ? (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-
+        <div className="msg-chat-main">
           {/* Chat Header */}
-          <div style={{
-            padding: '16px 24px', background: styles.headerBg,
-            borderBottom: styles.headerBorder,
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 40, height: 40, borderRadius: '50%', background: isUniverse ? 'linear-gradient(135deg,#6366f1,#8b5cf6)' : 'linear-gradient(135deg,#2563eb,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: '#fff' }}>
+          <div className="msg-chat-header">
+            <div className="msg-chat-header-user">
+              <div className="msg-contact-avatar msg-avatar-brand">
                 {selectedContact.name.charAt(0).toUpperCase()}
               </div>
               <div>
-                <div style={{ fontSize: 15, fontWeight: 600, color: styles.heading }}>{selectedContact.name}</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: styles.subtext }}>
+                <div className="msg-chat-header-name">{selectedContact.name}</div>
+                <div className="msg-chat-header-status">
                   {otherTyping ? (
                     <><Circle size={8} fill="#10b981" color="#10b981" /> <span style={{ color: '#10b981' }}>typing...</span></>
                   ) : (
@@ -504,26 +439,22 @@ const HrMessages: React.FC = () => {
             </div>
 
             {/* Call controls */}
-            <div style={{ display: 'flex', gap: 10 }}>
+            <div className="msg-call-actions">
               {callState === 'idle' && (
-                <button onClick={startCall} style={{
-                  display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px',
-                  background: isUniverse ? 'linear-gradient(135deg,#10b981,#06b6d4)' : '#10B981', border: 'none',
-                  borderRadius: 8, color: '#fff', fontSize: 13, cursor: 'pointer', fontWeight: 600
-                }}>
+                <button onClick={startCall} className="msg-call-btn-start">
                   <Phone size={14} /> Audio Call
                 </button>
               )}
               {(callState === 'calling' || callState === 'in-call') && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ fontSize: 13, color: callState === 'in-call' ? '#10b981' : '#f59e0b', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <Circle size={8} fill="currentColor" color="currentColor" style={{ animation: 'pulse 2s infinite' }} />
+                <div className="msg-call-active-bar">
+                  <div className={`msg-call-status-pulse ${callState === 'in-call' ? 'in-call' : 'calling'}`}>
+                    <Circle size={8} fill="currentColor" color="currentColor" style={{ animation: 'chatPulse 2s infinite' }} />
                     {callState === 'in-call' ? `In call with ${callWith}` : `Calling ${callWith}...`}
                   </div>
-                  <button onClick={toggleMute} style={{ padding: '7px', background: isMuted ? 'rgba(239,68,68,0.2)' : 'rgba(0,0,0,0.05)', border: 'none', borderRadius: 7, cursor: 'pointer', color: isMuted ? '#ef4444' : styles.subtext }}>
+                  <button onClick={toggleMute} className={`msg-mute-btn ${isMuted ? 'muted' : ''}`}>
                     {isMuted ? <MicOff size={14} /> : <Mic size={14} />}
                   </button>
-                  <button onClick={hangUp} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 8, color: '#ef4444', fontSize: 13, cursor: 'pointer' }}>
+                  <button onClick={hangUp} className="msg-hangup-btn">
                     <PhoneOff size={14} /> End
                   </button>
                 </div>
@@ -532,13 +463,13 @@ const HrMessages: React.FC = () => {
           </div>
 
           {/* Messages */}
-          <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div className="msg-stream">
             {loading ? (
-              <div style={{ textAlign: 'center', color: styles.subtext, paddingTop: 40 }}>Loading messages...</div>
+              <div style={{ textAlign: 'center', color: isUniverse ? '#94A3B8' : '#64748B', paddingTop: 40 }}>Loading messages...</div>
             ) : messages.length === 0 ? (
-              <div style={{ textAlign: 'center', paddingTop: 60, color: styles.subtext }}>
+              <div style={{ textAlign: 'center', paddingTop: 60, color: isUniverse ? '#94A3B8' : '#64748B' }}>
                 <MessageSquare size={40} style={{ marginBottom: 12, opacity: 0.3 }} />
-                <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 6, color: styles.heading }}>No messages yet</div>
+                <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 6, color: isUniverse ? '#F8FAFC' : '#1E293B' }}>No messages yet</div>
                 <div style={{ fontSize: 13 }}>Start the conversation with {selectedContact.name}</div>
               </div>
             ) : (
@@ -546,25 +477,18 @@ const HrMessages: React.FC = () => {
                 {messages.map((msg, idx) => {
                   const isMe = msg.senderId === currentUserId;
                   return (
-                    <div key={msg.id || idx} style={{ display: 'flex', flexDirection: isMe ? 'row-reverse' : 'row', alignItems: 'flex-end', gap: 8 }}>
+                    <div key={msg.id || idx} className={`msg-row ${isMe ? 'me' : 'other'}`}>
                       {!isMe && (
-                        <div style={{ width: 30, height: 30, borderRadius: '50%', background: isUniverse ? 'linear-gradient(135deg,#6366f1,#8b5cf6)' : 'linear-gradient(135deg,#2563eb,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: '#fff', flexShrink: 0 }}>
+                        <div className="msg-row-avatar msg-avatar-brand">
                           {msg.senderName?.charAt(0) || '?'}
                         </div>
                       )}
-                      <div style={{ maxWidth: '65%' }}>
-                        {!isMe && <div style={{ fontSize: 11, color: styles.subtext, marginBottom: 4, paddingLeft: 4 }}>{msg.senderName}</div>}
-                        <div style={{
-                          padding: '10px 14px', borderRadius: isMe ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
-                          background: isMe
-                            ? (isUniverse ? 'linear-gradient(135deg,#6366f1,#8b5cf6)' : '#2563EB')
-                            : styles.msgOtherBg,
-                          color: isMe ? '#ffffff' : styles.msgOtherText, fontSize: 14, lineHeight: 1.5,
-                          border: isMe ? 'none' : styles.inputBorder
-                        }}>
+                      <div className="msg-content-wrapper">
+                        {!isMe && <div className="msg-sender-label">{msg.senderName}</div>}
+                        <div className={`msg-bubble ${isMe ? 'msg-bubble-me me' : 'msg-bubble-other other'}`}>
                           {msg.content}
                         </div>
-                        <div style={{ fontSize: 10, color: styles.subtext, marginTop: 3, textAlign: isMe ? 'right' : 'left', paddingLeft: isMe ? 0 : 4 }}>
+                        <div className={`msg-timestamp ${isMe ? 'me' : ''}`}>
                           {formatMsgTime(msg.sentAt)}
                         </div>
                       </div>
@@ -577,50 +501,34 @@ const HrMessages: React.FC = () => {
           </div>
 
           {/* Input */}
-          <div style={{
-            padding: '16px 24px', background: styles.headerBg,
-            borderTop: styles.headerBorder, display: 'flex', gap: 10, alignItems: 'center'
-          }}>
+          <div className="msg-chat-input-bar">
             <input
               value={inputText}
               onChange={e => { setInputText(e.target.value); handleTyping(); }}
               onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
               placeholder={`Message ${selectedContact.name}...`}
-              style={{
-                flex: 1, padding: '12px 16px', background: styles.inputBg,
-                border: styles.inputBorder, borderRadius: 12, color: styles.inputText,
-                fontSize: 14, outline: 'none'
-              }}
+              className="msg-input-field"
             />
-            <button onClick={sendMessage} disabled={!inputText.trim() || !stompRef.current?.connected}
-              style={{
-                width: 44, height: 44, borderRadius: 12, border: 'none', cursor: 'pointer',
-                background: inputText.trim()
-                  ? (isUniverse ? 'linear-gradient(135deg,#6366f1,#8b5cf6)' : '#2563EB')
-                  : styles.inputBg,
-                display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s',
-                color: inputText.trim() ? '#fff' : styles.subtext
-              }}>
+            <button
+              onClick={sendMessage}
+              disabled={!inputText.trim() || !stompRef.current?.connected}
+              className={`msg-send-btn ${inputText.trim() ? 'active' : ''}`}
+            >
               <Send size={18} />
             </button>
           </div>
         </div>
       ) : (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: styles.subtext, textAlign: 'center', gap: 16 }}>
-          <div style={{ width: 80, height: 80, borderRadius: '50%', background: isUniverse ? 'rgba(99,102,241,0.1)' : '#EEF2FF', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8 }}>
+        <div className="msg-empty-placeholder">
+          <div className="msg-placeholder-icon-circle">
             <MessageSquare size={36} color="#6366f1" style={{ opacity: 0.6 }} />
           </div>
           <div>
-            <div style={{ fontSize: 20, fontWeight: 600, color: styles.heading, marginBottom: 8 }}>Select a conversation</div>
+            <div style={{ fontSize: 20, fontWeight: 600, color: isUniverse ? '#F8FAFC' : '#1E293B', marginBottom: 8 }}>Select a conversation</div>
             <div style={{ fontSize: 14 }}>Choose a candidate from the left to start messaging</div>
           </div>
         </div>
       )}
-
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        @keyframes pulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
-      `}</style>
     </div>
   );
 };

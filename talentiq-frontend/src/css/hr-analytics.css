@@ -1,0 +1,433 @@
+/* ============================================================
+   TalentIQ — HR Analytics Dashboard Styles
+   ============================================================ */
+
+.analytics-page-wrapper {
+  display: flex;
+  height: 100vh;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+}
+
+/* ── Light Theme ─────────────────────────────────────────── */
+.analytics-page-wrapper.theme-light {
+  background: #F8FAFC;
+  color: #1E293B;
+}
+
+.analytics-page-wrapper.theme-light .an-sidebar {
+  background: #FFFFFF;
+  border-right: 1px solid #E2E8F0;
+}
+
+.analytics-page-wrapper.theme-light .an-right-rail {
+  background: #FFFFFF;
+  border-left: 1px solid #E2E8F0;
+}
+
+.analytics-page-wrapper.theme-light .an-header-bar {
+  background: #FFFFFF;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.analytics-page-wrapper.theme-light .an-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.analytics-page-wrapper.theme-light .an-input-field {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  color: #1E293B;
+}
+
+.analytics-page-wrapper.theme-light .an-user-badge {
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+}
+
+.analytics-page-wrapper.theme-light .an-theme-btn {
+  background: #F1F5F9;
+  color: #475569;
+  border: 1px solid #E2E8F0;
+}
+
+.analytics-page-wrapper.theme-light .an-avatar-brand {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+}
+
+/* ── Universe Theme ──────────────────────────────────────── */
+.analytics-page-wrapper.theme-universe {
+  background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15), transparent 40%), #070B19;
+  color: #F8FAFC;
+}
+
+.analytics-page-wrapper.theme-universe .an-sidebar {
+  background: #0F172A;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.analytics-page-wrapper.theme-universe .an-right-rail {
+  background: rgba(15, 23, 42, 0.85);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.analytics-page-wrapper.theme-universe .an-header-bar {
+  background: rgba(15, 23, 42, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.analytics-page-wrapper.theme-universe .an-card {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+  backdrop-filter: blur(16px);
+}
+
+.analytics-page-wrapper.theme-universe .an-input-field {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #F8FAFC;
+}
+
+.analytics-page-wrapper.theme-universe .an-user-badge {
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.analytics-page-wrapper.theme-universe .an-theme-btn {
+  background: rgba(99, 102, 241, 0.2);
+  color: #A78BFA;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.analytics-page-wrapper.theme-universe .an-avatar-brand {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+/* ── Sidebar ─────────────────────────────────────────────── */
+.an-sidebar {
+  width: 220px;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.an-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px 28px;
+  cursor: pointer;
+}
+
+.an-brand-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.an-brand-name {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.an-nav-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.an-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: left;
+  transition: all 0.2s;
+  background: transparent;
+  color: #64748b;
+}
+
+.theme-universe .an-nav-item {
+  color: #94a3b8;
+}
+
+.an-nav-item:hover {
+  background: #F1F5F9;
+}
+
+.theme-universe .an-nav-item:hover {
+  background: rgba(99, 102, 241, 0.12);
+}
+
+.an-nav-item.active {
+  background: #2563EB;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.theme-universe .an-nav-item.active {
+  background: linear-gradient(135deg, #6366F1, #8B5CF6);
+  color: #FFFFFF;
+}
+
+.an-nav-divider {
+  height: 1px;
+  background: #E2E8F0;
+  margin: 8px 0;
+}
+
+.theme-universe .an-nav-divider {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.an-user-badge {
+  padding: 12px;
+  border-radius: 10px;
+}
+
+.an-user-name {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.an-user-email {
+  font-size: 10px;
+  color: #64748B;
+  margin-top: 2px;
+}
+
+.theme-universe .an-user-email {
+  color: #94A3B8;
+}
+
+/* ── Main Dashboard Workspace ────────────────────────────── */
+.an-main-workspace {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.an-header-bar {
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.an-header-search-wrapper {
+  position: relative;
+  width: 280px;
+}
+
+.an-header-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748B;
+}
+
+.theme-universe .an-header-search-icon {
+  color: #94A3B8;
+}
+
+.an-header-search-input {
+  width: 100%;
+  padding: 8px 12px 8px 36px;
+  border-radius: 10px;
+  font-size: 13px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.an-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.an-theme-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.an-post-btn-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #2563EB;
+  border: none;
+  border-radius: 9px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.theme-universe .an-post-btn-header {
+  background: linear-gradient(135deg, #6366F1, #8B5CF6);
+}
+
+.an-dashboard-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── KPI Cards ───────────────────────────────────────────── */
+.an-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.an-kpi-card {
+  border-radius: 14px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.an-kpi-label {
+  font-size: 12px;
+  color: #64748B;
+  margin-bottom: 4px;
+}
+
+.theme-universe .an-kpi-label {
+  color: #94A3B8;
+}
+
+.an-kpi-value {
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.an-kpi-trend {
+  font-size: 11px;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* ── Middle Row (Charts) ─────────────────────────────────── */
+.an-charts-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.an-chart-card {
+  border-radius: 16px;
+  padding: 20px 24px;
+}
+
+.an-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.an-chart-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.an-chart-legend {
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+  color: #64748B;
+}
+
+.theme-universe .an-chart-legend {
+  color: #94A3B8;
+}
+
+/* ── Bottom Row (Recent Activities & Jobs) ───────────────── */
+.an-bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.an-list-card {
+  border-radius: 16px;
+  padding: 20px 24px;
+}
+
+.an-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.an-list-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* ── Right Rail (Widgets) ────────────────────────────────── */
+.an-right-rail {
+  width: 290px;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.an-rail-card {
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.an-rail-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+
+@media (max-width: 1200px) {
+  .an-right-rail {
+    display: none;
+  }
+  .an-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .an-charts-grid,
+  .an-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}

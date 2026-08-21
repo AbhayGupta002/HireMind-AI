@@ -17,8 +17,17 @@ services:
       MYSQL_DATABASE: talentiq_dev
       MYSQL_USER: talentiq_user
       MYSQL_PASSWORD: ${DB_PASSWORD:-}
+    command: >
+      mysqld
+      --innodb-buffer-pool-size=256M
+      --innodb-log-file-size=64M
+      --innodb-flush-log-at-trx-commit=2
+      --max-connections=200
+      --slow-query-log=ON
+      --long-query-time=1
+      --slow-query-log-file=/var/log/mysql/slow-query.log
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
@@ -38,7 +47,7 @@ services:
     restart: unless-stopped
     command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
     ports:
-      - "6379:6379"
+      - "6380:6379"
     volumes:
       - redis_data:/data
     networks:
@@ -51,6 +60,7 @@ services:
 
   # ── Backend ───────────────────────────────────────────────────
   backend:
+    image: abhaygupta002/talentiq-backend:latest
     build:
       context: ./talentiq-backend
       dockerfile: Dockerfile
@@ -83,7 +93,7 @@ services:
       MAIL_USERNAME: ${MAIL_USERNAME:-}
       MAIL_PASSWORD: ${MAIL_PASSWORD:-}
     ports:
-      - "8080:8080"
+      - "8081:8080"
     volumes:
       - backend_uploads:/app/uploads
       - backend_logs:/var/log/talentiq
@@ -98,6 +108,7 @@ services:
 
   # ── Frontend ──────────────────────────────────────────────────
   frontend:
+    image: abhaygupta002/talentiq-frontend:latest
     build:
       context: ./talentiq-frontend
       dockerfile: Dockerfile

@@ -1,0 +1,126 @@
+/* ============================================================
+   TalentIQ — Admin Portal Page Styles
+   ============================================================ */
+
+.admin-container {
+  max-width: 1140px;
+  margin: 40px auto;
+  padding: 0 24px;
+}
+
+.admin-header {
+  margin-bottom: 32px;
+}
+
+.admin-badge {
+  margin-bottom: 12px;
+}
+
+.admin-title {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.admin-subtitle {
+  color: var(--text-muted);
+}
+
+.admin-loading {
+  text-align: center;
+  padding: 60px;
+  color: var(--text-muted);
+}
+
+/* ── Top Platform Metrics ────────────────────────────────── */
+.admin-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.admin-metric-card {
+  padding: 20px;
+}
+
+.admin-metric-label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.admin-metric-value {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.admin-metric-value.cyan {
+  color: var(--primary-cyan);
+}
+
+.admin-metric-value.amber {
+  color: var(--accent-amber);
+}
+
+.admin-metric-value.indigo {
+  color: var(--primary-indigo);
+}
+
+/* ── Control Panels Grid ─────────────────────────────────── */
+.admin-panels-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.admin-panel {
+  padding: 24px;
+}
+
+.admin-panel-title {
+  font-size: 18px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 8px;
+}
+
+.admin-item-primary {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.admin-item-secondary {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.admin-item-btn-group {
+  display: flex;
+  gap: 6px;
+}
+
+.admin-empty-text {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .admin-panels-grid {
+    grid-template-columns: 1fr;
+  }
+}

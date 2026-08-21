@@ -1,0 +1,476 @@
+/* ============================================================
+   TalentIQ — HR Calendar & Interview Management Styles
+   ============================================================ */
+
+.calendar-page-wrapper {
+  display: flex;
+  height: 100vh;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+}
+
+/* ── Light Theme ─────────────────────────────────────────── */
+.calendar-page-wrapper.theme-light {
+  background: #F8FAFC;
+  color: #1E293B;
+}
+
+.calendar-page-wrapper.theme-light .cal-sidebar {
+  background: #FFFFFF;
+  border-right: 1px solid #E2E8F0;
+}
+
+.calendar-page-wrapper.theme-light .cal-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+}
+
+.calendar-page-wrapper.theme-light .cal-header-bar {
+  background: #FFFFFF;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.calendar-page-wrapper.theme-light .cal-day-cell {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+}
+
+.calendar-page-wrapper.theme-light .cal-day-cell:hover {
+  background: #F8FAFC;
+}
+
+.calendar-page-wrapper.theme-light .cal-day-cell.selected {
+  border-color: #2563EB;
+  background: #EFF6FF;
+}
+
+.calendar-page-wrapper.theme-light .cal-slot-chip {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #BFDBFE;
+}
+
+.calendar-page-wrapper.theme-light .cal-modal-panel {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+}
+
+.calendar-page-wrapper.theme-light .cal-input-field {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  color: #1E293B;
+}
+
+.calendar-page-wrapper.theme-light .cal-user-badge {
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+}
+
+.calendar-page-wrapper.theme-light .cal-theme-btn {
+  background: #F1F5F9;
+  color: #475569;
+  border: 1px solid #E2E8F0;
+}
+
+.calendar-page-wrapper.theme-light .cal-avatar-brand {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+}
+
+/* ── Universe Theme ──────────────────────────────────────── */
+.calendar-page-wrapper.theme-universe {
+  background: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.12), transparent 40%), #070B19;
+  color: #F8FAFC;
+}
+
+.calendar-page-wrapper.theme-universe .cal-sidebar {
+  background: #0F172A;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.calendar-page-wrapper.theme-universe .cal-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.calendar-page-wrapper.theme-universe .cal-header-bar {
+  background: rgba(15, 23, 42, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.calendar-page-wrapper.theme-universe .cal-day-cell {
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.calendar-page-wrapper.theme-universe .cal-day-cell:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.calendar-page-wrapper.theme-universe .cal-day-cell.selected {
+  border-color: #6366F1;
+  background: rgba(99, 102, 241, 0.15);
+}
+
+.calendar-page-wrapper.theme-universe .cal-slot-chip {
+  background: rgba(99, 102, 241, 0.2);
+  color: #A78BFA;
+  border: 1px solid rgba(99, 102, 241, 0.35);
+}
+
+.calendar-page-wrapper.theme-universe .cal-modal-panel {
+  background: #0F172A;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.calendar-page-wrapper.theme-universe .cal-input-field {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #F8FAFC;
+}
+
+.calendar-page-wrapper.theme-universe .cal-user-badge {
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.calendar-page-wrapper.theme-universe .cal-theme-btn {
+  background: rgba(99, 102, 241, 0.2);
+  color: #A78BFA;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.calendar-page-wrapper.theme-universe .cal-avatar-brand {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+/* ── Sidebar Layout ──────────────────────────────────────── */
+.cal-sidebar {
+  width: 220px;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.cal-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px 28px;
+  cursor: pointer;
+}
+
+.cal-brand-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cal-brand-name {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.cal-nav-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cal-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: left;
+  transition: all 0.2s;
+  background: transparent;
+  color: #64748b;
+}
+
+.theme-universe .cal-nav-item {
+  color: #94a3b8;
+}
+
+.cal-nav-item:hover {
+  background: #F1F5F9;
+}
+
+.theme-universe .cal-nav-item:hover {
+  background: rgba(99, 102, 241, 0.12);
+}
+
+.cal-nav-item.active {
+  background: #2563EB;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.theme-universe .cal-nav-item.active {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #FFFFFF;
+}
+
+.cal-nav-divider {
+  height: 1px;
+  background: #E2E8F0;
+  margin: 8px 0;
+}
+
+.theme-universe .cal-nav-divider {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cal-user-badge {
+  padding: 12px;
+  border-radius: 10px;
+}
+
+.cal-user-name {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cal-user-email {
+  font-size: 10px;
+  color: #64748B;
+  margin-top: 2px;
+}
+
+.theme-universe .cal-user-email {
+  color: #94A3B8;
+}
+
+/* ── Main Workspace ──────────────────────────────────────── */
+.cal-main-workspace {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.cal-header-bar {
+  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cal-header-title-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cal-header-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.cal-theme-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-size: 11px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.cal-header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.cal-btn-schedule {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #2563EB;
+  color: #fff;
+}
+
+.theme-universe .cal-btn-schedule {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+.cal-btn-select {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #10B981;
+  color: #fff;
+}
+
+.theme-universe .cal-btn-select {
+  background: linear-gradient(135deg, #10b981, #06b6d4);
+}
+
+/* ── Content Body & Grid ─────────────────────────────────── */
+.cal-content-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 28px;
+}
+
+.cal-nav-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.cal-month-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.cal-month-nav-btns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cal-nav-arrow-btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #E2E8F0;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.theme-universe .cal-nav-arrow-btn {
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #F8FAFC;
+}
+
+.cal-weekdays-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 8px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748B;
+}
+
+.theme-universe .cal-weekdays-row {
+  color: #94A3B8;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.cal-day-cell {
+  min-height: 95px;
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.cal-day-cell.empty {
+  opacity: 0.2;
+  cursor: default;
+}
+
+.cal-day-number {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.cal-slots-indicator-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cal-slot-chip {
+  font-size: 10px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* ── Modal Dialogs ───────────────────────────────────────── */
+.cal-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 13, 22, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 400;
+  padding: 20px;
+}
+
+.cal-modal-panel {
+  width: 100%;
+  max-width: 520px;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.cal-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.cal-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.cal-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cal-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}

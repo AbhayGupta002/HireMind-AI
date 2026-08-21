@@ -1,0 +1,84 @@
+/* ============================================================
+   TalentIQ — My Applications Page Styles
+   ============================================================ */
+
+.my-apps-container {
+  max-width: 1140px;
+  margin: 40px auto;
+  padding: 0 24px;
+}
+
+.my-apps-header {
+  margin-bottom: 32px;
+}
+
+.my-apps-title {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.my-apps-subtitle {
+  color: var(--text-muted);
+}
+
+.my-apps-loading {
+  text-align: center;
+  padding: 60px;
+  color: var(--text-muted);
+}
+
+.my-apps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.my-app-card {
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.my-app-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.my-app-job-title {
+  font-size: 20px;
+  color: #FFF;
+}
+
+.my-app-meta-row {
+  display: flex;
+  gap: 20px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.my-app-company {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.my-app-score {
+  color: var(--primary-cyan);
+  fontWeight: 600;
+}
+
+.my-app-interview-alert {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--accent-amber);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.my-app-actions {
+  text-align: right;
+}

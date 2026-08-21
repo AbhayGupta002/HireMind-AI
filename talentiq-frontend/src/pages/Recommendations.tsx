@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import { Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
+import '../css/recommendations.css';
 
 interface RecommendationItem {
   id: number;
@@ -77,85 +78,79 @@ export const Recommendations: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: '1140px', margin: '40px auto', padding: '0 24px' }}>
-      <div style={{ marginBottom: '32px' }}>
-        <div className="badge badge-cyan" style={{ marginBottom: '12px' }}>
+    <div className="recs-container">
+      <div className="recs-header">
+        <div className="badge badge-cyan recs-tag">
           <Sparkles size={14} /> AI Recommendation Engine 2.0
         </div>
-        <h2 style={{ fontSize: '32px', marginBottom: '8px' }}>Personalized AI Job Matches</h2>
-        <p style={{ color: 'var(--text-muted)' }}>Weighted RAG matching calculated from your active resume and skills matrix</p>
+        <h2 className="recs-title">Personalized AI Job Matches</h2>
+        <p className="recs-subtitle">Weighted RAG matching calculated from your active resume and skills matrix</p>
       </div>
 
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '60px', color: 'var(--text-muted)' }}>Computing AI matches...</div>
+        <div className="recs-loading">Computing AI matches...</div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div className="recs-list">
           {recommendations.map(rec => (
-            <div key={rec.id} className="glass-panel" style={{ padding: '32px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
+            <div key={rec.id} className="glass-panel rec-card">
+              <div className="rec-top-row">
                 <div>
-                  <h3 style={{ fontSize: '24px', marginBottom: '4px' }}>{rec.job.title}</h3>
-                  <div style={{ fontSize: '14px', color: 'var(--primary-cyan)' }}>{rec.job.company.name} · {rec.job.location}</div>
+                  <h3 className="rec-job-title">{rec.job.title}</h3>
+                  <div className="rec-company-loc">{rec.job.company.name} · {rec.job.location}</div>
                 </div>
 
                 {/* Score Gauge */}
-                <div style={{
-                  padding: '12px 24px',
-                  borderRadius: '16px',
-                  background: 'var(--gradient-brand)',
-                  textAlign: 'center',
-                  boxShadow: 'var(--shadow-glow)'
-                }}>
-                  <div style={{ fontSize: '28px', fontWeight: 800, color: '#FFF' }}>{rec.overallScore.toFixed(0)}%</div>
-                  <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.8)', fontWeight: 700, letterSpacing: '0.05em' }}>MATCH SCORE</div>
+                <div className="rec-score-gauge">
+                  <div className="rec-score-value">{rec.overallScore.toFixed(0)}%</div>
+                  <div className="rec-score-label">MATCH SCORE</div>
                 </div>
               </div>
 
               {/* Score Meters Breakdown */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '24px', background: 'rgba(15, 23, 42, 0.5)', padding: '16px', borderRadius: '12px' }}>
+              <div className="rec-meters-grid">
                 <div>
-                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px' }}>Skills Fit: {rec.skillScore}%</div>
-                  <div style={{ height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
-                    <div style={{ width: `${rec.skillScore}%`, height: '100%', background: 'var(--primary-cyan)' }} />
+                  <div className="rec-meter-label">Skills Fit: {rec.skillScore}%</div>
+                  <div className="rec-meter-track">
+                    <div className="rec-meter-bar skills" style={{ width: `${rec.skillScore}%` }} />
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px' }}>Experience Fit: {rec.experienceScore}%</div>
-                  <div style={{ height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
-                    <div style={{ width: `${rec.experienceScore}%`, height: '100%', background: 'var(--primary-indigo)' }} />
+                  <div className="rec-meter-label">Experience Fit: {rec.experienceScore}%</div>
+                  <div className="rec-meter-track">
+                    <div className="rec-meter-bar experience" style={{ width: `${rec.experienceScore}%` }} />
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px' }}>Location/Remote Fit: {rec.locationScore}%</div>
-                  <div style={{ height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
-                    <div style={{ width: `${rec.locationScore}%`, height: '100%', background: 'var(--primary-violet)' }} />
+                  <div className="rec-meter-label">Location/Remote Fit: {rec.locationScore}%</div>
+                  <div className="rec-meter-track">
+                    <div className="rec-meter-bar location" style={{ width: `${rec.locationScore}%` }} />
                   </div>
                 </div>
               </div>
 
               {/* Strengths & Improvements */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+              <div className="rec-insights-grid">
                 <div>
-                  <h4 style={{ fontSize: '14px', color: 'var(--accent-emerald)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <h4 className="rec-insights-heading-emerald">
                     <CheckCircle2 size={16} /> Key Matching Strengths
                   </h4>
-                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <ul className="rec-insights-list">
                     {rec.strengths?.map((str, idx) => (
-                      <li key={idx} style={{ fontSize: '13px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--accent-emerald)' }} /> {str}
+                      <li key={idx} className="rec-insight-item">
+                        <span className="rec-bullet-emerald" /> {str}
                       </li>
                     ))}
                   </ul>
                 </div>
 
                 <div>
-                  <h4 style={{ fontSize: '14px', color: 'var(--accent-amber)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <h4 className="rec-insights-heading-amber">
                     <AlertCircle size={16} /> Skill Growth Recommendations
                   </h4>
-                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <ul className="rec-insights-list">
                     {rec.improvements?.map((imp, idx) => (
-                      <li key={idx} style={{ fontSize: '13px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--accent-amber)' }} /> {imp}
+                      <li key={idx} className="rec-insight-item">
+                        <span className="rec-bullet-amber" /> {imp}
                       </li>
                     ))}
                   </ul>

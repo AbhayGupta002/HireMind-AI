@@ -1,0 +1,297 @@
+/* ============================================================
+   TalentIQ — Register Page Styles
+   ============================================================ */
+
+.register-page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 24px 80px;
+  background: var(--bg-primary);
+}
+
+.register-container {
+  width: 100%;
+  max-width: 640px;
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.register-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.register-icon-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: var(--gradient-brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-glow);
+  margin: 0 auto 16px;
+}
+
+.register-title {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.register-subtitle {
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+.register-login-link {
+  color: var(--primary-cyan);
+}
+
+/* ── Mode Toggle ─────────────────────────────────────────── */
+.register-mode-toggle {
+  padding: 6px;
+  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+.register-mode-btn {
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.register-mode-btn.active-candidate {
+  background: var(--gradient-brand);
+  color: #FFF;
+}
+
+.register-mode-btn.active-hr {
+  background: var(--gradient-indigo-violet);
+  color: #FFF;
+}
+
+/* ── Role Banner ─────────────────────────────────────────── */
+.register-role-banner {
+  padding: 14px 20px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.register-role-banner.candidate {
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+}
+
+.register-role-banner.candidate strong {
+  color: var(--primary-cyan);
+}
+
+.register-role-banner.hr {
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.register-role-banner.hr strong {
+  color: var(--primary-indigo);
+}
+
+/* ── Step Progress ───────────────────────────────────────── */
+.register-step-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.register-step-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.register-step-bubble {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 2px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #FFF;
+}
+
+.register-step-bubble.active {
+  background: var(--gradient-brand);
+  border: none;
+}
+
+.register-step-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.register-step-label.active {
+  color: #FFF;
+}
+
+.register-step-connector {
+  flex: 1;
+  height: 2px;
+  background: var(--border-subtle);
+  border-radius: 2px;
+}
+
+.register-step-connector.active {
+  background: var(--gradient-brand);
+}
+
+/* ── Form & Error ────────────────────────────────────────── */
+.register-form-panel {
+  padding: 32px;
+}
+
+.register-error-alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #FCA5A5;
+  font-size: 13px;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.register-row-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.register-field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.register-password-wrapper {
+  position: relative;
+}
+
+.register-password-input {
+  padding-right: 48px;
+}
+
+.register-eye-btn {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.register-submit-btn-full {
+  width: 100%;
+  padding: 14px;
+  margin-top: 8px;
+}
+
+/* ── Benefits Callouts ───────────────────────────────────── */
+.register-benefits-box {
+  padding: 16px;
+  border-radius: 10px;
+}
+
+.register-benefits-box.candidate {
+  background: rgba(6, 182, 212, 0.06);
+  border: 1px solid rgba(6, 182, 212, 0.15);
+}
+
+.register-benefits-box.hr {
+  background: rgba(99, 102, 241, 0.06);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+}
+
+.register-benefits-title-cyan {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary-cyan);
+  margin-bottom: 10px;
+}
+
+.register-benefits-title-indigo {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary-indigo);
+  margin-bottom: 10px;
+}
+
+.register-benefits-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.register-step2-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.register-btn-back {
+  flex: 1;
+  padding: 14px;
+}
+
+.register-btn-submit {
+  flex: 2;
+  padding: 14px;
+}
+
+.register-terms-notice {
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: center;
+  margin-top: 4px;
+}
+
+@media (max-width: 600px) {
+  .register-row-2col {
+    grid-template-columns: 1fr;
+  }
+}
