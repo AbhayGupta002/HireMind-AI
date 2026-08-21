@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE = '/v1';
+const API_BASE = '/api/v1';
 
 export const apiClient = axios.create({
   baseURL: API_BASE,

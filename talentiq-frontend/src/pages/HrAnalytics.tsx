@@ -184,11 +184,11 @@ export const HrAnalytics: React.FC = () => {
     try {
       setLoading(true);
       const [analyticsRes, appsRes, calRes, jobsRes, chatRes] = await Promise.all([
-        apiClient.get('/v1/analytics/hr').catch(() => null),
-        apiClient.get('/v1/applications/hr?size=5&sort=appliedAt,desc').catch(() => null),
-        apiClient.get('/v1/interviews/calendar').catch(() => null),
-        apiClient.get('/v1/jobs?size=4').catch(() => null),
-        apiClient.get('/v1/chat/contacts').catch(() => null),
+        apiClient.get('/analytics/hr').catch(() => null),
+        apiClient.get('/applications/hr?size=5&sort=appliedAt,desc').catch(() => null),
+        apiClient.get('/interviews/calendar').catch(() => null),
+        apiClient.get('/jobs?size=4').catch(() => null),
+        apiClient.get('/chat/contacts').catch(() => null),
       ]);
 
       if (analyticsRes?.data?.data) {

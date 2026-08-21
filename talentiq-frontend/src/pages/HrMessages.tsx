@@ -93,7 +93,7 @@ const HrMessages: React.FC = () => {
     const fetchContacts = async () => {
       try {
         setContactsLoading(true);
-        const res = await apiClient.get('/v1/chat/contacts');
+        const res = await apiClient.get('/chat/contacts');
         setContacts(res.data?.data || []);
       } catch {
         setContacts([]);
@@ -121,7 +121,7 @@ const HrMessages: React.FC = () => {
             if (prev.some(m => m.id === msg.id)) return prev;
             return [...prev, msg];
           });
-          apiClient.get('/v1/chat/contacts').then(res => setContacts(res.data?.data || []));
+          apiClient.get('/chat/contacts').then(res => setContacts(res.data?.data || []));
         });
 
         client.subscribe('/user/queue/typing', (frame) => {
@@ -147,7 +147,7 @@ const HrMessages: React.FC = () => {
   const loadConversation = useCallback(async (contact: Contact) => {
     try {
       setLoading(true);
-      const res = await apiClient.get(`/v1/chat/conversations/${contact.userId}`);
+      const res = await apiClient.get(`/chat/conversations/${contact.userId}`);
       setMessages(res.data?.data || []);
     } catch {
       setMessages([]);

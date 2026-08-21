@@ -96,8 +96,8 @@ const HrCalendar: React.FC = () => {
     try {
       setLoading(true);
       const [slotsRes, appsRes] = await Promise.all([
-        apiClient.get('/v1/interviews/calendar'),
-        apiClient.get('/v1/applications/hr?size=50&sort=appliedAt,desc').catch(() => ({ data: { data: { content: [] } } })),
+        apiClient.get('/interviews/calendar'),
+        apiClient.get('/applications/hr?size=50&sort=appliedAt,desc').catch(() => ({ data: { data: { content: [] } } })),
       ]);
       setSlots(slotsRes.data?.data || []);
       setApplications(appsRes.data?.data?.content || []);
@@ -143,7 +143,7 @@ const HrCalendar: React.FC = () => {
     if (!scheduleForm.applicationId || !scheduleForm.scheduledAt) return;
     try {
       setActionLoading(true);
-      await apiClient.post('/v1/interviews/schedule', {
+      await apiClient.post('/interviews/schedule', {
         applicationId: parseInt(scheduleForm.applicationId),
         scheduledAt: new Date(scheduleForm.scheduledAt).toISOString(),
         durationMinutes: scheduleForm.durationMinutes,
@@ -164,7 +164,7 @@ const HrCalendar: React.FC = () => {
     if (!selectForm.applicationId) return;
     try {
       setActionLoading(true);
-      await apiClient.post('/v1/interviews/select', {
+      await apiClient.post('/interviews/select', {
         applicationId: parseInt(selectForm.applicationId),
         customMessage: selectForm.customMessage || undefined,
       });
@@ -179,7 +179,7 @@ const HrCalendar: React.FC = () => {
   /* ─── Update slot status ─── */
   const updateStatus = async (slotId: number, status: string) => {
     try {
-      await apiClient.put(`/v1/interviews/${slotId}/status`, { status });
+      await apiClient.put(`/interviews/${slotId}/status`, { status });
       fetchData();
     } catch { }
   };

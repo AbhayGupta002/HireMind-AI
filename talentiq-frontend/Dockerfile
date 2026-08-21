@@ -15,7 +15,7 @@ RUN npm install
 
 # Copy source and build
 COPY . .
-ENV VITE_API_BASE_URL=/api
+ENV VITE_API_BASE_URL=/api/v1
 RUN npm run build
 
 # ── Stage 2: Serve ────────────────────────────────────────────
@@ -27,7 +27,7 @@ LABEL description="TalentIQ AI Talent Intelligence Platform — Frontend"
 # Copy built assets
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Nginx config for SPA routing
+# Nginx config for SPA routing and API reverse proxy
 RUN printf 'server {\n\
     listen 80;\n\
     root /usr/share/nginx/html;\n\
@@ -40,6 +40,18 @@ RUN printf 'server {\n\
         proxy_http_version 1.1;\n\
         proxy_set_header Host $host;\n\
         proxy_set_header X-Real-IP $remote_addr;\n\
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n\
+        proxy_set_header X-Forwarded-Proto $scheme;\n\
+        proxy_set_header Upgrade $http_upgrade;\n\
+        proxy_set_header Connection "upgrade";\n\
+    }\n\
+    location /v1 {\n\
+        proxy_pass http://backend:8080/api/v1;\n\
+        proxy_http_version 1.1;\n\
+        proxy_set_header Host $host;\n\
+        proxy_set_header X-Real-IP $remote_addr;\n\
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n\
+        proxy_set_header X-Forwarded-Proto $scheme;\n\
         proxy_set_header Upgrade $http_upgrade;\n\
         proxy_set_header Connection "upgrade";\n\
     }\n\
