@@ -1,5 +1,5 @@
 -- ============================================================
--- V12: Performance Optimization Indexes
+-- V12: Performance Optimization Indexes & Communication Tables
 -- Adds composite and covering indexes for common query patterns
 -- ============================================================
 
@@ -52,7 +52,43 @@ CREATE INDEX idx_analytics_events_type_created
 CREATE INDEX idx_audit_logs_user_created 
     ON audit_logs (user_id, created_at);
 
--- ── 6. Chat & Interview Scheduling ──────────────────────────────
+-- ── 6. Chat & Interview Tables & Scheduling Indexes ────────────
+CREATE TABLE IF NOT EXISTS chat_messages (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    sender_id BIGINT NOT NULL,
+    sender_name VARCHAR(200) NOT NULL,
+    receiver_id BIGINT NOT NULL,
+    content TEXT NOT NULL,
+    type VARCHAR(30) NOT NULL DEFAULT 'TEXT',
+    is_read BOOLEAN NOT NULL DEFAULT FALSE,
+    sent_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_chat_msg_sender (sender_id),
+    INDEX idx_chat_msg_receiver (receiver_id),
+    INDEX idx_chat_msg_sent_at (sent_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS interview_slots (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    application_id BIGINT NOT NULL,
+    hr_user_id BIGINT NOT NULL,
+    hr_name VARCHAR(200) NOT NULL,
+    candidate_user_id BIGINT NOT NULL,
+    candidate_name VARCHAR(200) NOT NULL,
+    candidate_email VARCHAR(255) NOT NULL,
+    job_title VARCHAR(200) NOT NULL,
+    scheduled_at TIMESTAMP NOT NULL,
+    duration_minutes INT NOT NULL DEFAULT 60,
+    meeting_link VARCHAR(500),
+    notes TEXT,
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
+    reminder_sent BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_interview_hr_user_id (hr_user_id),
+    INDEX idx_interview_candidate_user_id (candidate_user_id),
+    INDEX idx_interview_application_id (application_id),
+    INDEX idx_interview_scheduled_at (scheduled_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Optimizes direct messaging thread queries between two users
 CREATE INDEX idx_chat_msg_pair_sent 
     ON chat_messages (sender_id, receiver_id, sent_at);

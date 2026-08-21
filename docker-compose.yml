@@ -13,10 +13,10 @@ services:
     container_name: talentiq-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-${MYSQL_ROOT_PASSWORD:-}}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-talentiq_dev}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-HireMeAI}
       MYSQL_USER: ${MYSQL_USER:-talentiq_user}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-${DB_PASSWORD:-}}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     command: >
       mysqld
       --innodb-buffer-pool-size=256M
@@ -75,9 +75,9 @@ services:
       APP_PROFILE: dev
       DB_HOST: ${DB_HOST:-mysql}
       DB_PORT: ${DB_PORT:-3306}
-      DB_NAME: ${DB_NAME:-talentiq_dev}
+      DB_NAME: ${DB_NAME:-HireMeAI}
       DB_USER: ${DB_USER:-talentiq_user}
-      DB_PASSWORD: ${DB_PASSWORD:-${DB_PASSWORD:-}}
+      DB_PASSWORD: ${DB_PASSWORD}
       REDIS_HOST: redis
       REDIS_PORT: 6379
       JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production-minimum-256-bits}
