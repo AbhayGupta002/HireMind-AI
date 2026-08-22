@@ -26,7 +26,7 @@ public class PortfolioController {
     private final PortfolioService portfolioService;
 
     @PostMapping
-    @PreAuthorize("hasRole('CANDIDATE')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Create a new portfolio showcase project")
     public ResponseEntity<ApiResponse<PortfolioDto.Response>> createPortfolio(
             @AuthenticationPrincipal UserPrincipal principal,
@@ -36,7 +36,7 @@ public class PortfolioController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('CANDIDATE')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Update an existing portfolio project")
     public ResponseEntity<ApiResponse<PortfolioDto.Response>> updatePortfolio(
             @AuthenticationPrincipal UserPrincipal principal,
@@ -47,7 +47,7 @@ public class PortfolioController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('CANDIDATE')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Delete a portfolio project")
     public ResponseEntity<ApiResponse<Void>> deletePortfolio(
             @AuthenticationPrincipal UserPrincipal principal,

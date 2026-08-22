@@ -10,37 +10,56 @@ export const apiClient = axios.create({
 });
 
 // Request Interceptor: Attach JWT Token
-apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('accessToken');
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-}, (error) => Promise.reject(error));
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('accessToken');
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-// Response Interceptor: Handle Token Refresh on 401
+// Response Interceptor: Handle Token Refresh on 401 or 403
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const status = error.response?.status;
+    const isAuthError = status === 401 || (status === 403 && !originalRequest.url?.includes('/auth/login'));
+
+    if (isAuthError && !originalRequest._retry) {
       originalRequest._retry = true;
       const refreshToken = localStorage.getItem('refreshToken');
+
       if (refreshToken) {
         try {
           const res = await axios.post(`${API_BASE}/auth/refresh`, { refreshToken });
-          const newAccessToken = res.data.data.accessToken;
-          const newRefreshToken = res.data.data.refreshToken;
-          
-          localStorage.setItem('accessToken', newAccessToken);
-          localStorage.setItem('refreshToken', newRefreshToken);
-          
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-          return apiClient(originalRequest);
+          const newAccessToken = res.data?.data?.accessToken || res.data?.accessToken;
+          const newRefreshToken = res.data?.data?.refreshToken || res.data?.refreshToken;
+
+          if (newAccessToken) {
+            localStorage.setItem('accessToken', newAccessToken);
+            if (newRefreshToken) localStorage.setItem('refreshToken', newRefreshToken);
+
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+            return apiClient(originalRequest);
+          }
         } catch (refreshError) {
+          console.warn('Token refresh failed. Redirecting to login...');
           localStorage.removeItem('accessToken');
           localStorage.removeItem('refreshToken');
           localStorage.removeItem('user');
+          if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+            window.location.href = '/login';
+          }
+        }
+      } else {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+        if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
           window.location.href = '/login';
         }
       }
@@ -48,3 +67,5 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export default apiClient;

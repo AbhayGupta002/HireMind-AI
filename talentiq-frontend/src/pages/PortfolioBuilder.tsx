@@ -118,7 +118,9 @@ export const PortfolioBuilder: React.FC = () => {
 
       setShowModal(false);
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to save portfolio project.');
+      console.error('Failed to save portfolio project:', err);
+      const msg = err?.response?.data?.message || err?.message || 'Failed to save portfolio project. Please verify your login session.';
+      setError(msg);
     } finally {
       setSaving(false);
     }
@@ -292,6 +294,12 @@ export const PortfolioBuilder: React.FC = () => {
                   <X size={18} />
                 </button>
               </div>
+
+              {error && (
+                <div style={{ padding: '10px 14px', background: 'rgba(239, 68, 68, 0.18)', border: '1px solid rgba(239, 68, 68, 0.35)', borderRadius: 10, color: '#FCA5A5', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8, fontSize: 13 }}>
+                  <AlertCircle size={15} /> {error}
+                </div>
+              )}
 
               <form onSubmit={handleSubmit} className="portfolio-form">
                 <div className="portfolio-form-group">

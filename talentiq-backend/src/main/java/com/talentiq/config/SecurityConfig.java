@@ -83,6 +83,15 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
+                // ── Exception Handling (401 on unauthenticated / expired JWT) ─
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"success\":false,\"message\":\"Session expired or unauthorized. Please log in.\",\"errorCode\":\"UNAUTHORIZED\"}");
+                        })
+                )
+
                 // ── Security headers ──────────────────────────────────────────
                 .headers(headers -> headers
                         .contentSecurityPolicy(csp ->
