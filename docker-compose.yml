@@ -135,8 +135,6 @@ services:
       - "8090:8080"
     networks:
       - talentiq-net
-    profiles:
-      - tools
 
   # ── Redis Commander (Redis UI) ────────────────────────────────
   redis-commander:
@@ -149,8 +147,6 @@ services:
       - "8091:8081"
     networks:
       - talentiq-net
-    profiles:
-      - tools
 
 # ── Networks ──────────────────────────────────────────────────
 networks:
