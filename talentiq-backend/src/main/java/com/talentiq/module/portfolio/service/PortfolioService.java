@@ -15,4 +15,6 @@ public interface PortfolioService {
     PortfolioDto.Response getPortfolioById(Long portfolioId);
 
     PagedResponse<PortfolioDto.Response> listPortfoliosByCandidate(Long candidateId, Pageable pageable);
+
+    PagedResponse<PortfolioDto.Response> listPortfoliosByCandidateUserId(Long candidateUserId, Pageable pageable);
 }

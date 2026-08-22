@@ -146,6 +146,17 @@ public class PortfolioServiceImpl implements PortfolioService {
         return PagedResponse.of(portfolios.map(this::mapToDto));
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public PagedResponse<PortfolioDto.Response> listPortfoliosByCandidateUserId(Long candidateUserId, Pageable pageable) {
+        Candidate candidate = candidateRepository.findByUserId(candidateUserId).orElse(null);
+        if (candidate == null) {
+            return PagedResponse.of(Page.empty());
+        }
+        Page<Portfolio> portfolios = portfolioRepository.findAllByCandidateIdOrderByDisplayOrderAsc(candidate.getId(), pageable);
+        return PagedResponse.of(portfolios.map(this::mapToDto));
+    }
+
     private PortfolioDto.Response mapToDto(Portfolio portfolio) {
         List<PortfolioDto.ItemDto> itemDtos = portfolio.getItems().stream()
                 .map(i -> PortfolioDto.ItemDto.builder()

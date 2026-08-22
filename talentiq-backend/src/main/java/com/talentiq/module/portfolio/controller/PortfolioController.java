@@ -63,6 +63,27 @@ public class PortfolioController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
+    @GetMapping("/my")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "List all portfolio project showcases belonging to the currently logged in user/candidate")
+    public ResponseEntity<PagedResponse<PortfolioDto.Response>> listMyPortfolios(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(portfolioService.listPortfoliosByCandidateUserId(principal.getId(), pageable));
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Alias for /my endpoint")
+    public ResponseEntity<PagedResponse<PortfolioDto.Response>> listMePortfolios(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size) {
+        return listMyPortfolios(principal, page, size);
+    }
+
     @GetMapping("/candidate/{candidateId}")
     @Operation(summary = "List all portfolio project showcases of a candidate")
     public ResponseEntity<PagedResponse<PortfolioDto.Response>> listCandidatePortfolios(
