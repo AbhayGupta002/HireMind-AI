@@ -1,5 +1,6 @@
 package com.talentiq.module.candidate.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.talentiq.common.enums.ExperienceLevel;
 import com.talentiq.common.enums.SkillProficiency;
@@ -88,8 +89,13 @@ public class CandidateDto {
         private String description;
         private String location;
         private String employmentType;
+
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate startDate;
+
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate endDate;
+
         private Boolean current;
         private Integer displayOrder;
     }
@@ -103,8 +109,13 @@ public class CandidateDto {
         private String description;
         private String location;
         private String employmentType;
+
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate startDate;
+
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate endDate;
+
         private boolean current;
         private Integer displayOrder;
     }
@@ -115,8 +126,13 @@ public class CandidateDto {
         private String degree;
         private String fieldOfStudy;
         private BigDecimal gpa;
+
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate startDate;
+
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate endDate;
+
         private Boolean current;
         private String description;
         private Integer displayOrder;
@@ -130,8 +146,13 @@ public class CandidateDto {
         private String degree;
         private String fieldOfStudy;
         private BigDecimal gpa;
+
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate startDate;
+
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate endDate;
+
         private boolean current;
         private String description;
         private Integer displayOrder;
@@ -144,8 +165,13 @@ public class CandidateDto {
         private String url;
         private String githubUrl;
         private List<String> techStack;
+
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate startDate;
+
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate endDate;
+
         private Boolean featured;
         private Integer displayOrder;
     }
@@ -159,8 +185,13 @@ public class CandidateDto {
         private String url;
         private String githubUrl;
         private List<String> techStack;
+
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate startDate;
+
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate endDate;
+
         private boolean featured;
         private Integer displayOrder;
     }

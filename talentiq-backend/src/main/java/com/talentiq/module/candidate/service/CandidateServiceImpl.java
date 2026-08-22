@@ -16,7 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.talentiq.common.enums.SkillProficiency;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -76,17 +77,36 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public CandidateDto.Response addSkill(Long userId, CandidateDto.SkillRequest request) {
         Candidate candidate = getOrCreateCandidate(userId);
+        String skillName = request.getSkillName().trim();
+        SkillProficiency proficiency = request.getProficiency() != null ? request.getProficiency() : SkillProficiency.INTERMEDIATE;
+        int years = request.getYears() != null ? request.getYears() : 0;
+        boolean isPrimary = Boolean.TRUE.equals(request.getPrimary());
+        int displayOrder = request.getDisplayOrder() != null ? request.getDisplayOrder() : 0;
 
-        CandidateSkill skill = CandidateSkill.builder()
-                .candidate(candidate)
-                .skillName(request.getSkillName().trim())
-                .proficiency(request.getProficiency())
-                .years(request.getYears() != null ? request.getYears() : 0)
-                .primary(Boolean.TRUE.equals(request.getPrimary()))
-                .displayOrder(request.getDisplayOrder() != null ? request.getDisplayOrder() : 0)
-                .build();
+        CandidateSkill existing = candidate.getSkills().stream()
+                .filter(s -> s.getSkillName().equalsIgnoreCase(skillName))
+                .findFirst()
+                .orElse(null);
 
-        candidate.getSkills().add(skill);
+        if (existing != null) {
+            existing.setProficiency(proficiency);
+            existing.setYears(years);
+            existing.setPrimary(isPrimary);
+            existing.setDisplayOrder(displayOrder);
+            skillRepository.save(existing);
+        } else {
+            CandidateSkill skill = CandidateSkill.builder()
+                    .candidate(candidate)
+                    .skillName(skillName)
+                    .proficiency(proficiency)
+                    .years(years)
+                    .primary(isPrimary)
+                    .displayOrder(displayOrder)
+                    .build();
+            skill = skillRepository.save(skill);
+            candidate.getSkills().add(skill);
+        }
+
         candidate.calculateProfileCompletion();
         Candidate updated = candidateRepository.save(candidate);
         return mapToResponse(updated);
@@ -95,7 +115,10 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public void deleteSkill(Long userId, Long skillId) {
         Candidate candidate = getOrCreateCandidate(userId);
-        candidate.getSkills().removeIf(s -> s.getId().equals(skillId));
+        candidate.getSkills().removeIf(s -> s.getId() != null && s.getId().equals(skillId));
+        try {
+            skillRepository.deleteById(skillId);
+        } catch (Exception ignored) {}
         candidate.calculateProfileCompletion();
         candidateRepository.save(candidate);
     }
@@ -104,19 +127,22 @@ public class CandidateServiceImpl implements CandidateService {
     public CandidateDto.Response addExperience(Long userId, CandidateDto.ExperienceRequest request) {
         Candidate candidate = getOrCreateCandidate(userId);
 
+        LocalDate startDate = request.getStartDate() != null ? request.getStartDate() : LocalDate.now();
+
         CandidateExperience exp = CandidateExperience.builder()
                 .candidate(candidate)
-                .company(request.getCompany())
-                .title(request.getTitle())
+                .company(request.getCompany().trim())
+                .title(request.getTitle().trim())
                 .description(request.getDescription())
                 .location(request.getLocation())
                 .employmentType(request.getEmploymentType())
-                .startDate(request.getStartDate())
+                .startDate(startDate)
                 .endDate(request.getEndDate())
                 .current(Boolean.TRUE.equals(request.getCurrent()))
                 .displayOrder(request.getDisplayOrder() != null ? request.getDisplayOrder() : 0)
                 .build();
 
+        exp = experienceRepository.save(exp);
         candidate.getExperiences().add(exp);
         candidate.calculateProfileCompletion();
         Candidate updated = candidateRepository.save(candidate);
@@ -126,7 +152,10 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public void deleteExperience(Long userId, Long experienceId) {
         Candidate candidate = getOrCreateCandidate(userId);
-        candidate.getExperiences().removeIf(e -> e.getId().equals(experienceId));
+        candidate.getExperiences().removeIf(e -> e.getId() != null && e.getId().equals(experienceId));
+        try {
+            experienceRepository.deleteById(experienceId);
+        } catch (Exception ignored) {}
         candidate.calculateProfileCompletion();
         candidateRepository.save(candidate);
     }
@@ -135,19 +164,22 @@ public class CandidateServiceImpl implements CandidateService {
     public CandidateDto.Response addEducation(Long userId, CandidateDto.EducationRequest request) {
         Candidate candidate = getOrCreateCandidate(userId);
 
+        LocalDate startDate = request.getStartDate() != null ? request.getStartDate() : LocalDate.now();
+
         CandidateEducation edu = CandidateEducation.builder()
                 .candidate(candidate)
                 .institution(request.getInstitution())
                 .degree(request.getDegree())
                 .fieldOfStudy(request.getFieldOfStudy())
                 .gpa(request.getGpa())
-                .startDate(request.getStartDate())
+                .startDate(startDate)
                 .endDate(request.getEndDate())
                 .current(Boolean.TRUE.equals(request.getCurrent()))
                 .description(request.getDescription())
                 .displayOrder(request.getDisplayOrder() != null ? request.getDisplayOrder() : 0)
                 .build();
 
+        edu = educationRepository.save(edu);
         candidate.getEducations().add(edu);
         candidate.calculateProfileCompletion();
         Candidate updated = candidateRepository.save(candidate);
@@ -157,7 +189,10 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public void deleteEducation(Long userId, Long educationId) {
         Candidate candidate = getOrCreateCandidate(userId);
-        candidate.getEducations().removeIf(e -> e.getId().equals(educationId));
+        candidate.getEducations().removeIf(e -> e.getId() != null && e.getId().equals(educationId));
+        try {
+            educationRepository.deleteById(educationId);
+        } catch (Exception ignored) {}
         candidate.calculateProfileCompletion();
         candidateRepository.save(candidate);
     }
@@ -175,6 +210,8 @@ public class CandidateServiceImpl implements CandidateService {
             }
         }
 
+        LocalDate startDate = request.getStartDate() != null ? request.getStartDate() : LocalDate.now();
+
         CandidateProject proj = CandidateProject.builder()
                 .candidate(candidate)
                 .title(request.getTitle())
@@ -182,12 +219,13 @@ public class CandidateServiceImpl implements CandidateService {
                 .url(request.getUrl())
                 .githubUrl(request.getGithubUrl())
                 .techStack(techStackJson)
-                .startDate(request.getStartDate())
+                .startDate(startDate)
                 .endDate(request.getEndDate())
                 .featured(Boolean.TRUE.equals(request.getFeatured()))
                 .displayOrder(request.getDisplayOrder() != null ? request.getDisplayOrder() : 0)
                 .build();
 
+        proj = projectRepository.save(proj);
         candidate.getProjects().add(proj);
         candidate.calculateProfileCompletion();
         Candidate updated = candidateRepository.save(candidate);
@@ -197,7 +235,10 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public void deleteProject(Long userId, Long projectId) {
         Candidate candidate = getOrCreateCandidate(userId);
-        candidate.getProjects().removeIf(p -> p.getId().equals(projectId));
+        candidate.getProjects().removeIf(p -> p.getId() != null && p.getId().equals(projectId));
+        try {
+            projectRepository.deleteById(projectId);
+        } catch (Exception ignored) {}
         candidate.calculateProfileCompletion();
         candidateRepository.save(candidate);
     }

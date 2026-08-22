@@ -26,7 +26,7 @@ public class ResumeController {
     private final ResumeService resumeService;
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('CANDIDATE')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Upload a new resume version")
     public ResponseEntity<ApiResponse<ResumeDto>> uploadResume(
             @AuthenticationPrincipal UserPrincipal principal,
@@ -51,7 +51,7 @@ public class ResumeController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('CANDIDATE')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "List all uploaded resume versions")
     public ResponseEntity<ApiResponse<List<ResumeDto>>> listMyResumes(
             @AuthenticationPrincipal UserPrincipal principal) {
@@ -60,7 +60,7 @@ public class ResumeController {
     }
 
     @PutMapping("/{id}/active")
-    @PreAuthorize("hasRole('CANDIDATE')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Set a resume version as active/primary")
     public ResponseEntity<ApiResponse<ResumeDto>> setActiveResume(
             @AuthenticationPrincipal UserPrincipal principal,
@@ -70,7 +70,7 @@ public class ResumeController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('CANDIDATE')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Delete a resume version")
     public ResponseEntity<ApiResponse<Void>> deleteResume(
             @AuthenticationPrincipal UserPrincipal principal,

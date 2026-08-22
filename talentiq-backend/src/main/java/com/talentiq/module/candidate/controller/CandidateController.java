@@ -25,7 +25,7 @@ public class CandidateController {
     private final CandidateService candidateService;
 
     @GetMapping("/me")
-    @PreAuthorize("hasRole('CANDIDATE')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get own candidate profile")
     public ResponseEntity<ApiResponse<CandidateDto.Response>> getMyProfile(
             @AuthenticationPrincipal UserPrincipal principal) {
@@ -34,7 +34,7 @@ public class CandidateController {
     }
 
     @PutMapping("/me")
-    @PreAuthorize("hasRole('CANDIDATE')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Update candidate profile")
     public ResponseEntity<ApiResponse<CandidateDto.Response>> updateProfile(
             @AuthenticationPrincipal UserPrincipal principal,
@@ -45,7 +45,7 @@ public class CandidateController {
 
     // ── Skills ────────────────────────────────────────────────────────────────
     @PostMapping("/me/skills")
-    @PreAuthorize("hasRole('CANDIDATE')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Add a skill to candidate profile")
     public ResponseEntity<ApiResponse<CandidateDto.Response>> addSkill(
             @AuthenticationPrincipal UserPrincipal principal,
@@ -55,7 +55,7 @@ public class CandidateController {
     }
 
     @DeleteMapping("/me/skills/{skillId}")
-    @PreAuthorize("hasRole('CANDIDATE')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Delete a skill")
     public ResponseEntity<ApiResponse<Void>> deleteSkill(
             @AuthenticationPrincipal UserPrincipal principal,
@@ -66,7 +66,7 @@ public class CandidateController {
 
     // ── Experiences ───────────────────────────────────────────────────────────
     @PostMapping("/me/experiences")
-    @PreAuthorize("hasRole('CANDIDATE')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Add experience entry")
     public ResponseEntity<ApiResponse<CandidateDto.Response>> addExperience(
             @AuthenticationPrincipal UserPrincipal principal,
@@ -76,7 +76,7 @@ public class CandidateController {
     }
 
     @DeleteMapping("/me/experiences/{experienceId}")
-    @PreAuthorize("hasRole('CANDIDATE')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Delete an experience entry")
     public ResponseEntity<ApiResponse<Void>> deleteExperience(
             @AuthenticationPrincipal UserPrincipal principal,
@@ -87,7 +87,7 @@ public class CandidateController {
 
     // ── Educations ────────────────────────────────────────────────────────────
     @PostMapping("/me/educations")
-    @PreAuthorize("hasRole('CANDIDATE')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Add education entry")
     public ResponseEntity<ApiResponse<CandidateDto.Response>> addEducation(
             @AuthenticationPrincipal UserPrincipal principal,
@@ -97,7 +97,7 @@ public class CandidateController {
     }
 
     @DeleteMapping("/me/educations/{educationId}")
-    @PreAuthorize("hasRole('CANDIDATE')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Delete an education entry")
     public ResponseEntity<ApiResponse<Void>> deleteEducation(
             @AuthenticationPrincipal UserPrincipal principal,
@@ -108,7 +108,7 @@ public class CandidateController {
 
     // ── Projects ──────────────────────────────────────────────────────────────
     @PostMapping("/me/projects")
-    @PreAuthorize("hasRole('CANDIDATE')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Add project entry")
     public ResponseEntity<ApiResponse<CandidateDto.Response>> addProject(
             @AuthenticationPrincipal UserPrincipal principal,
@@ -118,7 +118,7 @@ public class CandidateController {
     }
 
     @DeleteMapping("/me/projects/{projectId}")
-    @PreAuthorize("hasRole('CANDIDATE')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Delete a project entry")
     public ResponseEntity<ApiResponse<Void>> deleteProject(
             @AuthenticationPrincipal UserPrincipal principal,
