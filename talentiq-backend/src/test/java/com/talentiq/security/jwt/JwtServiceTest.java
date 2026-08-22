@@ -1,7 +1,7 @@
 package com.talentiq.security.jwt;
 
 import com.talentiq.common.enums.Role;
-import com.talentiq.module.user.entity.User;
+import com.talentiq.model.User;
 import com.talentiq.security.userdetails.UserPrincipal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

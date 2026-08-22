@@ -1,11 +1,11 @@
-package com.talentiq.module.hr.service;
+package com.talentiq.service.hr;
 
 import com.talentiq.common.exception.ForbiddenException;
-import com.talentiq.module.company.entity.Company;
-import com.talentiq.module.hr.dto.HrDto;
-import com.talentiq.module.hr.entity.HrProfile;
-import com.talentiq.module.hr.repository.HrProfileRepository;
-import com.talentiq.module.user.entity.User;
+import com.talentiq.model.Company;
+import com.talentiq.dto.hr.HrDto;
+import com.talentiq.model.HrProfile;
+import com.talentiq.repository.hr.HrProfileRepository;
+import com.talentiq.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

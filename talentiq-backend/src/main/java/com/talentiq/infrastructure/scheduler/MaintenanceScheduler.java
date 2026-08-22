@@ -1,6 +1,6 @@
 package com.talentiq.infrastructure.scheduler;
 
-import com.talentiq.module.auth.repository.RefreshTokenRepository;
+import com.talentiq.repository.auth.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

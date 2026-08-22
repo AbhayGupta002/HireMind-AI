@@ -1,22 +1,22 @@
-package com.talentiq.module.application.service;
+package com.talentiq.service.application;
 
 import com.talentiq.common.enums.ApplicationStatus;
 import com.talentiq.common.enums.JobStatus;
 import com.talentiq.common.enums.JobType;
 import com.talentiq.common.exception.BadRequestException;
-import com.talentiq.module.application.dto.JobApplicationDto;
-import com.talentiq.module.application.entity.JobApplication;
-import com.talentiq.module.application.repository.ApplicationStatusHistoryRepository;
-import com.talentiq.module.application.repository.JobApplicationRepository;
-import com.talentiq.module.candidate.entity.Candidate;
-import com.talentiq.module.candidate.repository.CandidateRepository;
-import com.talentiq.module.job.entity.Job;
-import com.talentiq.module.job.repository.JobRepository;
-import com.talentiq.module.recommendation.repository.JobRecommendationRepository;
-import com.talentiq.module.recommendation.service.RecommendationService;
-import com.talentiq.module.resume.entity.Resume;
-import com.talentiq.module.resume.repository.ResumeRepository;
-import com.talentiq.module.user.entity.User;
+import com.talentiq.dto.application.JobApplicationDto;
+import com.talentiq.model.JobApplication;
+import com.talentiq.repository.application.ApplicationStatusHistoryRepository;
+import com.talentiq.repository.application.JobApplicationRepository;
+import com.talentiq.model.Candidate;
+import com.talentiq.repository.candidate.CandidateRepository;
+import com.talentiq.model.Job;
+import com.talentiq.repository.job.JobRepository;
+import com.talentiq.repository.recommendation.JobRecommendationRepository;
+import com.talentiq.service.recommendation.RecommendationService;
+import com.talentiq.model.Resume;
+import com.talentiq.repository.resume.ResumeRepository;
+import com.talentiq.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,7 +63,7 @@ class JobApplicationServiceImplTest {
                 .id(20L)
                 .title("Engineer")
                 .status(JobStatus.ACTIVE)
-                .company(com.talentiq.module.company.entity.Company.builder().id(100L).build())
+                .company(com.talentiq.model.Company.builder().id(100L).build())
                 .build();
 
         resume = Resume.builder()

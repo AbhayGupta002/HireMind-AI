@@ -1,13 +1,13 @@
-package com.talentiq.module.candidate.service;
+package com.talentiq.service.candidate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.talentiq.common.enums.Role;
-import com.talentiq.module.candidate.dto.CandidateDto;
-import com.talentiq.module.candidate.entity.Candidate;
-import com.talentiq.module.candidate.entity.CandidateSkill;
-import com.talentiq.module.candidate.repository.*;
-import com.talentiq.module.user.entity.User;
-import com.talentiq.module.user.repository.UserRepository;
+import com.talentiq.dto.candidate.CandidateDto;
+import com.talentiq.model.Candidate;
+import com.talentiq.model.CandidateSkill;
+import com.talentiq.repository.candidate.*;
+import com.talentiq.model.User;
+import com.talentiq.repository.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

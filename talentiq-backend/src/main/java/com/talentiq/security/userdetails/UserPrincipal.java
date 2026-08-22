@@ -1,7 +1,7 @@
 package com.talentiq.security.userdetails;
 
 import com.talentiq.common.enums.Role;
-import com.talentiq.module.user.entity.User;
+import com.talentiq.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

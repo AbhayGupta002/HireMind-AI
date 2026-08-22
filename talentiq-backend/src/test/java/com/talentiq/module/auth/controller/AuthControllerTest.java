@@ -1,9 +1,9 @@
-package com.talentiq.module.auth.controller;
+package com.talentiq.controller.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.talentiq.common.enums.Role;
-import com.talentiq.module.auth.dto.*;
-import com.talentiq.module.auth.service.AuthService;
+import com.talentiq.dto.auth.*;
+import com.talentiq.service.auth.AuthService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

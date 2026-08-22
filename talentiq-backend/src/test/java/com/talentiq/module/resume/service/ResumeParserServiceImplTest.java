@@ -1,16 +1,16 @@
-package com.talentiq.module.resume.service;
+package com.talentiq.service.resume;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.talentiq.common.enums.Role;
 import com.talentiq.config.AppProperties;
 import com.talentiq.infrastructure.storage.FileStorageService;
-import com.talentiq.module.candidate.entity.Candidate;
-import com.talentiq.module.candidate.repository.CandidateRepository;
-import com.talentiq.module.resume.dto.ResumeDto;
-import com.talentiq.module.resume.entity.Resume;
-import com.talentiq.module.resume.repository.ResumeParsedDataRepository;
-import com.talentiq.module.resume.repository.ResumeRepository;
-import com.talentiq.module.user.entity.User;
+import com.talentiq.model.Candidate;
+import com.talentiq.repository.candidate.CandidateRepository;
+import com.talentiq.dto.resume.ResumeDto;
+import com.talentiq.model.Resume;
+import com.talentiq.repository.resume.ResumeParsedDataRepository;
+import com.talentiq.repository.resume.ResumeRepository;
+import com.talentiq.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

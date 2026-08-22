@@ -1,7 +1,7 @@
 package com.talentiq.security.userdetails;
 
-import com.talentiq.module.user.entity.User;
-import com.talentiq.module.user.repository.UserRepository;
+import com.talentiq.model.User;
+import com.talentiq.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;

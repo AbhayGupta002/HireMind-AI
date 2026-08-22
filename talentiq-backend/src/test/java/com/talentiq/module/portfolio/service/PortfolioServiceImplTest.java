@@ -1,15 +1,15 @@
-package com.talentiq.module.portfolio.service;
+package com.talentiq.service.portfolio;
 
 import com.talentiq.common.enums.Role;
 import com.talentiq.common.exception.ForbiddenException;
-import com.talentiq.module.candidate.entity.Candidate;
-import com.talentiq.module.candidate.repository.CandidateRepository;
-import com.talentiq.module.portfolio.dto.PortfolioDto;
-import com.talentiq.module.portfolio.entity.Portfolio;
-import com.talentiq.module.portfolio.repository.PortfolioItemRepository;
-import com.talentiq.module.portfolio.repository.PortfolioRepository;
-import com.talentiq.module.user.entity.User;
-import com.talentiq.module.user.repository.UserRepository;
+import com.talentiq.model.Candidate;
+import com.talentiq.repository.candidate.CandidateRepository;
+import com.talentiq.dto.portfolio.PortfolioDto;
+import com.talentiq.model.Portfolio;
+import com.talentiq.repository.portfolio.PortfolioItemRepository;
+import com.talentiq.repository.portfolio.PortfolioRepository;
+import com.talentiq.model.User;
+import com.talentiq.repository.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

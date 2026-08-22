@@ -1,13 +1,13 @@
-package com.talentiq.module.company.service;
+package com.talentiq.service.company;
 
 import com.talentiq.common.enums.Role;
 import com.talentiq.common.exception.ConflictException;
-import com.talentiq.module.company.dto.CompanyDto;
-import com.talentiq.module.company.entity.Company;
-import com.talentiq.module.company.repository.CompanyRepository;
-import com.talentiq.module.hr.repository.HrProfileRepository;
-import com.talentiq.module.user.entity.User;
-import com.talentiq.module.user.repository.UserRepository;
+import com.talentiq.dto.company.CompanyDto;
+import com.talentiq.model.Company;
+import com.talentiq.repository.company.CompanyRepository;
+import com.talentiq.repository.hr.HrProfileRepository;
+import com.talentiq.model.User;
+import com.talentiq.repository.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

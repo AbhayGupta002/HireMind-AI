@@ -1,4 +1,4 @@
-package com.talentiq.module.auth.service;
+package com.talentiq.service.auth;
 
 import com.talentiq.common.enums.Role;
 import com.talentiq.common.enums.UserStatus;
@@ -7,11 +7,11 @@ import com.talentiq.common.exception.ConflictException;
 import com.talentiq.common.exception.UnauthorizedException;
 import com.talentiq.config.AppProperties;
 import com.talentiq.infrastructure.mail.MailService;
-import com.talentiq.module.auth.dto.*;
-import com.talentiq.module.auth.entity.RefreshToken;
-import com.talentiq.module.auth.repository.RefreshTokenRepository;
-import com.talentiq.module.user.entity.User;
-import com.talentiq.module.user.repository.UserRepository;
+import com.talentiq.dto.auth.*;
+import com.talentiq.model.RefreshToken;
+import com.talentiq.repository.auth.RefreshTokenRepository;
+import com.talentiq.model.User;
+import com.talentiq.repository.user.UserRepository;
 import com.talentiq.security.jwt.JwtService;
 import com.talentiq.security.userdetails.UserPrincipal;
 import jakarta.servlet.http.HttpServletRequest;

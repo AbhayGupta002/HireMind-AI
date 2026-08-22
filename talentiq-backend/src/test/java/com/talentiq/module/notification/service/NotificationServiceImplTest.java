@@ -1,14 +1,14 @@
-package com.talentiq.module.notification.service;
+package com.talentiq.service.notification;
 
 import com.talentiq.common.enums.Role;
 import com.talentiq.infrastructure.mail.MailService;
-import com.talentiq.module.notification.dto.NotificationDto;
-import com.talentiq.module.notification.entity.Notification;
-import com.talentiq.module.notification.entity.NotificationPreferences;
-import com.talentiq.module.notification.repository.NotificationPreferencesRepository;
-import com.talentiq.module.notification.repository.NotificationRepository;
-import com.talentiq.module.user.entity.User;
-import com.talentiq.module.user.repository.UserRepository;
+import com.talentiq.dto.notification.NotificationDto;
+import com.talentiq.model.Notification;
+import com.talentiq.model.NotificationPreferences;
+import com.talentiq.repository.notification.NotificationPreferencesRepository;
+import com.talentiq.repository.notification.NotificationRepository;
+import com.talentiq.model.User;
+import com.talentiq.repository.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
