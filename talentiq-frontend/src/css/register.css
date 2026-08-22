@@ -1,115 +1,183 @@
 /* ============================================================
-   TalentIQ — Register Page Styles
+   TalentIQ / HireMind AI — 3D Milky Way Register Page Styles
    ============================================================ */
 
 .register-page-wrapper {
+  position: relative;
   min-height: 100vh;
+  width: 100vw;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  padding: 40px 24px 80px;
-  background: var(--bg-primary);
+  padding: 40px 20px 80px;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .register-container {
+  position: relative;
+  z-index: 10;
   width: 100%;
-  max-width: 640px;
+  max-width: 620px;
+  margin: 0 auto;
+  animation: cosmicFloatIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cosmicFloatIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.register-card {
+  padding: 36px 32px;
+  border-radius: 24px;
+  background: rgba(15, 23, 42, 0.75) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 40px rgba(99, 102, 241, 0.22) !important;
+  transition: all 0.3s ease;
+}
+
+.register-card:hover {
+  border-color: rgba(99, 102, 241, 0.4) !important;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.75), 0 0 50px rgba(99, 102, 241, 0.35) !important;
 }
 
 /* ── Header ──────────────────────────────────────────────── */
 .register-header {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .register-icon-badge {
   width: 56px;
   height: 56px;
-  border-radius: 16px;
-  background: var(--gradient-brand);
+  border-radius: 18px;
+  background: linear-gradient(135deg, #06b6d4 0%, #6366f1 50%, #a855f7 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-glow);
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.6);
   margin: 0 auto 16px;
+  animation: badgePulse 3s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 25px rgba(6, 182, 212, 0.6);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 0 40px rgba(99, 102, 241, 0.8);
+  }
 }
 
 .register-title {
   font-size: 28px;
   font-weight: 800;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+  color: #f8fafc;
+  letter-spacing: -0.5px;
 }
 
 .register-subtitle {
-  color: var(--text-muted);
-  font-size: 15px;
+  color: #94a3b8;
+  font-size: 13px;
+  margin: 0;
 }
 
 .register-login-link {
-  color: var(--primary-cyan);
+  color: #38bdf8;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.register-login-link:hover {
+  color: #818cf8;
+  text-decoration: underline;
 }
 
 /* ── Mode Toggle ─────────────────────────────────────────── */
 .register-mode-toggle {
-  padding: 6px;
-  margin-bottom: 24px;
+  padding: 5px;
+  margin-bottom: 20px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4px;
+  gap: 6px;
+  background: rgba(10, 15, 30, 0.75);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .register-mode-btn {
-  padding: 14px;
+  padding: 12px;
   border-radius: 10px;
   border: none;
   cursor: pointer;
   background: transparent;
-  color: var(--text-muted);
+  color: #94a3b8;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
+}
+
+.register-mode-btn:hover {
+  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .register-mode-btn.active-candidate {
-  background: var(--gradient-brand);
+  background: linear-gradient(135deg, #06b6d4 0%, #2563eb 100%);
   color: #FFF;
+  box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
 }
 
 .register-mode-btn.active-hr {
-  background: var(--gradient-indigo-violet);
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
   color: #FFF;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
 }
 
 /* ── Role Banner ─────────────────────────────────────────── */
 .register-role-banner {
-  padding: 14px 20px;
+  padding: 12px 16px;
   border-radius: 10px;
-  margin-bottom: 24px;
-  font-size: 13px;
-  color: var(--text-muted);
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: #cbd5e1;
   line-height: 1.6;
+  transition: all 0.3s ease;
 }
 
 .register-role-banner.candidate {
-  background: rgba(6, 182, 212, 0.08);
-  border: 1px solid rgba(6, 182, 212, 0.2);
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.25);
 }
 
 .register-role-banner.candidate strong {
-  color: var(--primary-cyan);
+  color: #38bdf8;
 }
 
 .register-role-banner.hr {
-  background: rgba(99, 102, 241, 0.08);
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.25);
 }
 
 .register-role-banner.hr strong {
-  color: var(--primary-indigo);
+  color: #818cf8;
 }
 
 /* ── Step Progress ───────────────────────────────────────── */
@@ -117,7 +185,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
 .register-step-item {
@@ -128,170 +196,192 @@
 }
 
 .register-step-bubble {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: var(--bg-card);
-  border: 2px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid rgba(255, 255, 255, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 13px;
   font-weight: 700;
-  color: #FFF;
+  color: #94a3b8;
+  transition: all 0.3s ease;
 }
 
 .register-step-bubble.active {
-  background: var(--gradient-brand);
-  border: none;
+  background: linear-gradient(135deg, #06b6d4 0%, #2563eb 100%);
+  border-color: #38bdf8;
+  color: #FFF;
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
 }
 
 .register-step-label {
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-dim);
+  color: #94a3b8;
 }
 
-.register-step-label.active {
-  color: #FFF;
-}
-
-.register-step-connector {
+.register-step-line {
   flex: 1;
   height: 2px;
-  background: var(--border-subtle);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 2px;
 }
 
-.register-step-connector.active {
-  background: var(--gradient-brand);
+.register-step-line.active {
+  background: linear-gradient(90deg, #06b6d4, #6366f1);
 }
 
-/* ── Form & Error ────────────────────────────────────────── */
-.register-form-panel {
-  padding: 32px;
-}
-
+/* ── Alerts & Error ──────────────────────────────────────── */
 .register-error-alert {
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #FCA5A5;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
   font-size: 13px;
-}
-
-.register-form {
+  margin-bottom: 18px;
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  align-items: center;
+  gap: 8px;
 }
 
-.register-row-2col {
+/* ── Form Controls ───────────────────────────────────────── */
+.register-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 14px;
 }
 
-.register-field-label {
-  display: block;
+.register-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.register-label {
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-muted);
-  margin-bottom: 6px;
+  color: #cbd5e1;
+  margin-left: 2px;
+}
+
+.register-input,
+.register-select {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: #f8fafc !important;
+  font-size: 13px;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.register-input:focus,
+.register-select:focus {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.3) !important;
+}
+
+.register-input::placeholder {
+  color: #64748b !important;
 }
 
 .register-password-wrapper {
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.register-password-input {
-  padding-right: 48px;
-}
-
-.register-eye-btn {
+.register-password-toggle {
   position: absolute;
   right: 12px;
-  bottom: 10px;
   background: none;
   border: none;
+  color: #94a3b8;
   cursor: pointer;
-  color: var(--text-muted);
-}
-
-.register-submit-btn-full {
-  width: 100%;
-  padding: 14px;
-  margin-top: 8px;
-}
-
-/* ── Benefits Callouts ───────────────────────────────────── */
-.register-benefits-box {
-  padding: 16px;
-  border-radius: 10px;
-}
-
-.register-benefits-box.candidate {
-  background: rgba(6, 182, 212, 0.06);
-  border: 1px solid rgba(6, 182, 212, 0.15);
-}
-
-.register-benefits-box.hr {
-  background: rgba(99, 102, 241, 0.06);
-  border: 1px solid rgba(99, 102, 241, 0.15);
-}
-
-.register-benefits-title-cyan {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--primary-cyan);
-  margin-bottom: 10px;
-}
-
-.register-benefits-title-indigo {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--primary-indigo);
-  margin-bottom: 10px;
-}
-
-.register-benefits-list {
-  list-style: none;
   padding: 0;
-  margin: 0;
-  font-size: 12px;
-  color: var(--text-muted);
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: center;
 }
 
-.register-step2-actions {
+.register-password-toggle:hover {
+  color: #f8fafc;
+}
+
+.register-actions {
   display: flex;
   gap: 12px;
-  margin-top: 8px;
+  margin-top: 18px;
 }
 
 .register-btn-back {
-  flex: 1;
-  padding: 14px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.register-btn-back:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
 }
 
 .register-btn-submit {
-  flex: 2;
-  padding: 14px;
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.register-terms-notice {
-  font-size: 12px;
-  color: var(--text-dim);
-  text-align: center;
-  margin-top: 4px;
+.register-btn-submit.candidate {
+  background: linear-gradient(135deg, #06b6d4 0%, #2563eb 100%);
+  box-shadow: 0 8px 25px rgba(6, 182, 212, 0.35);
+}
+
+.register-btn-submit.hr {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35);
+}
+
+.register-btn-submit:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.register-btn-submit:active {
+  transform: translateY(0);
+}
+
+.register-btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 @media (max-width: 600px) {
-  .register-row-2col {
+  .register-form-grid {
     grid-template-columns: 1fr;
   }
 }
